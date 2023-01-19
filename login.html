@@ -1,0 +1,101 @@
+<html>
+  <head>
+  <meta name="description" content="HCAT">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>HCAT - 登录</title>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/mdui/1.0.2/css/mdui.min.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <script src="https://cdn.staticfile.org/mdui/1.0.2/js/mdui.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="https://cdn.staticfile.org/jquery/3.6.1/jquery.min.js"></script>
+  <!--<link href="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/css/bootstrap.min.css" rel="stylesheet">-->
+  <!--<script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/js/bootstrap.bundle.min.js"></script>-->
+</head>
+<body class="mdui-theme-primary-indigo mdui-color-blue-100 mdui-theme-accent-indigo mdui-theme-layout-auto">
+  <div class="mdui-appbar mb10">
+    <div class="mdui-toolbar mdui-color-indigo">
+      <a class="mdui-typo-headline">HCAT</a>
+      <a class="mdui-typo-title">登录</a>
+    </div>
+  </div>
+  
+<div class="mdui-container mdui-row mdui-center">
+    <div class="mdui-typo-display-2 mdui-text-center">
+        <br>
+    </div>
+    <div id="login">
+    <div class="mdui-text-center mdui-typo-display-3">登录HCAT</div>
+    <div class="mdui-textfield">
+        <div class="mdui-textfield mdui-textfield-floating-label"><label class="mdui-textfield-label">账号</label><input id="login_account" required="" class="mdui-textfield-input" type="text" name="uid" onkeyup="value=value.replace(/[\W]/g,'')"/></div>
+        <div class="mdui-textfield mdui-textfield-floating-label"><label class="mdui-textfield-label">密码</label><input id="login_passwd" required="" class="mdui-textfield-input" type="password" name="password" onkeyup="value=value.replace(/[\W]/g,'')"/></div><br>
+        <input onclick="loginHandler()" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent" type="submit" value="登录"><br>
+        <a href="register.html"><button class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple">没有账号？点击注册！</button></a>
+    </div>
+</div>
+    <div class="mdui-typo-display-2 mdui-text-center">
+        <br>
+    </div>
+</div>
+
+<footer>
+  <div class="mdui-center mdui-text-center">
+    <p><strong>通知：由于更改加密算法，数据已于2022/10/22重置！<br><span id="runtime_span"></span> <script type="text/javascript">function show_runtime(){window.setTimeout("show_runtime()",1000);X=new Date("10/1/2022 21:00:00");Y=new Date();T=(Y.getTime()-X.getTime());M=24*60*60*1000;a=T/M;A=Math.floor(a);b=(a-A)*24;B=Math.floor(b);c=(b-B)*60;C=Math.floor((b-B)*60);D=Math.floor((c-C)*60);runtime_span.innerHTML="网站已开启测试"+A+"天"+B+"小时"+C+"分"+D+"秒"}show_runtime();</script><br>
+        备案号：<a href="https://beian.miit.gov.cn/" target="_blank">沪B2-20100004</a>
+        </strong>
+    </p>
+  </div>
+</footer>
+
+<script>
+function loginHandler() {
+    var user = $("#login_account").val();
+    var pwd = $("#login_passwd").val();
+    if(user === "" || pwd === ""){
+        mdui.snackbar({message:'请填写内容'});
+        return;
+    }
+    $.ajax({
+        type: 'post',
+        url: apiAddress + "/auth/login",
+        data: {username: user, password: pwd},
+        dataType: 'text',
+        success: function(data){
+            obj = JSON.parse(data);
+            if (obj.status == "ok"){
+                mdui.snackbar({message:'登录成功'});
+                setCookie("username",user,180);
+                setCookie("token",obj.token,180);
+                window.location = "index.html";
+            }else if(obj.status == "error"){
+                mdui.snackbar({message:'登录失败，错误原因：' + obj.message});
+            }else if(obj.status == "null"){
+                mdui.snackbar({message:'账号不存在'});
+            }else{
+                mdui.snackbar({message:'未知错误'});
+            }
+        }
+    });
+}
+
+// token验证
+function authenticateToken(){
+    $.ajax({
+        type: 'post',
+        url: apiAddress + "/auth/authenticate_token",
+        data: {username: getCookie("username"), token: getCookie("token")},
+        dataType: 'text',
+        success: function(data){
+            obj = JSON.parse(data);
+            if (obj.status == "ok"){
+                mdui.snackbar({message:'您已登录'});
+                window.location = "index.html";
+            }
+        }
+    });
+}
+authenticateToken();
+</script>
+
+
+</body></html>
