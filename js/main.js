@@ -1,5 +1,5 @@
 // 设置后台地址
-var apiAddress = "https://3455f9504d.goho.co/hcat-api";
+var apiAddress = "";
 
 // 拉到底部
 function contentScroll(){
