@@ -2,7 +2,7 @@
 function sendPhoto(){
     mdui.prompt('请输入图片链接(带http/https)或者<a href="https://tool.chinaz.com/tools/imgtobase/" target="_blank">base64格式文本</a>', '发送图片',
       function (value) {
-        sendMessage('<img src="' + value + '">');
+        sendMessage('{"msg_chain":[{"type":"img","msg":"'+value+'"}]}');
       },
       function (value) {
         
@@ -14,7 +14,7 @@ function sendPhoto(){
 function sendTexture(){
     mdui.prompt('请输入文本', '发送多行文本',
       function (value) {
-        sendMessage(value);
+        sendMessage('{"msg_chain":[{"type":"text","msg":"'+value+'"}]}');
       },
       function (value) {
         

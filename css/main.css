@@ -8,6 +8,7 @@
     color: #000000;
     display: block;
     margin-left: 5px;
+    width: fit-content;
 }
 
 .bubble {
@@ -23,7 +24,7 @@
 }
 
 .opacity {
-    opacity: 0.85;
+    opacity: 0.9;
 }
 
 .background {
@@ -32,7 +33,6 @@
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
-    backdrop-filter: blur(5px);
 }
 
 .list {
@@ -54,6 +54,14 @@
     padding: 4px;
     color: #000000;
     border-radius: 0px 0px 20px 20px;
+}
+
+.card {
+    width: 100%;
+    padding: 50px;
+    color: #000000;
+    opacity: 0.95;
+    border-radius: 20px;
 }
 
 .CardTitle {

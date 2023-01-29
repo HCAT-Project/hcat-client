@@ -5,12 +5,13 @@ function createGroup(){
         $.ajax({
             type: 'post',
             url: apiAddress + "/group/create_group",
-            data: {username: getCookie("username"), token: getCookie("token") ,group_name: value},
+            data: {group_name: value},
             dataType: 'text',
             success: function(data){
                 obj = JSON.parse(data);
                 if (obj.status == "ok"){
                     mdui.snackbar({message:'成功'});
+                    refreshGrouplist();
                 }else if(obj.status == "error"){
                     mdui.snackbar({message:'失败：' + obj.message});
                 }else if(obj.status == "null"){
@@ -31,34 +32,106 @@ function createGroup(){
 function joinGroup(){
     mdui.prompt('请输入您要添加的群组ID', '加入群组',
       function (name) {
-        mdui.prompt('请输入您的附加信息', '加入群组',
-          function (additional) {
-            $.ajax({
-                type: 'post',
-                url: apiAddress + "/group/join_group",
-                data: {username: getCookie("username"), token: getCookie("token") ,group_id: name, additional_information: additional},
-                dataType: 'text',
-                success: function(data){
-                    obj = JSON.parse(data);
-                    if (obj.status == "ok"){
-                        mdui.snackbar({message:'成功'});
-                    }else if(obj.status == "error"){
-                        mdui.snackbar({message:'失败：' + obj.message});
-                    }else if(obj.status == "null"){
-                        mdui.snackbar({message:'NULL'});
-                    }else{
-                        mdui.snackbar({message:'未知错误'});
+        // 获取进群方式
+        $.ajax({
+            type: 'post',
+            url: apiAddress + "/group/get_verification_method",
+            data: {group_id: name},
+            dataType: 'text',
+            success: function(data){
+                obj = JSON.parse(data);
+                if (obj.status == "ok"){
+                    if (obj.data.verification_method == 'fr') {
+                        // 自由进出
+                        $.ajax({
+                            type: 'post',
+                            url: apiAddress + "/group/join_group",
+                            data: {group_id: name, add_info: '114514'},
+                            dataType: 'text',
+                            success: function(data){
+                                obj = JSON.parse(data);
+                                if (obj.status == "ok"){
+                                    mdui.snackbar({message:'成功'});
+                                }else if(obj.status == "error"){
+                                    mdui.snackbar({message:'失败：' + obj.message});
+                                }else if(obj.status == "null"){
+                                    mdui.snackbar({message:'NULL'});
+                                }else{
+                                    mdui.snackbar({message:'未知错误'});
+                                }
+                            }
+                        });
+                    } else if (obj.data.verification_method == 'ac') {
+                        // 需要管理员同意
+                        mdui.prompt('请输入您的附加信息', '加入群组',
+                          function (info) {
+                            $.ajax({
+                                type: 'post',
+                                url: apiAddress + "/group/join_group",
+                                data: {group_id: name, add_info: info},
+                                dataType: 'text',
+                                success: function(data){
+                                    obj = JSON.parse(data);
+                                    if (obj.status == "ok"){
+                                        mdui.snackbar({message:'成功'});
+                                    }else if(obj.status == "error"){
+                                        mdui.snackbar({message:'失败：' + obj.message});
+                                    }else if(obj.status == "null"){
+                                        mdui.snackbar({message:'NULL'});
+                                    }else{
+                                        mdui.snackbar({message:'未知错误'});
+                                    }
+                                }
+                            });
+                          },
+                          function (value) {
+                            
+                          },
+                          {
+                              defaultValue: '我是' + getCookie("user_id")
+                          }
+                        );
+                    } else if (obj.data.verification_method == 'na') {
+                        mdui.snackbar({message:'该群聊不允许新成员加入'});
+                    } else if (obj.data.verification_method == 'aw') {
+                        // 需要正确回答问题
+                        mdui.prompt('加入该群需要您回答以下问题：'+obj.data.question, '加入群组',
+                          function (info) {
+                            $.ajax({
+                                type: 'post',
+                                url: apiAddress + "/group/join_group",
+                                data: {group_id: name, add_info: info},
+                                dataType: 'text',
+                                success: function(data){
+                                    obj = JSON.parse(data);
+                                    if (obj.status == "ok"){
+                                        mdui.snackbar({message:'成功'});
+                                    }else if(obj.status == "error"){
+                                        mdui.snackbar({message:'失败：' + obj.message});
+                                    }else if(obj.status == "null"){
+                                        mdui.snackbar({message:'NULL'});
+                                    }else{
+                                        mdui.snackbar({message:'未知错误'});
+                                    }
+                                }
+                            });
+                          },
+                          function (value) {
+                            
+                          }
+                        );
+                    } else {
+                        mdui.snackbar({message:'未知的入群方式：'+obj.data.verification_method});
                     }
+                }else if(obj.status == "error"){
+                    mdui.snackbar({message:'失败：' + obj.message});
+                }else if(obj.status == "null"){
+                    mdui.snackbar({message:'NULL'});
+                }else{
+                    mdui.snackbar({message:'未知错误'});
                 }
-            });
-          },
-          function (value) {
-            
-          },
-          {
-              defaultValue: '我是' + getCookie("username")
-          }
-        );
+            }
+        });
       },
       function (value) {
         
@@ -71,7 +144,7 @@ function agreeGroup(rid){
     $.ajax({
         type: 'post',
         url: apiAddress + "/group/agree_join_group_request",
-        data: {username: getCookie("username"), token: getCookie("token") ,rid: rid},
+        data: {rid: rid},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
@@ -94,8 +167,8 @@ function agreeGroup(rid){
 function refreshGrouplist(){
     $.ajax({
         type: 'post',
-        url: apiAddress + "/group/get_groups_list",
-        data: {username: getCookie("username"), token: getCookie("token")},
+        url: apiAddress + "/group/get_groups",
+        data: {},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
@@ -103,8 +176,7 @@ function refreshGrouplist(){
                 list = obj.data;
                 var out = "";
                 for(var i in list) {
-                    out += '<li class="mdui-list-item mdui-ripple"><i class="mdui-list-item-avatar mdui-icon material-icons">group</i><div class="mdui-list-item-content"><span id="'+i+'-ingrouplist">'+i+'</span>（' + i +'）</div><a href="javascript:addChattinglist(&quot;'+i+'&quot;,&quot;group&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">message</i></a><a href="javascript:copy(&quot;'+i+'&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">content_copy</i></a><a href="javascript:confirmDeleteGroup(&quot;'+i+'&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">delete</i></a></li>';
-                    getGroupname(i,i+'-ingrouplist');
+                    out += '<li class="mdui-list-item mdui-ripple"><i class="mdui-list-item-avatar mdui-icon material-icons">group</i><div class="mdui-list-item-content">'+list[i].remark+'（' + i +'）</div><a href="javascript:addChattinglist(&quot;'+i+'&quot;,&quot;group&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">message</i></a><a href="javascript:copy(&quot;'+i+'&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">content_copy</i></a><a href="javascript:confirmDeleteGroup(&quot;'+i+'&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">delete</i></a></li>';
                 }
                 document.getElementById("inner-group-list").innerHTML=out;
             }else if(obj.status == "error"){
@@ -130,7 +202,7 @@ function confirmDeleteGroup(name){
         {
           text: '确认',
           onClick: function(inst){
-            deleteFriend(name);
+            deleteGroup(name);
           }
         }
       ]
@@ -138,11 +210,11 @@ function confirmDeleteGroup(name){
 }
 
 // 删除群组
-function deleteGroup(){
+function deleteGroup(id){
     $.ajax({
         type: 'post',
         url: apiAddress + "/group/leave",
-        data: {username: getCookie("username"), token: getCookie("token") ,group_id: chatting},
+        data: {group_id: id},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
@@ -158,58 +230,54 @@ function deleteGroup(){
             }
         }
     });
-    closeChatting();
 }
 
 // 将群组名称查询并输出
-function getGroupname(groupId,where){
+function getGroupname(groupId){
+    var out;
     $.ajax({
-        type: 'get',
-        url: apiAddress + "/group/get_group_name/" + groupId,
+        type: 'post',
+        url: apiAddress + "/group/get_name",
+        data: {group_id: groupId},
         dataType: 'text',
+        async: false,
         success: function(data){
             obj = JSON.parse(data);
             if (obj.status == "ok"){
-                document.getElementById(where).innerHTML = obj.group_name;
+                out = obj.remark;
             }else if(obj.status == "null"){
-                document.getElementById(where).innerHTML = "NULL";
+                mdui.snackbar({message:'群聊不存在'});
             }else{
-                document.getElementById(where).innerHTML = "error";
+                mdui.snackbar({message:'未知错误'});
             }
         }
     });
+    return out;
 }
 
 // 改群组名
-function changeGroupName(){
-    mdui.prompt('请输入您的群组ID', '更改群名',
-      function (group_id) {
-        mdui.prompt('请输入新名称', '更改群名',
-          function (group_name) {
-            $.ajax({
-                type: 'post',
-                url: apiAddress + "/group/group_rename",
-                data: {username: getCookie("username"), token: getCookie("token") ,group_id: group_id, group_name: group_name},
-                dataType: 'text',
-                success: function(data){
-                    obj = JSON.parse(data);
-                    if (obj.status == "ok"){
-                        mdui.snackbar({message:'成功：' + obj.message});
-                        getDisplayName(getCookie("username"),"myname");
-                    }else if(obj.status == "error"){
-                        mdui.snackbar({message:'失败：' + obj.message});
-                    }else if(obj.status == "null"){
-                        mdui.snackbar({message:'账号不存在'});
-                    }else{
-                        mdui.snackbar({message:'未知错误'});
-                    }
+function changeGroupName(id){
+    mdui.prompt('请输入新名称', '更改群名',
+      function (group_name) {
+        $.ajax({
+            type: 'post',
+            url: apiAddress + "/group/rename",
+            data: {group_id: id, group_name: group_name},
+            dataType: 'text',
+            success: function(data){
+                obj = JSON.parse(data);
+                if (obj.status == "ok"){
+                    mdui.snackbar({message:'成功：' + obj.message});
+                    openChatting(id,'group');
+                }else if(obj.status == "error"){
+                    mdui.snackbar({message:'失败：' + obj.message});
+                }else if(obj.status == "null"){
+                    mdui.snackbar({message:'账号不存在'});
+                }else{
+                    mdui.snackbar({message:'未知错误'});
                 }
-            });
-          },
-          function (value) {
-            
-          }
-        );
+            }
+        });
       },
       function (value) {
         
@@ -221,8 +289,8 @@ function changeGroupName(){
 function getGroupInfo(id,permission){
     $.ajax({
         type: 'post',
-        url: apiAddress + "/group/get_group_members_list",
-        data: {username: getCookie("username"), token: getCookie("token"), group_id: id},
+        url: apiAddress + "/group/get_members",
+        data: {group_id: id},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
@@ -245,7 +313,7 @@ function getGroupInfo(id,permission){
                     if (permission == 'admin' || permission == 'owner') {
                         other += '<a href="javascript:banGroupUser(&quot;'+i+'&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">speaker_notes_off</i></a><a href="javascript:kickMember(&quot;'+i+'&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">close</i></a>';
                     }
-                    out += '<li class="mdui-list-item mdui-ripple"><i class="mdui-list-item-avatar mdui-icon material-icons">'+icon+'</i><div class="mdui-list-item-content">' + i +'</div>'+other+'<a href="javascript:addFriendReal(&quot;'+i+'&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">add</i></a></li>';
+                    out += '<li class="mdui-list-item mdui-ripple"><i class="mdui-list-item-avatar mdui-icon material-icons">'+icon+'</i><div class="mdui-list-item-content">' + i +'</div>'+other+'<a href="javascript:addFriendReal(&quot;'+i+'&quot;,&quot;来自群'+id+'&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">add</i></a></li>';
                 }
                 document.getElementById("inner-group-info").innerHTML=out;
                 new mdui.Dialog('#group-info').open();
@@ -262,12 +330,13 @@ function getGroupInfo(id,permission){
 
 // 封禁成员
 function banGroupUser(id){
+    mdui.snackbar({message:'新的对话框被遮挡，请手动关闭成员列表'});
     mdui.prompt('请输入禁言时长（秒数，如600秒为10分钟、3600秒为1小时、86400秒为1天）', '封禁成员'+id,
       function (value) {
         $.ajax({
             type: 'post',
             url: apiAddress + "/group/ban",
-            data: {username: getCookie("username"), token: getCookie("token") ,group_id: chatting ,member_name: id ,time: value},
+            data: {group_id: chatting ,member_id: id ,ban_time: value},
             dataType: 'text',
             success: function(data){
                 obj = JSON.parse(data);
@@ -295,8 +364,8 @@ function getGroupOwner(id){
     $.ajax({
         type: 'post',
         async: false,
-        url: apiAddress + "/group/get_group_owner",
-        data: {username: getCookie("username"), token: getCookie("token"), group_id: id},
+        url: apiAddress + "/group/get_owner",
+        data: {group_id: id},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
@@ -321,7 +390,7 @@ function getGroupPermission(id){
         type: 'post',
         async: false,
         url: apiAddress + "/group/get_permission",
-        data: {username: getCookie("username"), token: getCookie("token"), group_id: id},
+        data: {group_id: id},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
@@ -355,7 +424,7 @@ function removeAdmin(id){
     $.ajax({
         type: 'post',
         url: apiAddress + "/group/remove_admin",
-        data: {username: getCookie("username"), token: getCookie("token"), group_id: chatting, member_name: id},
+        data: {group_id: chatting, member_name: id},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
@@ -377,7 +446,7 @@ function addAdmin(id){
     $.ajax({
         type: 'post',
         url: apiAddress + "/group/add_admin",
-        data: {username: getCookie("username"), token: getCookie("token"), group_id: chatting, member_name: id},
+        data: {group_id: chatting, member_name: id},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
@@ -399,7 +468,7 @@ function transferGroup(id){
     $.ajax({
         type: 'post',
         url: apiAddress + "/group/transfer_ownership",
-        data: {username: getCookie("username"), token: getCookie("token"), group_id: chatting, new_owner_name: id},
+        data: {group_id: chatting, member_id: id},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
@@ -421,12 +490,65 @@ function kickMember(id){
     $.ajax({
         type: 'post',
         url: apiAddress + "/group/kick",
-        data: {username: getCookie("username"), token: getCookie("token"), group_id: chatting, member_name: id},
+        data: {group_id: chatting, member_id: id},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
             if (obj.status == "ok"){
                 mdui.snackbar({message:'已踢出'});
+            }else if(obj.status == "error"){
+                mdui.snackbar({message:'失败：' + obj.message});
+            }else if(obj.status == "null"){
+                mdui.snackbar({message:'NULL'});
+            }else{
+                mdui.snackbar({message:'未知错误'});
+            }
+        }
+    });
+}
+
+// 群管理
+function manageGroup(){
+    $.ajax({
+        type: 'post',
+        url: apiAddress + "/group/get_setting",
+        data: {group_id: chatting},
+        dataType: 'text',
+        success: function(data){
+            obj = JSON.parse(data);
+            if (obj.status == "ok"){
+                var list = obj.data;
+                var out = '审核方式：<select id="group-setting-select" class="mdui-select" mdui-select><option value="ac">需要管理员同意</option><option value="fr">自由进出</option><option value="aw">需要回答问题</option><option value="na">不允许加入</option></select><div class="mdui-textfield"><label class="mdui-textfield-label">问题</label><textarea class="mdui-textfield-input" id="group-setting-question">'+list.question+'</textarea></div><div class="mdui-textfield"><label class="mdui-textfield-label">答案</label><textarea class="mdui-textfield-input" id="group-setting-answer">'+list.answer+'</textarea></div>';
+                document.getElementById("inner-group-setting").innerHTML=out;
+                $("#group-setting-select").val(list.verification_method);
+                new mdui.Dialog('#group-setting').open();
+            }else if(obj.status == "error"){
+                mdui.snackbar({message:'失败：' + obj.message});
+            }else if(obj.status == "null"){
+                mdui.snackbar({message:'NULL'});
+            }else{
+                mdui.snackbar({message:'未知错误'});
+            }
+        }
+    });
+}
+
+// 保存群设置
+function saveGroupSetting(){
+    var settings = {};
+    settings.verification_method = $("#group-setting-select option:selected").val();
+    settings.question = $("#group-setting-question").val();
+    settings.answer = $("#group-setting-answer").val();
+    var post = JSON.stringify(settings);
+    $.ajax({
+        type: 'post',
+        url: apiAddress + "/group/change_group_setting",
+        data: {group_id: chatting, setting: post},
+        dataType: 'text',
+        success: function(data){
+            obj = JSON.parse(data);
+            if (obj.status == "ok"){
+                mdui.snackbar({message:'保存成功'});
             }else if(obj.status == "error"){
                 mdui.snackbar({message:'失败：' + obj.message});
             }else if(obj.status == "null"){

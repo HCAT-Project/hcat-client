@@ -1,5 +1,5 @@
 // 设置后台地址
-var apiAddress = "";
+var apiAddress = "https://3455f9504d.goho.co/hcat-api";
 
 // 拉到底部
 function contentScroll(){
@@ -94,8 +94,43 @@ function keyup_submit(e){
  var evt = window.event || e; 
   if (evt.keyCode == 13){
     var message = $("#inputmessage").val();
-    sendMessage(message);
+    sendMessage('{"msg_chain":[{"type":"text","msg":"'+message+'"}]}');
   }
+}
+
+// 解压消息
+function unzipMessage(data,type){
+    var arr = JSON.parse(data).msg_chain;
+    var out = '';
+    var i;
+    for(i = 0; i < arr.length; i++) {
+        if (arr[i].type == 'text') {
+            if (type == 'chat') {
+                out += arr[i].msg;
+            } else if (type == 'list') {
+                out += arr[i].msg;
+            } else {
+                // idk
+            }
+        } else if (arr[i].type == 'img') {
+            if (type == 'chat') {
+                out += '<img src="' + arr[i].msg + '" style="height: 150px;">';
+            } else if (type == 'list') {
+                out += '[图片]';
+            } else {
+                // idk
+            }
+        } else {
+            if (type == 'chat') {
+                out += arr[i].msg;
+            } else if (type == 'list') {
+                out += '[未知消息类型]';
+            } else {
+                // idk
+            }
+        }
+    }
+    return out;
 }
 
 var sending = false;
@@ -112,15 +147,15 @@ function sendMessage(message){
     if (chattingType == "friend"){
         $.ajax({
             type: 'post',
-            url: apiAddress + "/chat/friend/send_msg",
-            data: {username: getCookie("username"), token: getCookie("token") ,friend_username: chatting,msg: message},
+            url: apiAddress + "/chat/send_friend_msg",
+            data: {friend_id: chatting ,msg: message},
             dataType: 'text',
             success: function(data){
                 obj = JSON.parse(data);
                 if (obj.status == "ok"){
-                    document.getElementById(chatting+"_chatting").innerHTML = message;
+                    document.getElementById(chatting+"_chatting").innerHTML = unzipMessage(message,'list');
                     im = msg[chatting];
-                    im += '<div class="username">' + getCookie("username") + '</div><div class="bubble"><span>' + message + '</span></div>';
+                    im += '<div class="username" mdui-tooltip="{content: &apos;'+getCookie("user_id")+' '+dateFormat(Date.parse(new Date()))+'&apos;}">' + document.getElementById('myname').innerHTML + '</div><div class="bubble">' + unzipMessage(message,'chat') + '</div>';
                     msg[chatting] = im;
                     document.getElementById("content").innerHTML = msg[chatting];
                     document.getElementById("inputmessage").value = "";
@@ -128,7 +163,7 @@ function sendMessage(message){
                     sending = false;
                     putTop(chatting);
                 }else{
-                    mdui.snackbar({message:obj.status + obj.message});
+                    mdui.snackbar({message:obj.status + ': ' + obj.message});
                     sending = false;
                 }
             }
@@ -136,15 +171,15 @@ function sendMessage(message){
     }else if(chattingType == "group"){
         $.ajax({
             type: 'post',
-            url: apiAddress + "/chat/group/send_msg",
-            data: {username: getCookie("username"), token: getCookie("token") ,group_id: chatting,msg: message},
+            url: apiAddress + "/chat/send_group_msg",
+            data: {group_id: chatting,msg: message},
             dataType: 'text',
             success: function(data){
                 obj = JSON.parse(data);
                 if (obj.status == "ok"){
-                    document.getElementById(chatting+"_chatting").innerHTML = getCookie("username") + ': ' + message;
+                    document.getElementById(chatting+"_chatting").innerHTML = getCookie("user_id") + ': ' + unzipMessage(message,'list');
                     im = msg[chatting];
-                    im += '<div class="username">' + getCookie("username") + '</div><div class="bubble"><span>' + message + '</span></div>';
+                    im += '<div class="username">' + getCookie("user_id") + '  (' + dateFormat(Date.parse(new Date())) + ')</div><div class="bubble">' + unzipMessage(message,'chat') + '</div>';
                     msg[chatting] = im;
                     document.getElementById("content").innerHTML = msg[chatting];
                     document.getElementById("inputmessage").value = "";
@@ -163,16 +198,8 @@ function sendMessage(message){
     }
 }
 
-// 新增消息
-function addMessage(chatname,username,message){
-    im = document.getElementById("content").innerHTML;
-    im += '<div class="username">' + username + '</div><div class="bubble"><span>' + message + '</span></div>';
-    document.getElementById("content").innerHTML = im;
-    contentScroll();
-}
-
 // 新增系统通知
-function systemNotification(message){
+function systemNotification(message,time){
     // 不在会话列表先创建
     if(!exist("系统通知_chatting")){
         addChattinglist("系统通知","system");
@@ -185,7 +212,7 @@ function systemNotification(message){
     }else{
         im = "";
     }
-    im += '<div class="username">系统通知</div><div class="bubble"><span>' + message + '</span></div>';
+    im += '<div class="username" mdui-tooltip="{content: &apos;'+dateFormat(time)+'&apos;}">系统通知</div><div class="bubble"><span>' + message + '</span></div>';
     msg["系统通知"] = im;
     // 对话拉到顶
     putTop("系统通知");
@@ -202,23 +229,33 @@ function systemNotification(message){
     }
 }
 
-// 将昵称查询并输出
-function getDisplayName(username,where){
+// 查询昵称
+function getUserName(id){
+    var out;
     $.ajax({
-        type: 'get',
-        url: apiAddress + "/auth/get_display_name/" + username,
+        type: 'post',
+        url: apiAddress + "/account/get_user_name",
+        data: {user_id: id},
+        async: false,
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
             if (obj.status == "ok"){
-                document.getElementById(where).innerHTML = obj.display_name;
+                if (obj.nick) {
+                    out = obj.nick;
+                } else {
+                    out = obj.data;
+                }
+            }else if(obj.status == "error"){
+                mdui.snackbar({message:'失败：' + obj.message});
             }else if(obj.status == "null"){
-                document.getElementById(where).innerHTML = "NULL";
+                mdui.snackbar({message:'账号不存在'});
             }else{
-                document.getElementById(where).innerHTML = "error";
+                mdui.snackbar({message:'未知错误'});
             }
         }
     });
+    return out;
 }
 
 // 改名字
@@ -227,14 +264,14 @@ function changeName(){
       function (value) {
         $.ajax({
             type: 'post',
-            url: apiAddress + "/auth/rename",
-            data: {username: getCookie("username"), token: getCookie("token") ,display_name: value},
+            url: apiAddress + "/account/rename",
+            data: {name: value},
             dataType: 'text',
             success: function(data){
                 obj = JSON.parse(data);
                 if (obj.status == "ok"){
                     mdui.snackbar({message:'成功' + obj.message});
-                    getDisplayName(getCookie("username"),"myname");
+                    document.getElementById('myname').innerHTML = getUserName(getCookie("user_id"));
                 }else if(obj.status == "error"){
                     mdui.snackbar({message:'失败：' + obj.message});
                 }else if(obj.status == "null"){
@@ -253,33 +290,26 @@ function changeName(){
 
 // 改密码
 function changePassword(){
-    mdui.prompt('请输入您的旧密码', '更改密码',
-      function (oldpwd) {
-        mdui.prompt('请输入您的新密码', '更改密码',
-          function (newpwd) {
-            $.ajax({
-                type: 'post',
-                url: apiAddress + "/auth/change_password",
-                data: {username: getCookie("username"), token: getCookie("token") ,password: oldpwd, new_password: newpwd},
-                dataType: 'text',
-                success: function(data){
-                    obj = JSON.parse(data);
-                    if (obj.status == "ok"){
-                        mdui.snackbar({message:'成功' + obj.message});
-                    }else if(obj.status == "error"){
-                        mdui.snackbar({message:'失败：' + obj.message});
-                    }else if(obj.status == "null"){
-                        mdui.snackbar({message:'账号不存在'});
-                    }else{
-                        mdui.snackbar({message:'未知错误'});
-                    }
+    mdui.prompt('请输入您的新密码', '更改密码',
+      function (newpwd) {
+        $.ajax({
+            type: 'post',
+            url: apiAddress + "/account/change_password",
+            data: {password: newpwd},
+            dataType: 'text',
+            success: function(data){
+                obj = JSON.parse(data);
+                if (obj.status == "ok"){
+                    mdui.snackbar({message:'成功' + obj.message});
+                }else if(obj.status == "error"){
+                    mdui.snackbar({message:'失败：' + obj.message});
+                }else if(obj.status == "null"){
+                    mdui.snackbar({message:'账号不存在'});
+                }else{
+                    mdui.snackbar({message:'未知错误'});
                 }
-            });
-          },
-          function (value) {
-            
-          }
-        );
+            }
+        });
       },
       function (value) {
         
@@ -291,15 +321,14 @@ function changePassword(){
 function logout(){
     $.ajax({
         type: 'post',
-        url: apiAddress + "/auth/logout",
-        data: {username: getCookie("username"), token: getCookie("token")},
+        url: apiAddress + "/account/logout",
+        data: {},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
             if (obj.status == "ok"){
                 mdui.snackbar({message:'退出成功'});
-                delCookie("username");
-                delCookie("token");
+                delCookie("user_id");
                 window.location = "login.html";
             }else if(obj.status == "error"){
                 mdui.snackbar({message:'失败：' + obj.message});
@@ -316,8 +345,8 @@ function logout(){
 function getTodolist(){
     $.ajax({
         type: 'post',
-        url: apiAddress + "/auth/get_todo_list",
-        data: {username: getCookie("username"), token: getCookie("token")},
+        url: apiAddress + "/account/get_todo_list",
+        data: {},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
@@ -328,39 +357,45 @@ function getTodolist(){
                     if (list[i].type == "friend_request"){
                         // 好友申请
                         var out = document.getElementById("inner-friend-request").innerHTML;
-                        out += '<li class="mdui-list-item mdui-ripple" id="' + list[i].rid + '"><i class="mdui-list-item-avatar mdui-icon material-icons">person</i><div class="mdui-list-item-content">' + list[i].username + '</div><a href="javascript:agreeFriend(&quot;' + list[i].rid + '&quot;)"><i class="mdui-list-item-icon mdui-icon material-icons">playlist_add_check</i></a></li>';
+                        out += '<li class="mdui-list-item mdui-ripple" id="' + list[i].rid + '"><i class="mdui-list-item-avatar mdui-icon material-icons">person</i><div class="mdui-list-item-content">' + list[i].user_id + '</div><a href="javascript:agreeFriend(&quot;' + list[i].rid + '&quot;)"><i class="mdui-list-item-icon mdui-icon material-icons">playlist_add_check</i></a></li>';
                         document.getElementById("inner-friend-request").innerHTML=out;
-                        systemNotification('您有来自'+list[i].username+'的好友申请：'+list[i].additional_information);
+                        systemNotification('您有来自'+list[i].user_id+'的好友申请：'+list[i].add_info,list[i].time);
                     }else if(list[i].type == "group_join_request"){
                         // 群组申请
                         var out = document.getElementById("inner-group-request").innerHTML;
-                        out += '<li class="mdui-list-item mdui-ripple" id="' + list[i].rid + '"><i class="mdui-list-item-avatar mdui-icon material-icons">person</i><div class="mdui-list-item-content">' + list[i].username + '</div><a href="javascript:agreeGroup(&quot;' + list[i].rid + '&quot;)"><i class="mdui-list-item-icon mdui-icon material-icons">playlist_add_check</i></a></li>';
+                        out += '<li class="mdui-list-item mdui-ripple" id="' + list[i].rid + '"><i class="mdui-list-item-avatar mdui-icon material-icons">person</i><div class="mdui-list-item-content">' + list[i].user_id + '</div><a href="javascript:agreeGroup(&quot;' + list[i].rid + '&quot;)"><i class="mdui-list-item-icon mdui-icon material-icons">playlist_add_check</i></a></li>';
                         document.getElementById("inner-group-request").innerHTML=out;
-                        systemNotification('您有来自'+list[i].username+'的加入'+list[i].group_id+'的申请：'+list[i].additional_information);
+                        systemNotification('您有来自'+list[i].user_id+'的加入'+list[i].group_id+'的申请：'+list[i].add_info,list[i].time);
                     }
                     else if(list[i].type == "friend_msg"){
                         // 不在会话列表先创建
-                        if(!exist(list[i].username+"_chatting")){
-                            addChattinglist(list[i].username,"friend");
+                        if(!exist(list[i].user_id+"_chatting")){
+                            addChattinglist(list[i].user_id,"friend");
                         }
                         // 会话列表最新消息修改
-                        document.getElementById(list[i].username+"_chatting").innerHTML = list[i].msg;
+                        document.getElementById(list[i].user_id+"_chatting").innerHTML = unzipMessage(JSON.stringify(list[i].msg),'list');
                         // 更新信息到数组
-                        if(msg[list[i].username]){
-                            im = msg[list[i].username];
+                        if(msg[list[i].user_id]){
+                            im = msg[list[i].user_id];
                         }else{
                             im = "";
                         }
-                        im += '<div class="username">' + list[i].username + '</div><div class="bubble"><span>' + list[i].msg + '</span></div>';
-                        msg[list[i].username] = im;
+                        var nickname;
+                        if (list[i].friend_nick) {
+                            nickname = list[i].friend_nick;
+                        } else {
+                            nickname = list[i].friend_name;
+                        }
+                        im += '<div class="username" mdui-tooltip="{content: &apos;'+list[i].user_id+' '+dateFormat(list[i].time)+'&apos;}">' + nickname + '</div><div class="bubble">' + unzipMessage(JSON.stringify(list[i].msg),'chat') + '</div>';
+                        msg[list[i].user_id] = im;
                         // 对话拉到顶
-                        putTop(list[i].username);
+                        putTop(list[i].user_id);
                         // 如果正在显示就输出，否则不输出并标记未读
-                        if(chatting==list[i].username){
+                        if(chatting==list[i].user_id){
                                 document.getElementById("content").innerHTML = msg[chatting];
                                 contentScroll();
                         } else {
-                            unread(list[i].username);
+                            unread(list[i].user_id);
                         }
                         // 如果没关注窗口就提示音
                         if(bubbleNotification == "on"){
@@ -372,14 +407,14 @@ function getTodolist(){
                             addChattinglist(list[i].group_id,"group");
                         }
                         // 会话列表最新消息修改
-                        document.getElementById(list[i].group_id+"_chatting").innerHTML = list[i].username + ': ' + list[i].msg;
+                        document.getElementById(list[i].group_id+"_chatting").innerHTML = list[i].user_id + ': ' + unzipMessage(JSON.stringify(list[i].msg),'list');
                         // 更新信息到数组
                         if(msg[list[i].group_id]){
                             im = msg[list[i].group_id];
                         }else{
                             im = "";
                         }
-                        im += '<div class="username">' + list[i].username + '</div><div class="bubble"><span>' + list[i].msg + '</span></div>';
+                        im += '<div class="username">' + list[i].user_id + '  (' + dateFormat(list[i].time) + ')</div><div class="bubble">' + unzipMessage(JSON.stringify(list[i].msg),'chat') + '</div>';
                         msg[list[i].group_id] = im;
                         // 对话拉到顶
                         putTop(list[i].group_id);
@@ -395,27 +430,27 @@ function getTodolist(){
                             document.getElementById("bubble").play();
                         }
                     }else if(list[i].type == "friend_agree"){
-                        systemNotification(list[i].username+' 通过了您的好友请求');
+                        systemNotification(list[i].user_id+' 通过了您的好友请求',list[i].time);
                         refreshFriendlist();
                     }else if(list[i].type == "friend_deleted"){
-                        systemNotification(list[i].username+' 删除了您');
+                        systemNotification(list[i].user_id+' 删除了您',list[i].time);
                         refreshFriendlist();
                     }else if(list[i].type == "group_agree"){
-                        systemNotification('您成功加入了'+list[i].group_id);
+                        systemNotification('您成功加入了'+list[i].group_id,list[i].time);
                         refreshFriendlist();
                     }else if(list[i].type == "group_deleted"){
-                        systemNotification('您被移出了'+list[i].group_id);
+                        systemNotification('您被移出了'+list[i].group_id,list[i].time);
                         refreshGrouplist();
                     }else if(list[i].type == "group_rename"){
-                        systemNotification(list[i].group_id+'更改了他们的群名：'+list[i].old_name+'→'+list[i].new_name);
+                        systemNotification(list[i].group_id+'更改了他们的群名：'+list[i].old_name+'→'+list[i].new_name,list[i].time);
                     }else if(list[i].type == "banned"){
-                        systemNotification('群'+list[i].group_id+'的管理员将您禁言了'+list[i].ban_time+'秒');
+                        systemNotification('群'+list[i].group_id+'的管理员将您禁言了'+list[i].ban_time+'秒',list[i].time);
                     }else if(list[i].type == "admin_removed"){
-                        systemNotification('您被'+list[i].group_id+'的群主撤销了管理员资格');
+                        systemNotification(list[i].name+'被'+list[i].group_id+'的群主撤销了管理员资格',list[i].time);
                     }else if(list[i].type == "admin_add"){
-                        systemNotification('您被'+list[i].group_id+'的群主任命为管理员');
+                        systemNotification(list[i].name+'被'+list[i].group_id+'的群主任命为管理员',list[i].time);
                     }else if(list[i].type == "owner_replaced"){
-                        systemNotification('群'+list[i].group_id+'的群主由'+list[i].old_owner+'变更为了'+list[i].new_name);
+                        systemNotification('群'+list[i].group_id+'的群主由'+list[i].old_owner+'变更为了'+list[i].new_name,list[i].time);
                     }else if(list[i].type == "question"){
                         var param_name = list[i].param_name;
                         var rid = list[i].rid;
@@ -424,7 +459,7 @@ function getTodolist(){
                             $.ajax({
                                 type: 'post',
                                 url: apiAddress + list[i].path,
-                                data: JSON.parse('{username:' + getCookie("username") + ', token:' + getCookie("token") + ' ,' + param_name + ':' + value + ',rid:' + rid + "}"),
+                                data: JSON.parse('{username:' + getCookie("user_id") + ', token:' + getCookie("token") + ' ,' + param_name + ':' + value + ',rid:' + rid + "}"),
                                 dataType: 'text',
                                 success: function(data){
                                     obj = JSON.parse(data);
@@ -444,7 +479,7 @@ function getTodolist(){
                             $.ajax({
                                 type: 'post',
                                 url: apiAddress + list[i].path,
-                                data: {username: getCookie("username"), token: getCookie("token") ,param_name: "",rid: rid},
+                                data: {username: getCookie("user_id"), token: getCookie("token") ,param_name: "",rid: rid},
                                 dataType: 'text',
                                 success: function(data){
                                     obj = JSON.parse(data);
@@ -488,13 +523,12 @@ function addChattinglist(name,type){
     if(!exist(name+"_chatting")){
         if(type == "friend"){
             var out = document.getElementById("chattinglist").innerHTML;
-            out += '<li class="mdui-list-item mdui-ripple" onclick="openChatting(&quot;'+name+'&quot;,&quot;friend&quot;)" id="'+name+'-inlist"><i class="mdui-list-item-avatar mdui-icon material-icons">person</i><div class="mdui-list-item-content"><div class="mdui-list-item-title" id="'+name+'-list">'+name+'</div><div class="mdui-list-item-text mdui-list-item-one-line"><span id="'+name+'_chatting" class="">无信息</span></div></div></li>';
+            out += '<li class="mdui-list-item mdui-ripple" onclick="openChatting(&quot;'+name+'&quot;,&quot;friend&quot;)" id="'+name+'-inlist"><i class="mdui-list-item-avatar mdui-icon material-icons">person</i><div class="mdui-list-item-content"><div class="mdui-list-item-title" id="'+name+'-list">'+getUserName(name)+'</div><div class="mdui-list-item-text mdui-list-item-one-line"><span id="'+name+'_chatting" class="">无信息</span></div></div></li>';
             document.getElementById("chattinglist").innerHTML = out;
         }else if(type == "group"){
             var out = document.getElementById("chattinglist").innerHTML;
-            out += '<li class="mdui-list-item mdui-ripple" onclick="openChatting(&quot;'+name+'&quot;,&quot;group&quot;)" id="'+name+'-inlist"><i class="mdui-list-item-avatar mdui-icon material-icons">group</i><div class="mdui-list-item-content"><div class="mdui-list-item-title" id="'+name+'-list">'+name+'</div><div class="mdui-list-item-text mdui-list-item-one-line"><span id="'+name+'_chatting" class="">无信息</span></div></div></li>';
+            out += '<li class="mdui-list-item mdui-ripple" onclick="openChatting(&quot;'+name+'&quot;,&quot;group&quot;)" id="'+name+'-inlist"><i class="mdui-list-item-avatar mdui-icon material-icons">group</i><div class="mdui-list-item-content"><div class="mdui-list-item-title" id="'+name+'-list">'+getGroupname(name)+'</div><div class="mdui-list-item-text mdui-list-item-one-line"><span id="'+name+'_chatting" class="">无信息</span></div></div></li>';
             document.getElementById("chattinglist").innerHTML = out;
-            getGroupname(name,name+'-list');
         }else if(type == "system"){
             var out = document.getElementById("chattinglist").innerHTML;
             out += '<li class="mdui-list-item mdui-ripple" onclick="openChatting(&quot;'+name+'&quot;,&quot;system&quot;)" id="'+name+'-inlist"><i class="mdui-list-item-avatar mdui-icon material-icons">notifications</i><div class="mdui-list-item-content"><div class="mdui-list-item-title" id="'+name+'-list">'+name+'</div><div class="mdui-list-item-text mdui-list-item-one-line"><span id="'+name+'_chatting" class="">无信息</span></div></div></li>';
@@ -516,21 +550,22 @@ function openChatting(name,type){
     chattingType = type;
     chatOpened(chatting);
     if(type == "friend"){
-        document.getElementById("chatting-title").innerHTML = name + '<span class="mdui-float-right" id="' + name + '-status"></span>';
+        document.getElementById("chatting-title").innerHTML = getUserName(name) + ' ('+name+')<a href="javascript:setFriendNick();"><i class="mdui-icon material-icons">edit</i></a><span class="mdui-float-right">' + getStatus(name) + '</span>';
         document.getElementById("content").innerHTML = msg[name];
-        getStatus(name,name + "-status");
         contentScroll();
+        document.getElementById(name+'-list').innerHTML = getUserName(name);
     }else if(type == "group"){
         var permission =  getGroupPermission(name);
         var other = '';
+        var change = '';
         if (permission == 'owner' || permission == 'admin') {
-            other = '<a href="javascript:manageGroup(&quot;' + name + '&quot;);"><i class="mdui-icon material-icons">settings</i></a>';
+            other = '<a href="javascript:manageGroup();"><i class="mdui-icon material-icons">settings</i></a>';
+            change = '<a href="javascript:changeGroupName(&quot;' + name + '&quot;);"><i class="mdui-icon material-icons">edit</i></a>';
         }
-        document.getElementById("chatting-title").innerHTML = '<span id="' + name + '-group-name"></span><span class="mdui-float-right">'+other+'<a href="javascript:getGroupInfo(&quot;' + name + '&quot;,&quot;'+permission+'&quot;);"><i class="mdui-icon material-icons">more_horiz</i></a></span>';
+        document.getElementById("chatting-title").innerHTML = getGroupname(name)+change+'<span class="mdui-float-right">'+other+'<a href="javascript:getGroupInfo(&quot;' + name + '&quot;,&quot;'+permission+'&quot;);"><i class="mdui-icon material-icons">more_horiz</i></a></span>';
         document.getElementById("content").innerHTML = msg[name];
         contentScroll();
-        getGroupname(name,name+'-group-name');
-        getGroupname(name,name+'-list');
+        document.getElementById(name+'-list').innerHTML = getGroupname(name);
     }else if(type == "system"){
         document.getElementById("chatting-title").innerHTML = name;
         document.getElementById("content").innerHTML = msg[name];
@@ -541,25 +576,25 @@ function openChatting(name,type){
 
 }
 
-// 查询状态并输出
-function getStatus(username,where){
+// 查询状态
+function getStatus(id){
+    var out;
     $.ajax({
-        type: 'get',
-        url: apiAddress + "/auth/status/" + username,
+        type: 'post',
+        url: apiAddress + "/account/status",
+        data: {user_id: id},
         dataType: 'text',
+        async: false,
         success: function(data){
             obj = JSON.parse(data);
-            if(obj.status=="ok"){
-                if(obj.user_status=="online"){
-                    document.getElementById(where).innerHTML = "在线";
-                }else{
-                    document.getElementById(where).innerHTML = "离线";
-                }
+            if (obj.status == "online"){
+                out = '在线';
             }else{
-                document.getElementById(where).innerHTML = obj.status;
+                out = '离线';
             }
         }
     });
+    return out;
 }
 
 // 关闭当前会话
@@ -583,7 +618,7 @@ function clearComment(){
 function setBackground(){
     mdui.prompt('请输入背景地址', '自定义背景',
       function (value) {
-        localStorage.setItem(getCookie("username")+"-background", value);
+        localStorage.setItem(getCookie("user_id")+"-background", value);
         $('body').css("background-image","url(" + value + ")");
       },
       function (value) {
@@ -598,7 +633,7 @@ function setBackground(){
 
 // 重置背景
 function resetBackground(){
-    localStorage.removeItem(getCookie("username")+"-background");
+    localStorage.removeItem(getCookie("user_id")+"-background");
     $('body').css("background-image","url(https://api.kdcc.cn/)");
 }
 
@@ -607,21 +642,22 @@ var outputtedStorage;
 // 存入缓存
 function inputStorage(){
     if(outputtedStorage=="ok"){
-        localStorage.setItem(getCookie("username")+"-msg", JSON.stringify(msg));
-        localStorage.setItem(getCookie("username")+"-chattinglist", document.getElementById("chattinglist").innerHTML);
-        localStorage.setItem(getCookie("username")+"-storage", "ok");
+        localStorage.setItem(getCookie("user_id")+"-msg", JSON.stringify(msg));
+        localStorage.setItem(getCookie("user_id")+"-chattinglist", document.getElementById("chattinglist").innerHTML);
+        localStorage.setItem(getCookie("user_id")+"-storage", "ok");
     }
 }
 
 // 读取缓存
 function outputStorage(){
-    if (localStorage.getItem(getCookie("username")+"-storage") == "ok") {
-        msg = JSON.parse(localStorage.getItem(getCookie("username")+"-msg"));
-        document.getElementById("chattinglist").innerHTML = localStorage.getItem(getCookie("username")+"-chattinglist");
+    if (localStorage.getItem(getCookie("user_id")+"-storage") == "ok") {
+        msg = JSON.parse(localStorage.getItem(getCookie("user_id")+"-msg"));
+        document.getElementById("chattinglist").innerHTML = localStorage.getItem(getCookie("user_id")+"-chattinglist");
     }
-    if (localStorage.getItem(getCookie("username")+"-background") !== null) {
-        $('body').css("background-image","url(" + localStorage.getItem(getCookie("username")+"-background") + ")");
+    if (localStorage.getItem(getCookie("user_id")+"-background") !== null) {
+        $('body').css("background-image","url(" + localStorage.getItem(getCookie("user_id")+"-background") + ")");
     }
+    $(".mdui-list-item-active").removeClass("mdui-list-item-active");
     outputtedStorage = "ok";
 }
 
@@ -629,8 +665,8 @@ function outputStorage(){
 function deleteStorage(){
     mdui.confirm('您真的要清空缓存吗？这将导致您的缓存消息记录与正在进行的会话被清空！此过程不可逆。', '警告',
       function(){
-        localStorage.removeItem(getCookie("username")+"-msg");
-        localStorage.removeItem(getCookie("username")+"-chattinglist");
+        localStorage.removeItem(getCookie("user_id")+"-msg");
+        localStorage.removeItem(getCookie("user_id")+"-chattinglist");
         closeChatting();
         document.getElementById("chattinglist").innerHTML = "";
       },
@@ -650,17 +686,16 @@ function developMode(){
               function (pwd) {
                 $.ajax({
                     type: 'post',
-                    url: address + "/auth/login",
-                    data: {username: account, password: pwd},
+                    url: address + "/account/login",
+                    data: {user_id: account, password: pwd},
                     dataType: 'text',
                     success: function(data){
                         obj = JSON.parse(data);
                         if (obj.status == "ok"){
                             mdui.snackbar({message:'登录成功，调试已开启'});
                             apiAddress = address;
-                            setCookie("username",account,180);
-                            setCookie("token",obj.token,180);
-                            getDisplayName(getCookie("username"),"myname");
+                            setCookie("user_id",account,180);
+                            document.getElementById('myname').innerHTML = getUserName(getCookie("user_id"));
                             closeChatting();
                             document.getElementById("chattinglist").innerHTML = "";
                             refreshFriendlist();
@@ -700,4 +735,24 @@ function copy(copyValue){
     document.execCommand('Copy');
     document.body.removeChild(input);
 	mdui.snackbar({message:'复制成功'});
+}
+
+// 日期格式
+function dateFormat(timestamp) {
+    timestamp = Math.trunc(timestamp)
+    if (String(timestamp).length === 10) {
+        timestamp = timestamp * 1000
+    }
+    var date = new Date(timestamp)
+    var Y = date.getFullYear()
+    var M = date.getMonth() + 1
+    var D = date.getDate()
+    var hour = date.getHours()
+    var min = date.getMinutes()
+    var sec = date.getSeconds()
+    if (timestamp !== ""){
+        return Y + '-' + (M < 10 ? '0' + M : M) + '-' + (D < 10 ? '0' + D : D) + ' ' + (hour < 10 ? '0' + hour : hour) + ':' + (min < 10 ? '0' + min : min) + ':' + (sec < 10 ? '0' + sec : sec)
+    }else{
+    	return "NaN"
+    }
 }

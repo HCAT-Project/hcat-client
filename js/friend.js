@@ -2,7 +2,17 @@
 function addFriend(){
     mdui.prompt('请输入您要添加的好友ID', '添加好友',
       function (name) {
-        addFriendReal(name);
+        mdui.prompt('请输入您的附加信息', '添加好友',
+          function (info) {
+            addFriendReal(name,info);
+          },
+          function (value) {
+            
+          },
+          {
+              defaultValue: '我是' + getCookie("user_id")
+          }
+        );
       },
       function (value) {
         
@@ -11,48 +21,38 @@ function addFriend(){
 }
 
 // 确认加好友
-function addFriendReal(name){
-    mdui.prompt('请输入您的附加信息', '添加好友',
-      function (additional) {
-        $.ajax({
-            type: 'post',
-            url: apiAddress + "/friend/add",
-            data: {username: getCookie("username"), token: getCookie("token") ,friend_username: name, additional_information: additional},
-            dataType: 'text',
-            success: function(data){
-                obj = JSON.parse(data);
-                if (obj.status == "ok"){
-                    mdui.snackbar({message:'成功' + obj.message});
-                }else if(obj.status == "error"){
-                    mdui.snackbar({message:'失败：' + obj.message});
-                }else if(obj.status == "null"){
-                    mdui.snackbar({message:'账号不存在'});
-                }else{
-                    mdui.snackbar({message:'未知错误'});
-                }
+function addFriendReal(name,info){
+    $.ajax({
+        type: 'post',
+        url: apiAddress + "/friend/add_friend",
+        data: {user_id: name, add_info: info},
+        dataType: 'text',
+        success: function(data){
+            obj = JSON.parse(data);
+            if (obj.status == "ok"){
+                mdui.snackbar({message:'成功' + obj.message});
+            }else if(obj.status == "error"){
+                mdui.snackbar({message:'失败：' + obj.message});
+            }else if(obj.status == "null"){
+                mdui.snackbar({message:'账号不存在'});
+            }else{
+                mdui.snackbar({message:'未知错误'});
             }
-        });
-      },
-      function (value) {
-        
-      },
-      {
-          defaultValue: '我是' + getCookie("username")
-      }
-    );
+        }
+    });
 }
 
 // 同意好友
 function agreeFriend(rid){
     $.ajax({
         type: 'post',
-        url: apiAddress + "/friend/agree",
-        data: {username: getCookie("username"), token: getCookie("token") ,rid: rid},
+        url: apiAddress + "/friend/agree_friend_require",
+        data: {rid: rid},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
             if (obj.status == "ok"){
-                mdui.snackbar({message:'已添加为好友'});
+                mdui.snackbar({message:'已同意请求'});
                 $("#"+rid).remove();
                 refreshFriendlist();
             }else if(obj.status == "error"){
@@ -89,8 +89,8 @@ function confirmDeleteFriend(name){
 function deleteFriend(name){
     $.ajax({
         type: 'post',
-        url: apiAddress + "/friend/delete",
-        data: {username: getCookie("username"), token: getCookie("token") ,friend_username: name},
+        url: apiAddress + "/friend/delete_friend",
+        data: {friend_id: name},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
@@ -112,8 +112,8 @@ function deleteFriend(name){
 function refreshFriendlist(){
     $.ajax({
         type: 'post',
-        url: apiAddress + "/friend/get_friends_list",
-        data: {username: getCookie("username"), token: getCookie("token")},
+        url: apiAddress + "/friend/get_friend_list",
+        data: {},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
@@ -121,7 +121,7 @@ function refreshFriendlist(){
                 list = obj.data;
                 var out = "";
                 for(var i in list) {
-                out += '<li class="mdui-list-item mdui-ripple"><i class="mdui-list-item-avatar mdui-icon material-icons">person</i><div class="mdui-list-item-content">' + list[i].nick + '（'+i+'）</div><a href="javascript:addChattinglist(&quot;'+i+'&quot;,&quot;friend&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">message</i></a><a href="javascript:confirmDeleteFriend(&quot;'+i+'&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">delete</i></a></li>';
+                out += '<li class="mdui-list-item mdui-ripple"><i class="mdui-list-item-avatar mdui-icon material-icons">person</i><div class="mdui-list-item-content">' + getUserName(list[i]) + '（'+list[i]+'）</div><a href="javascript:addChattinglist(&quot;'+list[i]+'&quot;,&quot;friend&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">message</i></a><a href="javascript:confirmDeleteFriend(&quot;'+list[i]+'&quot;);"><i class="mdui-list-item-icon mdui-icon material-icons">delete</i></a></li>';
                 }
                 document.getElementById("inner-friend-list").innerHTML=out;
             }else if(obj.status == "error"){
@@ -135,3 +135,32 @@ function refreshFriendlist(){
     });
 }
 
+// 设置朋友备注
+function setFriendNick(){
+    mdui.prompt('请输入您给朋友设置的备注（留空重置）', '设置备注',
+      function (nick) {
+        $.ajax({
+            type: 'post',
+            url: apiAddress + "/friend/set_friend_nick",
+            data: {friend_id: chatting, nick: nick},
+            dataType: 'text',
+            success: function(data){
+                obj = JSON.parse(data);
+                if (obj.status == "ok"){
+                    mdui.snackbar({message:'设置成功'});
+                    openChatting(chatting,'friend');
+                }else if(obj.status == "error"){
+                    mdui.snackbar({message:'失败：' + obj.message});
+                }else if(obj.status == "null"){
+                    mdui.snackbar({message:'失败：' + obj.message});
+                }else{
+                    mdui.snackbar({message:'未知错误'});
+                }
+            }
+        });
+      },
+      function (value) {
+        
+      }
+    );
+}

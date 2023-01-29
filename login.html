@@ -12,9 +12,9 @@
   <!--<link href="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/css/bootstrap.min.css" rel="stylesheet">-->
   <!--<script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/js/bootstrap.bundle.min.js"></script>-->
 </head>
-<body class="mdui-theme-primary-indigo mdui-color-blue-100 mdui-theme-accent-indigo mdui-theme-layout-auto">
+<body class="mdui-theme-primary-indigo mdui-theme-accent-indigo background">
   <div class="mdui-appbar mb10">
-    <div class="mdui-toolbar mdui-color-indigo">
+    <div class="mdui-toolbar mdui-color-indigo-50">
       <a class="mdui-typo-headline">HCAT</a>
       <a class="mdui-typo-title">登录</a>
     </div>
@@ -24,13 +24,13 @@
     <div class="mdui-typo-display-2 mdui-text-center">
         <br>
     </div>
-    <div id="login">
+    <div id="login" class="card mdui-card">
     <div class="mdui-text-center mdui-typo-display-3">登录HCAT</div>
     <div class="mdui-textfield">
         <div class="mdui-textfield mdui-textfield-floating-label"><label class="mdui-textfield-label">账号</label><input id="login_account" required="" class="mdui-textfield-input" type="text" name="uid" onkeyup="value=value.replace(/[\W]/g,'')"/></div>
         <div class="mdui-textfield mdui-textfield-floating-label"><label class="mdui-textfield-label">密码</label><input id="login_passwd" required="" class="mdui-textfield-input" type="password" name="password" onkeyup="value=value.replace(/[\W]/g,'')"/></div><br>
-        <input onclick="loginHandler()" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent" type="submit" value="登录"><br>
-        <a href="register.html"><button class="mdui-btn mdui-btn-block mdui-color-theme-accent mdui-ripple">没有账号？点击注册！</button></a>
+        <input onclick="loginHandler()" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent-100" type="submit" value="登录"><br>
+        <button onclick="window.location='register.html'" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent-100">没有账号？点击注册！</button>
     </div>
 </div>
     <div class="mdui-typo-display-2 mdui-text-center">
@@ -39,8 +39,8 @@
 </div>
 
 <footer>
-  <div class="mdui-center mdui-text-center">
-    <p><strong>通知：由于更改加密算法，数据已于2022/10/22重置！<br><span id="runtime_span"></span> <script type="text/javascript">function show_runtime(){window.setTimeout("show_runtime()",1000);X=new Date("10/1/2022 21:00:00");Y=new Date();T=(Y.getTime()-X.getTime());M=24*60*60*1000;a=T/M;A=Math.floor(a);b=(a-A)*24;B=Math.floor(b);c=(b-B)*60;C=Math.floor((b-B)*60);D=Math.floor((c-C)*60);runtime_span.innerHTML="网站已开启测试"+A+"天"+B+"小时"+C+"分"+D+"秒"}show_runtime();</script><br>
+  <div class="mdui-center mdui-text-center mdui-container">
+    <p><strong>通知：由于更新后端，数据已于2023/1/25重置！<br><span id="runtime_span"></span> <script type="text/javascript">function show_runtime(){window.setTimeout("show_runtime()",1000);X=new Date("10/1/2022 21:00:00");Y=new Date();T=(Y.getTime()-X.getTime());M=24*60*60*1000;a=T/M;A=Math.floor(a);b=(a-A)*24;B=Math.floor(b);c=(b-B)*60;C=Math.floor((b-B)*60);D=Math.floor((c-C)*60);runtime_span.innerHTML="网站已开启测试"+A+"天"+B+"小时"+C+"分"+D+"秒"}show_runtime();</script><br>
         备案号：<a href="https://beian.miit.gov.cn/" target="_blank">沪B2-20100004</a>
         </strong>
     </p>
@@ -56,16 +56,15 @@ function loginHandler() {
         return;
     }
     $.ajax({
-        type: 'post',
-        url: apiAddress + "/auth/login",
-        data: {username: user, password: pwd},
+        type: 'get',
+        url: apiAddress + "/account/login",
+        data: {user_id: user, password: pwd},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
             if (obj.status == "ok"){
                 mdui.snackbar({message:'登录成功'});
-                setCookie("username",user,180);
-                setCookie("token",obj.token,180);
+                setCookie("user_id",user,180);
                 window.location = "index.html";
             }else if(obj.status == "error"){
                 mdui.snackbar({message:'登录失败，错误原因：' + obj.message});
@@ -81,9 +80,9 @@ function loginHandler() {
 // token验证
 function authenticateToken(){
     $.ajax({
-        type: 'post',
-        url: apiAddress + "/auth/authenticate_token",
-        data: {username: getCookie("username"), token: getCookie("token")},
+        type: 'get',
+        url: apiAddress + "/account/authenticate_token",
+        data: {},
         dataType: 'text',
         success: function(data){
             obj = JSON.parse(data);
