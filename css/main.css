@@ -24,7 +24,7 @@
 }
 
 .opacity {
-    opacity: 0.9;
+    opacity: 0.75;
 }
 
 .background {
@@ -47,13 +47,17 @@
     width: 100%;
     height: 50px;
     background: transparent;
-    border-top: 1px solid #787d9a;
+    border-top: 1px solid #333333;
     border-left: 0;
     border-right: 0;
     border-bottom: 0;
-    padding: 4px;
+    padding: 13px;
     color: #000000;
     border-radius: 0px 0px 20px 20px;
+}
+
+input::-webkit-input-placeholder {
+    color: #333333;
 }
 
 .card {
@@ -172,6 +176,7 @@
     color: #000000;
 }
 
+
 .player {
     padding-right: 5px ! important;
 }
@@ -199,4 +204,69 @@
 
 .swal2-container.swal2-center>.swal2-popup {
     font-size:16px;
+}
+
+a,div,span,i {
+    color: #333333!important
+}
+
+#toolbar {
+    border-radius: 20px;
+    padding: 0px 15px 0 8px;
+    backdrop-filter: blur(5px);
+    background-color: rgba(255,255,255, 0.7)!important;
+    box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
+    border: 0px rgba(255,255,255,0.4) solid;
+    border-bottom: 0px rgba(40,40,40,0.35) solid;
+    border-right: 0px rgba(40,40,40,0.35) solid;
+    box-shadow:
+    2.8px 2.8px 2.2px rgba(0, 0, 0, 0.042),
+    6.7px 6.7px 5.3px rgba(0, 0, 0, 0.061),
+    12.5px 12.5px 10px rgba(0, 0, 0, 0.075),
+    22.3px 22.3px 17.9px rgba(0, 0, 0, 0.089),
+    41.8px 41.8px 33.4px rgba(0, 0, 0, 0.108),
+    100px 100px 80px rgba(0, 0, 0, 0.15)
+    ;
+    margin: 10px 20px;
+    width: calc(100% - 40px);
+    height: 48px;
+    line-height: 48px;
+}
+
+#chattinglist {
+    border-radius: 25px;
+    backdrop-filter: blur(2px);
+    background-color: rgba(255,255,255, 0.6)!important;
+    box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
+    border: 0px rgba(255,255,255,0.5) solid;
+    border-bottom: 0px rgba(40,40,40,0.35) solid;
+    border-right: 0px rgba(40,40,40,0.35) solid;
+}
+
+#chattinglist:hover {
+    background-color: rgb(255 255 255 / 0.5)!important;
+}
+
+.mdui-menu {
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    background-color: rgba(255,255,255, 0.7)!important;
+    box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
+    border: 0px rgba(255,255,255,0.4) solid;
+    border-bottom: 0px rgba(40,40,40,0.35) solid;
+    border-right: 0px rgba(40,40,40,0.35) solid;
+    box-shadow: 2.8px 2.8px 2.2px rgb(0 0 0 / 4%), 6.7px 6.7px 5.3px rgb(0 0 0 / 6%), 12.5px 12.5px 10px rgb(0 0 0 / 8%), 22.3px 22.3px 17.9px rgb(0 0 0 / 9%), 41.8px 41.8px 33.4px rgb(0 0 0 / 11%), 100px 100px 80px rgb(0 0 0 / 15%);
+    margin: 10px
+}
+
+.mdui-tooltip {
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    background-color: rgba(255,255,255, 0.7)!important;
+    box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
+    border: 0px rgba(255,255,255,0.4) solid;
+    border-bottom: 0px rgba(40,40,40,0.35) solid;
+    border-right: 0px rgba(40,40,40,0.35) solid;
+    box-shadow: 2.8px 2.8px 2.2px rgb(0 0 0 / 4%), 6.7px 6.7px 5.3px rgb(0 0 0 / 6%), 12.5px 12.5px 10px rgb(0 0 0 / 8%), 22.3px 22.3px 17.9px rgb(0 0 0 / 9%), 41.8px 41.8px 33.4px rgb(0 0 0 / 11%), 100px 100px 80px rgb(0 0 0 / 15%);
+    margin: 10px
 }
