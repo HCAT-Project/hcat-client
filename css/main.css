@@ -28,7 +28,7 @@
 }
 
 .background {
-    background-color: #ebf1f5;
+    background-color: #000000;
     background-image: url(https://api.kdcc.cn/);
     background-attachment: fixed;
     background-repeat: no-repeat;
@@ -62,9 +62,9 @@ input::-webkit-input-placeholder {
 
 .card {
     width: 100%;
-    padding: 50px;
+    padding: 30px 60px 10px 60px;
     color: #000000;
-    opacity: 0.95;
+    /* opacity: 0.95; */
     border-radius: 20px;
 }
 
