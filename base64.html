@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta name="description" content="HCAT">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>HCAT-base64转换</title>
+  <link rel="shortcut icon" href="img/hcat.ico">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/mdui/1.0.2/css/mdui.min.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <script src="https://cdn.staticfile.org/mdui/1.0.2/js/mdui.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/friend.js"></script>
+  <script src="js/group.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="https://cdn.staticfile.org/jquery/3.6.1/jquery.min.js"></script>
+  <link href="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/js/bootstrap.bundle.min.js"></script>
+  <!--<script src="https://cdn.staticfile.org/ckeditor5/36.0.0/ckeditor.js"></script>-->
+</head>
+<body class="mdui-theme-primary-indigo mdui-theme-accent-indigo background">
+  <div class="mdui-appbar mb10" style="box-shadow: 0px 0px;z-index:10000;position: sticky;">
+    <div class="mdui-toolbar mdui-color-indigo-50" id="toolbar">
+      <a class="mdui-typo-headline" href="">HCAT</a>
+      <a class="mdui-typo-title">工具-base64转换</a>
+    </div>
+  </div>
+<div class="mdui-container-fluid">
+    <div class="mdui-row main-area mdui-center" style="width: calc(100% - 28px);">
+        <div id="chattinglist" class="card mdui-card" style="height: 518px;padding: 60px;height:518px;margin-bottom: 20px;">
+            <div>
+            <input type="file" id="img_upload"/>
+            <textarea id="base64_code" rows="30" cols="360" style="width: 100%; height: 118px;"></textarea>
+            <p id="img_area"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+window.onload = function(){ 
+var img_upload=document.getElementById("img_upload");
+var base64_code=document.getElementById("base64_code");
+var img_area=document.getElementById("img_area");
+img_upload.addEventListener('change',readFile,false);}
+ function readFile(){
+    var file=this.files[0];
+    if(!/image\/\w+/.test(file.type)){ 
+        alert("文件格式错误！"); 
+        return false; 
+    }
+    var reader=new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload=function(){
+        base64_code.innerHTML = this.result; 
+        img_area.innerHTML = '<div>原图片：</div><img src="'+this.result+'" alt=""/>'; 
+    }
+}
+</script>
+        
+
+</body></html>

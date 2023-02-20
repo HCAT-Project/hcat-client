@@ -241,6 +241,7 @@ a,div,span,i {
     border: 0px rgba(255,255,255,0.4) solid;
     border-bottom: 0px rgba(40,40,40,0.35) solid;
     border-right: 0px rgba(40,40,40,0.35) solid;
+    user-select: auto;
 }
 
 #chattinglist:hover {
@@ -304,4 +305,8 @@ delete {
     border-right: 0px rgba(40,40,40,0.35) solid;
     box-shadow: 2.8px 2.8px 2.2px rgb(0 0 0 / 4%), 6.7px 6.7px 5.3px rgb(0 0 0 / 6%), 12.5px 12.5px 10px rgb(0 0 0 / 8%), 22.3px 22.3px 17.9px rgb(0 0 0 / 9%), 41.8px 41.8px 33.4px rgb(0 0 0 / 11%), 100px 100px 80px rgb(0 0 0 / 15%);
     margin: 20px
+}
+
+body {
+    user-select: none;
 }
