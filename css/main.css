@@ -214,7 +214,7 @@ a,div,span,i {
     border-radius: 25px;
     padding: 0px 15px 0 8px;
     backdrop-filter: blur(5px);
-    background-color: rgba(255,255,255, 0.8)!important;
+    background-color: rgba(255,255,255, 0.85)!important;
     box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
     border: 0px rgba(255,255,255,0.4) solid;
     border-bottom: 0px rgba(40,40,40,0.35) solid;
@@ -236,7 +236,7 @@ a,div,span,i {
 #chattinglist {
     border-radius: 25px;
     backdrop-filter: blur(5px);
-    background-color: rgba(255,255,255, 0.75)!important;
+    background-color: rgba(255,255,255, 0.8)!important;
     box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
     border: 0px rgba(255,255,255,0.4) solid;
     border-bottom: 0px rgba(40,40,40,0.35) solid;
@@ -245,7 +245,7 @@ a,div,span,i {
 }
 
 #chattinglist:hover {
-    background-color: rgb(255 255 255 / 0.7)!important;
+    background-color: rgb(255 255 255 / 0.75)!important;
 }
 
 .mdui-col, [class*=mdui-col-lg-], [class*=mdui-col-md-], [class*=mdui-col-sm-], [class*=mdui-col-xl-], [class*=mdui-col-xs-] {
@@ -255,7 +255,7 @@ a,div,span,i {
 .mdui-menu {
     border-radius: 20px;
     backdrop-filter: blur(5px);
-    background-color: rgba(255,255,255, 0.8)!important;
+    background-color: rgba(255,255,255, 0.85)!important;
     box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
     border: 0px rgba(255,255,255,0.4) solid;
     border-bottom: 0px rgba(40,40,40,0.35) solid;
@@ -271,7 +271,7 @@ a,div,span,i {
 .mdui-tooltip {
     border-radius: 20px;
     backdrop-filter: blur(5px);
-    background-color: rgba(255,255,255, 0.75)!important;
+    background-color: rgba(255,255,255, 0.8)!important;
     box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
     border: 0px rgba(255,255,255,0.4) solid;
     border-bottom: 0px rgba(40,40,40,0.35) solid;
@@ -283,7 +283,7 @@ a,div,span,i {
 .mdui-dialog {
     border-radius: 25px;
     backdrop-filter: blur(5px); 
-    background-color: rgba(255,255,255, 0.8)!important;
+    background-color: rgba(255,255,255, 0.85)!important;
     box-shadow: rgb(0 0 0 \ 30%) 2px 8px 8px;
     border: 0px rgba(255,255,255,0.4) solid;
     border-bottom: 0px rgba(40,40,40,0.35) solid;
@@ -298,13 +298,13 @@ delete {
 .mdui-snackbar {
     border-radius: 20px;
     backdrop-filter: blur(5px);
-    background-color: rgba(255,255,255, 0.75)!important;
+    background-color: rgba(255,255,255, 0.8)!important;
     box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
     border: 0px rgba(255,255,255,0.4) solid;
     border-bottom: 0px rgba(40,40,40,0.35) solid;
     border-right: 0px rgba(40,40,40,0.35) solid;
     box-shadow: 2.8px 2.8px 2.2px rgb(0 0 0 / 4%), 6.7px 6.7px 5.3px rgb(0 0 0 / 6%), 12.5px 12.5px 10px rgb(0 0 0 / 8%), 22.3px 22.3px 17.9px rgb(0 0 0 / 9%), 41.8px 41.8px 33.4px rgb(0 0 0 / 11%), 100px 100px 80px rgb(0 0 0 / 15%);
-    margin: 20px
+    margin: 20px 0px
 }
 
 body {
