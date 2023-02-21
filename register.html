@@ -26,9 +26,10 @@
     <div id="chattinglist" class="card mdui-card" style="height: 518px;padding: 60px;">
     <div class="mdui-text-center mdui-typo-display-3"style="font-size: 36px">注册HCAT</div>
     <div class="mdui-textfield" style="padding: 16px 20%">
-        <div class="mdui-textfield mdui-textfield-floating-label"><label class="mdui-textfield-label">账号</label><input id="reg_account" required="" class="mdui-textfield-input" type="text" name="uid"/></div>
-        <div class="mdui-textfield mdui-textfield-floating-label"><label class="mdui-textfield-label">密码</label><input id="reg_passwd" required="" class="mdui-textfield-input" type="password" name="password"/></div>
-        <div class="mdui-textfield mdui-textfield-floating-label"><label class="mdui-textfield-label">昵称</label><input id="reg_display_name" required="" class="mdui-textfield-input" type="text" name="display_name"/></div><br>
+        <div class="mdui-textfield mdui-textfield-floating-label" id="textfield"><i class="mdui-icon material-icons">account_circle</i><label class="mdui-textfield-label" style="margin-left: 48px;">账号</label><input id="reg_account" required="" class="mdui-textfield-input" style="margin-left: 48px;" type="text" name="uid"/></div>
+        <div class="mdui-textfield mdui-textfield-floating-label" id="textfield"><i class="mdui-icon material-icons">lock</i><label class="mdui-textfield-label" style="margin-left: 48px;">密码</label><input id="reg_passwd" required="" class="mdui-textfield-input"style="margin-left: 48px;"  type="password" name="password"/></div>
+        <div class="mdui-textfield mdui-textfield-floating-label" id="textfield"><i class="mdui-icon material-icons">contacts</i><label class="mdui-textfield-label" style="margin-left: 48px;">昵称</label><input id="reg_display_name" required="" class="mdui-textfield-input" style="margin-left: 48px;" type="text" name="display_name"/></div>
+        <div class="mdui-textfield mdui-textfield-floating-label" id="textfield"><i class="mdui-icon material-icons">email</i><label class="mdui-textfield-label" style="margin-left: 48px;">邮箱</label><input id="reg_email" required="" class="mdui-textfield-input" style="margin-left: 48px;" type="text" name="display_name"/></div><br>
         <input onclick="loginHandler()" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent-100" type="submit" value="注册"><br>
         <button onclick="window.location='login.html'" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent-100">已有账号？点击登录！</button>
     </div>

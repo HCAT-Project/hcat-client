@@ -248,6 +248,10 @@ a,div,span,i {
     background-color: rgb(255 255 255 / 0.75)!important;
 }
 
+#textfield {
+    padding-top: 0px;
+}
+
 .mdui-col, [class*=mdui-col-lg-], [class*=mdui-col-md-], [class*=mdui-col-sm-], [class*=mdui-col-xl-], [class*=mdui-col-xs-] {
     padding: 0px 14px;
 }

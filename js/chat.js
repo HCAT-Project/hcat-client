@@ -1,6 +1,6 @@
 // 发送图片
 function sendPhoto(){
-    mdui.prompt('请输入图片链接(带http/https)或者<a href="https://tool.chinaz.com/tools/imgtobase/" target="_blank">base64格式文本</a>', '发送图片',
+    mdui.prompt('请输入图片链接(带http/https)或者<a href="base64.html" target="_blank" title="">base64格式文本</a>', '发送图片',
       function (value) {
         sendMessage('{"msg_chain":[{"type":"img","msg":"'+value+'"}]}');
       },

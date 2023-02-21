@@ -26,8 +26,8 @@
     <div id="chattinglist" class="card mdui-card" style="height: 518px;padding: 60px;">
     <div class="mdui-text-center mdui-typo-display-3" style="font-size: 36px;">登录HCAT</div>
     <div class="mdui-textfield" style="padding: 16px 20%;">
-        <div class="mdui-textfield mdui-textfield-floating-label"><label class="mdui-textfield-label">账号</label><input id="login_account" required="" class="mdui-textfield-input" type="text" name="uid" onkeyup="value=value.replace(/[\W]/g,'')"/></div>
-        <div class="mdui-textfield mdui-textfield-floating-label"><label class="mdui-textfield-label">密码</label><input id="login_passwd" required="" class="mdui-textfield-input" type="password" name="password" onkeyup="value=value.replace(/[\W]/g,'')"/></div><br>
+        <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">account_circle</i><label class="mdui-textfield-label" style="margin-left: 48px;">账号</label><input id="login_account" required="" class="mdui-textfield-input" style="margin-left: 48px;" type="text" name="uid" onkeyup="value=value.replace(/[\W]/g,'')"/></div>
+        <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">lock</i><label class="mdui-textfield-label" style="margin-left: 48px;">密码</label><input id="login_passwd" required="" class="mdui-textfield-input" style="margin-left: 48px;" type="password" name="password" onkeyup="value=value.replace(/[\W]/g,'')"/></div><br>
         <input onclick="loginHandler()" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent-100" type="submit" value="登录"><br>
         <button onclick="window.location='register.html'" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent-100">没有账号？点击注册！</button>
     </div>
