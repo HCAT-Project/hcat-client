@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>HCAT - 登录</title>
+  <link rel="shortcut icon" href="img/hcat.ico">
   <link rel="stylesheet" href="https://cdn.staticfile.org/mdui/1.0.2/css/mdui.min.css" />
   <link rel="stylesheet" href="css/main.css" />
   <script src="https://cdn.staticfile.org/mdui/1.0.2/js/mdui.min.js"></script>
@@ -13,39 +14,33 @@
   <!--<script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/js/bootstrap.bundle.min.js"></script>-->
 </head>
 <body class="mdui-theme-primary-indigo mdui-theme-accent-indigo background">
-  <div class="mdui-appbar mb10">
-    <div class="mdui-toolbar mdui-color-indigo-50">
-      <a class="mdui-typo-headline">HCAT</a>
+  <div class="mdui-appbar mb10" style="box-shadow: 0px 0px;z-index:10000;position: sticky;">
+    <div class="mdui-toolbar mdui-color-indigo-50" id="toolbar">
+      <a class="mdui-typo-headline" href="">HCAT</a>
       <a class="mdui-typo-title">登录</a>
     </div>
   </div>
   
-<div class="mdui-container mdui-row mdui-center">
-    <div class="mdui-typo-display-2 mdui-text-center">
-        <br>
-    </div>
-    <div id="login" class="card mdui-card">
-    <div class="mdui-text-center mdui-typo-display-3">登录HCAT</div>
-    <div class="mdui-textfield">
-        <div class="mdui-textfield mdui-textfield-floating-label"><label class="mdui-textfield-label">账号</label><input id="login_account" required="" class="mdui-textfield-input" type="text" name="uid" onkeyup="value=value.replace(/[\W]/g,'')"/></div>
-        <div class="mdui-textfield mdui-textfield-floating-label"><label class="mdui-textfield-label">密码</label><input id="login_passwd" required="" class="mdui-textfield-input" type="password" name="password" onkeyup="value=value.replace(/[\W]/g,'')"/></div><br>
+<div class="mdui-container-fluid">
+    <div class="mdui-row main-area mdui-center" style="width: calc(100% - 28px);">
+    <div id="chattinglist" class="card mdui-card" style="height: 518px;padding: 60px;">
+    <div class="mdui-text-center mdui-typo-display-3" style="font-size: 36px;">登录HCAT</div>
+    <div class="mdui-textfield" style="padding: 16px 20%;">
+        <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">account_circle</i><label class="mdui-textfield-label" style="margin-left: 48px;">账号</label><input id="login_account" required="" class="mdui-textfield-input" style="margin-left: 48px;" type="text" name="uid" onkeyup="value=value.replace(/[\W]/g,'')"/></div>
+        <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">lock</i><label class="mdui-textfield-label" style="margin-left: 48px;">密码</label><input id="login_passwd" required="" class="mdui-textfield-input" style="margin-left: 48px;" type="password" name="password" onkeyup="value=value.replace(/[\W]/g,'')"/></div><br>
         <input onclick="loginHandler()" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent-100" type="submit" value="登录"><br>
         <button onclick="window.location='register.html'" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent-100">没有账号？点击注册！</button>
     </div>
-</div>
-    <div class="mdui-typo-display-2 mdui-text-center">
-        <br>
-    </div>
-</div>
-
-<footer>
-  <div class="mdui-center mdui-text-center mdui-container">
-    <p><strong>通知：由于更新后端，数据已于2023/1/25重置！<br><span id="runtime_span"></span> <script type="text/javascript">function show_runtime(){window.setTimeout("show_runtime()",1000);X=new Date("10/1/2022 21:00:00");Y=new Date();T=(Y.getTime()-X.getTime());M=24*60*60*1000;a=T/M;A=Math.floor(a);b=(a-A)*24;B=Math.floor(b);c=(b-B)*60;C=Math.floor((b-B)*60);D=Math.floor((c-C)*60);runtime_span.innerHTML="网站已开启测试"+A+"天"+B+"小时"+C+"分"+D+"秒"}show_runtime();</script><br>
+    <div class="mdui-center mdui-text-center mdui-container">
+        <p><strong>通知：由于更新后端，数据已于2023/1/25重置！<br><span id="runtime_span"></span> <script type="text/javascript">function show_runtime(){window.setTimeout("show_runtime()",1000);X=new Date("10/1/2022 21:00:00");Y=new Date();T=(Y.getTime()-X.getTime());M=24*60*60*1000;a=T/M;A=Math.floor(a);b=(a-A)*24;B=Math.floor(b);c=(b-B)*60;C=Math.floor((b-B)*60);D=Math.floor((c-C)*60);runtime_span.innerHTML="网站已开启测试"+A+"天"+B+"小时"+C+"分"+D+"秒"}show_runtime();</script><br>
         备案号：<a href="https://beian.miit.gov.cn/" target="_blank">沪B2-20100004</a>
         </strong>
-    </p>
-  </div>
-</footer>
+        </p>
+    </div>
+    </div>
+    </div>
+    </div>
+</div>
 
 <script>
 function loginHandler() {
