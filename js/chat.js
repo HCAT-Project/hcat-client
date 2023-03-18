@@ -1,6 +1,14 @@
+// 发送base64图片
+function sendBase64Photo() {
+    selectAndConvertToBase64((base64String) => {
+      // 发送base64字符串
+      sendMessage('{"msg_chain":[{"type":"img","msg":"'+base64String+'"}]}');
+    });
+}
+
 // 发送图片
-function sendPhoto(){
-    mdui.prompt('请输入图片链接(带http/https)或者<a href="https://tool.chinaz.com/tools/imgtobase/" target="_blank">base64格式文本</a>', '发送图片',
+function sendPhoto() {
+    mdui.prompt('请输入图片链接(带http/https)', '发送图片',
       function (value) {
         sendMessage('{"msg_chain":[{"type":"img","msg":"'+value+'"}]}');
       },
@@ -9,6 +17,31 @@ function sendPhoto(){
       }
     );
 }
+
+// 加载图片 爱来自ChatGPT
+function selectAndConvertToBase64(callback) {
+  // 创建一个<input>元素来选择文件
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  // 当用户选择文件时
+  input.onchange = (event) => {
+    const file = event.target.files[0];
+    // 创建一个FileReader来读取文件
+    const reader = new FileReader();
+    // 当文件加载完成时
+    reader.onload = () => {
+      // 将结果转换为Data URL并传递给回调函数
+      const dataURL = reader.result;
+      callback(dataURL);
+    };
+    // 读取文件并将其转换为Data URL
+    reader.readAsDataURL(file);
+  };
+  // 触发选择文件操作
+  input.click();
+}
+
 
 // 发送多行文本
 function sendTexture(){

@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <title>HCAT</title>
+  <link rel="shortcut icon" href="img/hcat.ico">
   <link rel="stylesheet" href="https://cdn.staticfile.org/mdui/1.0.2/css/mdui.min.css" />
   <link rel="stylesheet" href="css/main.css" />
   <script src="https://cdn.staticfile.org/mdui/1.0.2/js/mdui.min.js"></script>
@@ -18,10 +19,11 @@
   <!--<script src="https://cdn.staticfile.org/ckeditor5/36.0.0/ckeditor.js"></script>-->
 </head>
 <body class="mdui-theme-primary-indigo mdui-theme-accent-indigo background">
-  <div class="mdui-appbar mb10">
-    <div class="mdui-toolbar mdui-color-indigo-50">
-      <a class="mdui-typo-headline">HCAT</a>
-      <a class="mdui-typo-title"><span id="myname"></span></a>
+  <div class="mdui-appbar mb10" style="box-shadow: 0px 0px;z-index: 100000;position: sticky;
+">
+    <div class="mdui-toolbar mdui-color-indigo-50" id="toolbar">
+      <a class="mdui-typo-headline" href="">HCAT</a>
+      <a class="mdui-typo-title">聊天 - <span id="myname"></span></a>
       <div class="mdui-toolbar-spacer"></div>
         <a class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#chat-menu'}" mdui-tooltip="{content: '会话'}">
           <i class="mdui-icon material-icons">chat</i>
@@ -116,6 +118,11 @@
               <i class="mdui-menu-item-icon mdui-icon material-icons">person_pin</i>更改昵称
             </a>
           </li>
+          <li class="mdui-menu-item">
+            <a href="javascript:logout();" class="mdui-ripple">
+              <i class="mdui-menu-item-icon mdui-icon material-icons">exit_to_app</i>退出登录
+            </a>
+          </li>
         </ul>
         <ul class="mdui-menu mdui-menu-cascade" id="settings-menu">
           <li class="mdui-menu-item">
@@ -135,16 +142,16 @@
               <i class="mdui-menu-item-icon mdui-icon material-icons">info</i>关于我们
             </a>
           </li>
-          <li class="mdui-menu-item">
-            <a href="javascript:logout();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">exit_to_app</i>退出登录
-            </a>
-          </li>
         </ul>
         <ul class="mdui-menu mdui-menu-cascade" id="tool-menu">
           <li class="mdui-menu-item">
             <a href="javascript:sendPhoto();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">photo</i>发送图片
+              <i class="mdui-menu-item-icon mdui-icon material-icons">photo</i>外链图片
+            </a>
+          </li>
+          <li class="mdui-menu-item">
+            <a href="javascript:sendBase64Photo();" class="mdui-ripple">
+              <i class="mdui-menu-item-icon mdui-icon material-icons">photo</i>上传图片
             </a>
           </li>
           <li class="mdui-menu-item">
@@ -158,19 +165,19 @@
 
 <div class="mdui-container-fluid" id="main-area">
     <div class="mdui-row mb10 h100 main-area mdui-center">
-        <div class="mdui-col-xs-3 mb10 h100 opacity">
+        <div class="mdui-col-xs-3 mb10 h100 opacity" style="opacity: 1;">
             <ul class="mdui-list mb10 h100 list" style="background-color: #E8EAF6;overflow-y: auto;" id="chattinglist">
             </ul>
         </div>
-        <div class="mdui-col-xs-9 mb10 h100 opacity">
+        <div class="mdui-col-xs-9 mb10 h100 opacity" style="opacity: 1;">
             <div class="commentdata2" id="commentdata2">
-                <div class="comments mdui-card" style="background-color:#E8EAF6">
+                <div class="comments mdui-card" style="background-color:#E8EAF6;" id="chattinglist">
                     <div class="CardTitle"><div id="chatting-title"></div></div>
                     <div class="CardBody commentdata" id="contentarea">
                         <div class="msgcontent" id="content"></div>
                     </div>
                     <div>
-                        <input type="text" class="inputcontent" max="128" placeholder="输入后回车发送" onkeydown="keyup_submit(event);" id="inputmessage">
+                        <input type="text" class="inputcontent" max="128" placeholder="按回车键发送信息" onkeydown="keyup_submit(event);" id="inputmessage">
                     </div>
                 </div>
             </div>
@@ -258,7 +265,7 @@
     <div class="mdui-dialog" id="about-us">
       <div class="mdui-dialog-content">
         <div class="mdui-dialog-title">关于我们</div>
-        我们这个HCAT占存小方便携带，注册一下，登录以后就变大，怎么发都发不坏，用来聊天，斗图，开团都是很好用的，你看打开以后像网页一样大小，放在浏览器里遇网络变大变高，可用性很强的。打开以后，是一个简单快捷的网页，你看他怎么发都发不坏，好不漏消息不泄露隐私，使用114514次都没问题，和朋友聊天时带上它非常方便，用它聊聊天，再斗斗图，开开团，干净卫生。什么？在哪里体验？打开浏览器，注册五个号还送五个号，还开源。
+        我们这个HCAT占用小方便使用，注册一下，一登录就变大，怎么发都<delete>可能坏</delete>不会坏，用来聊天，发病，开团都是很好用的，你看打开以后像网页一样大小，放在浏览器里遇网络变大变<delete>卡</delete>快，<delete>不</delete>稳定性很强的。打开以后，是一个简单快捷的聊天网页，你看他怎么发都<delete>可能坏</delete>不会坏，好不留答辩不露消息，使用1145141919810次都没问题，日常聊天带上它非常方便，用它聊聊天，再发发病，开开团，不会被封。什么?在哪里体验?打开浏览器注册一个号就是一个号，还<a href="https://github.com/HCAT-Project" target="_blank">开源</a>
       </div>
       <div class="mdui-dialog-actions">
         <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
