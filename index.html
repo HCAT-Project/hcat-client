@@ -18,167 +18,169 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta name="description" content="HCAT">
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>HCAT</title>
-  <link rel="shortcut icon" href="img/hcat.ico">
-  <link rel="stylesheet" href="https://cdn.staticfile.org/mdui/1.0.2/css/mdui.min.css" />
-  <link rel="stylesheet" href="css/main.css" />
-  <script src="https://cdn.staticfile.org/mdui/1.0.2/js/mdui.min.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/friend.js"></script>
-  <script src="js/group.js"></script>
-  <script src="js/chat.js"></script>
-  <script src="https://cdn.staticfile.org/jquery/3.6.1/jquery.min.js"></script>
-  <link href="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/js/bootstrap.bundle.min.js"></script>
-  <!--<script src="https://cdn.staticfile.org/ckeditor5/36.0.0/ckeditor.js"></script>-->
+    <meta name="description" content="HCAT">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>HCAT</title>
+    <link rel="shortcut icon" href="img/hcat.ico">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/mdui/1.0.2/css/mdui.min.css"/>
+    <link rel="stylesheet" href="css/main.css"/>
+    <script src="https://cdn.staticfile.org/mdui/1.0.2/js/mdui.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/friend.js"></script>
+    <script src="js/group.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/enum.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/3.6.1/jquery.min.js"></script>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/js/bootstrap.bundle.min.js"></script>
+    <!--<script src="https://cdn.staticfile.org/ckeditor5/36.0.0/ckeditor.js"></script>-->
 </head>
 <body class="mdui-theme-primary-indigo mdui-theme-accent-indigo background">
-  <div class="mdui-appbar mb10" style="box-shadow: 0px 0px;z-index: 100000;position: sticky;
+<div class="mdui-appbar mb10" style="box-shadow: 0px 0px;z-index: 100000;position: sticky;
 ">
     <div class="mdui-toolbar mdui-color-indigo-50" id="toolbar">
-      <a class="mdui-typo-headline" href="">HCAT</a>
-      <a class="mdui-typo-title">聊天 - <span id="myname"></span></a>
-      <div class="mdui-toolbar-spacer"></div>
+        <a class="mdui-typo-headline" href="">HCAT</a>
+        <a class="mdui-typo-title">聊天 - <span id="myname"></span></a>
+        <div class="mdui-toolbar-spacer"></div>
         <a class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#chat-menu'}" mdui-tooltip="{content: '会话'}">
-          <i class="mdui-icon material-icons">chat</i>
+            <i class="mdui-icon material-icons">chat</i>
         </a>
         <a class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#tool-menu'}" mdui-tooltip="{content: '工具'}">
-          <i class="mdui-icon material-icons">add</i>
+            <i class="mdui-icon material-icons">add</i>
         </a>
         <a class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#friend-menu'}" mdui-tooltip="{content: '好友'}">
-          <i class="mdui-icon material-icons">person</i>
+            <i class="mdui-icon material-icons">person</i>
         </a>
         <a class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#group-menu'}" mdui-tooltip="{content: '群组'}">
-          <i class="mdui-icon material-icons">group</i>
+            <i class="mdui-icon material-icons">group</i>
         </a>
         <a class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#account-menu'}" mdui-tooltip="{content: '账号'}">
-          <i class="mdui-icon material-icons">account_box</i>
+            <i class="mdui-icon material-icons">account_box</i>
         </a>
         <a class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#settings-menu'}" mdui-tooltip="{content: '设置'}">
-          <i class="mdui-icon material-icons">settings</i>
+            <i class="mdui-icon material-icons">settings</i>
         </a>
         <a class="mdui-btn mdui-btn-icon" mdui-menu="{target: '#more-menu'}" mdui-tooltip="{content: '更多'}">
-          <i class="mdui-icon material-icons">more_horiz</i>
+            <i class="mdui-icon material-icons">more_horiz</i>
         </a>
         <ul class="mdui-menu mdui-menu-cascade" id="chat-menu">
-          <li class="mdui-menu-item">
-            <a href="javascript:closeChatting();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">close</i>关闭会话
-            </a>
-          </li>
-          <li class="mdui-menu-item">
-            <a href="javascript:clearComment();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">clear_all</i>会话清屏
-            </a>
-          </li>
-          <li class="mdui-menu-item">
-            <a href="javascript:deleteStorage();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">delete_forever</i>清空缓存
-            </a>
-          </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:closeChatting();" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">close</i>关闭会话
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:clearComment();" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">clear_all</i>会话清屏
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:deleteStorage();" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">delete_forever</i>清空缓存
+                </a>
+            </li>
         </ul>
         <ul class="mdui-menu mdui-menu-cascade" id="friend-menu">
-          <li class="mdui-menu-item">
-            <a class="mdui-ripple" mdui-dialog="{target: '#friend-list'}">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">people</i>好友列表
-            </a>
-          </li>
-          <li class="mdui-menu-item">
-            <a href="javascript:addFriend();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">person_add</i>添加好友
-            </a>
-          </li>
-          <li class="mdui-menu-item">
-            <a class="mdui-ripple" mdui-dialog="{target: '#friend-request'}">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">playlist_add</i>申请列表
-            </a>
-          </li>
+            <li class="mdui-menu-item">
+                <a class="mdui-ripple" mdui-dialog="{target: '#friend-list'}">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">people</i>好友列表
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:addFriend();" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">person_add</i>添加好友
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a class="mdui-ripple" mdui-dialog="{target: '#friend-request'}">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">playlist_add</i>申请列表
+                </a>
+            </li>
         </ul>
         <ul class="mdui-menu mdui-menu-cascade" id="group-menu">
-          <li class="mdui-menu-item">
-            <a class="mdui-ripple" mdui-dialog="{target: '#group-list'}">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">group</i>群组列表
-            </a>
-          </li>
-          <li class="mdui-menu-item">
-            <a href="javascript:joinGroup();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">group_add</i>加入群组
-            </a>
-          </li>
-          <li class="mdui-menu-item">
-            <a href="javascript:createGroup();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">create_new_folder</i>创建群组
-            </a>
-          </li>
-          <li class="mdui-menu-item">
-            <a class="mdui-ripple" mdui-dialog="{target: '#group-request'}">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">playlist_add</i>申请列表
-            </a>
-          </li>
-          <li class="mdui-menu-item">
-            <a href="javascript:changeGroupName();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">person_pin</i>更改群名
-            </a>
-          </li>
+            <li class="mdui-menu-item">
+                <a class="mdui-ripple" mdui-dialog="{target: '#group-list'}">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">group</i>群组列表
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:joinGroup();" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">group_add</i>加入群组
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:createGroup();" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">create_new_folder</i>创建群组
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a class="mdui-ripple" mdui-dialog="{target: '#group-request'}">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">playlist_add</i>申请列表
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:changeGroupName();" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">person_pin</i>更改群名
+                </a>
+            </li>
         </ul>
         <ul class="mdui-menu mdui-menu-cascade" id="account-menu">
-          <li class="mdui-menu-item">
-            <a href="javascript:changePassword();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">https</i>更改密码
-            </a>
-          </li>
-          <li class="mdui-menu-item">
-            <a href="javascript:changeName();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">person_pin</i>更改昵称
-            </a>
-          </li>
-          <li class="mdui-menu-item">
-            <a href="javascript:logout();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">exit_to_app</i>退出登录
-            </a>
-          </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:changePassword();" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">https</i>更改密码
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:changeName();" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">person_pin</i>更改昵称
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:logout();" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">exit_to_app</i>退出登录
+                </a>
+            </li>
         </ul>
         <ul class="mdui-menu mdui-menu-cascade" id="settings-menu">
-          <li class="mdui-menu-item">
-            <a href="javascript:developMode()" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">developer_board</i>调试模式
-            </a>
-          </li>
-          <li class="mdui-menu-item">
-            <a href="javascript:setBackground()" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">image</i>自定义背景
-            </a>
-          </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:developMode()" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">developer_board</i>调试模式
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:setBackground()" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">image</i>自定义背景
+                </a>
+            </li>
         </ul>
         <ul class="mdui-menu mdui-menu-cascade" id="more-menu">
-          <li class="mdui-menu-item">
-            <a class="mdui-ripple" mdui-dialog="{target: '#about-us'}">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">info</i>关于我们
-            </a>
-          </li>
+            <li class="mdui-menu-item">
+                <a class="mdui-ripple" mdui-dialog="{target: '#about-us'}">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">info</i>关于我们
+                </a>
+            </li>
         </ul>
         <ul class="mdui-menu mdui-menu-cascade" id="tool-menu">
-          <li class="mdui-menu-item">
-            <a href="javascript:sendPhoto();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">photo</i>外链图片
-            </a>
-          </li>
-          <li class="mdui-menu-item">
-            <a href="javascript:sendBase64Photo();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">photo</i>上传图片
-            </a>
-          </li>
-          <li class="mdui-menu-item">
-            <a href="javascript:sendTexture();" class="mdui-ripple">
-              <i class="mdui-menu-item-icon mdui-icon material-icons">texture</i>发送多行文本
-            </a>
-          </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:sendPhoto();" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">photo</i>外链图片
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:sendBase64Photo();" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">photo</i>上传图片
+                </a>
+            </li>
+            <li class="mdui-menu-item">
+                <a href="javascript:sendTexture();" class="mdui-ripple">
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">texture</i>发送多行文本
+                </a>
+            </li>
         </ul>
     </div>
-  </div>
+</div>
 
 <div class="mdui-container-fluid" id="main-area">
     <div class="mdui-row mb10 h100 main-area mdui-center">
@@ -189,12 +191,15 @@
         <div class="mdui-col-xs-9 mb10 h100 opacity" style="opacity: 1;">
             <div class="commentdata2" id="commentdata2">
                 <div class="comments mdui-card" style="background-color:#E8EAF6;" id="chattinglist">
-                    <div class="CardTitle"><div id="chatting-title"></div></div>
+                    <div class="CardTitle">
+                        <div id="chatting-title"></div>
+                    </div>
                     <div class="CardBody commentdata" id="contentarea">
                         <div class="msgcontent" id="content"></div>
                     </div>
                     <div>
-                        <input type="text" autocomplete="off" class="inputcontent" max="128" placeholder="按回车键发送信息" onkeydown="keyup_submit(event);" id="inputmessage">
+                        <input type="text" autocomplete="off" class="inputcontent" max="128"
+                               placeholder="按回车键发送信息" onkeydown="keyUpSubmit(event);" id="inputmessage">
                     </div>
                 </div>
             </div>
@@ -203,139 +208,151 @@
 </div>
 
 <!-- 好友列表 -->
-  <div class="mdui-dialog" id="friend-list">
+<div class="mdui-dialog" id="friend-list">
     <div class="mdui-dialog-content">
         <div class="mdui-dialog-title">好友列表</div>
         <ul class="mdui-list" id="inner-friend-list">
         </ul>
     </div>
     <div class="mdui-dialog-actions">
-      <button class="mdui-btn mdui-ripple" onclick="refreshFriendlist()">刷新列表</button>
-      <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
+        <button class="mdui-btn mdui-ripple" onclick="refreshFriendlist()">刷新列表</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
     </div>
-  </div>
+</div>
 
 <!-- 群组列表 -->
-  <div class="mdui-dialog" id="group-list">
+<div class="mdui-dialog" id="group-list">
     <div class="mdui-dialog-content">
         <div class="mdui-dialog-title">群组列表</div>
         <ul class="mdui-list" id="inner-group-list">
         </ul>
     </div>
     <div class="mdui-dialog-actions">
-      <button class="mdui-btn mdui-ripple" onclick="refreshGrouplist()">刷新列表</button>
-      <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
+        <button class="mdui-btn mdui-ripple" onclick="refreshGrouplist()">刷新列表</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
     </div>
-  </div>
+</div>
 
 <!-- 好友申请列表 -->
-  <div class="mdui-dialog" id="friend-request">
+<div class="mdui-dialog" id="friend-request">
     <div class="mdui-dialog-content">
         <div class="mdui-dialog-title">好友申请列表</div>
         <ul class="mdui-list" id="inner-friend-request">
         </ul>
     </div>
     <div class="mdui-dialog-actions">
-      <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
     </div>
-  </div>
+</div>
 
 <!-- 群组申请列表 -->
-  <div class="mdui-dialog" id="group-request">
+<div class="mdui-dialog" id="group-request">
     <div class="mdui-dialog-content">
         <div class="mdui-dialog-title">群组申请列表</div>
         <ul class="mdui-list" id="inner-group-request">
         </ul>
     </div>
     <div class="mdui-dialog-actions">
-      <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
     </div>
-  </div>
+</div>
 
 <!-- 群组信息 -->
-  <div class="mdui-dialog" id="group-info">
+<div class="mdui-dialog" id="group-info">
     <div class="mdui-dialog-content">
-      <div class="mdui-dialog-title">成员列表</div>
+        <div class="mdui-dialog-title">成员列表</div>
         <ul class="mdui-list" id="inner-group-info">
         </ul>
     </div>
     <div class="mdui-dialog-actions">
-      <button class="mdui-btn mdui-ripple" onclick="deleteGroup()">退群</button>
-      <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
+        <button class="mdui-btn mdui-ripple" onclick="deleteGroup()">退群</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
     </div>
-  </div>
+</div>
 
 <!-- 群聊设置 -->
-  <div class="mdui-dialog" id="group-setting">
+<div class="mdui-dialog" id="group-setting">
     <div class="mdui-dialog-content">
-      <div class="mdui-dialog-title">群管理</div>
+        <div class="mdui-dialog-title">群管理</div>
         <div id="inner-group-setting">
         </div>
     </div>
     <div class="mdui-dialog-actions">
-      <button class="mdui-btn mdui-ripple" onclick="saveGroupSetting()">保存</button>
-      <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
+        <button class="mdui-btn mdui-ripple" onclick="saveGroupSetting()">保存</button>
+        <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
     </div>
-  </div>
+</div>
 
 <!-- 关于我们 -->
-    <div class="mdui-dialog" id="about-us">
-      <div class="mdui-dialog-content">
+<div class="mdui-dialog" id="about-us">
+    <div class="mdui-dialog-content">
         <div class="mdui-dialog-title">关于我们</div>
-        我们这个HCAT占用小方便使用，注册一下，一登录就变大，怎么发都<delete>可能坏</delete>不会坏，用来聊天，发病，开团都是很好用的，你看打开以后像网页一样大小，放在浏览器里遇网络变大变<delete>卡</delete>快，<delete>不</delete>稳定性很强的。打开以后，是一个简单快捷的聊天网页，你看他怎么发都<delete>可能坏</delete>不会坏，好不留答辩不露消息，使用1145141919810次都没问题，日常聊天带上它非常方便，用它聊聊天，再发发病，开开团，不会被封。什么?在哪里体验?打开浏览器注册一个号就是一个号，还<a href="https://github.com/HCAT-Project" target="_blank">开源</a>
-      </div>
-      <div class="mdui-dialog-actions">
-        <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
-      </div>
+        我们这个HCAT占用小方便使用，注册一下，一登录就变大，怎么发都
+        <delete>可能坏</delete>
+        不会坏，用来聊天，发病，开团都是很好用的，你看打开以后像网页一样大小，放在浏览器里遇网络变大变
+        <delete>卡</delete>
+        快，
+        <delete>不</delete>
+        稳定性很强的。打开以后，是一个简单快捷的聊天网页，你看他怎么发都
+        <delete>可能坏</delete>
+        不会坏，好不留答辩不露消息，使用1145141919810次都没问题，日常聊天带上它非常方便，用它聊聊天，再发发病，开开团，不会被封。什么?在哪里体验?打开浏览器注册一个号就是一个号，还<a
+            href="https://github.com/HCAT-Project" target="_blank">开源</a>
     </div>
-  <audio id="bubble" src="bubble.mp3"></audio>
-  <script>
+    <div class="mdui-dialog-actions">
+        <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
+    </div>
+</div>
+<audio id="bubble" src="bubble.mp3"></audio>
+<script>
+
     //初始化
     var chattingType;
     var msg = {};
     var chatting;
     var bubbleNotification;
     outputStorage();
+
     // token验证
-    function authenticateToken(){
+    function authenticateToken() {
         $.ajax({
             type: 'get',
             url: apiAddress + "/account/authenticate_token",
             data: {},
             dataType: 'text',
-            success: function(data){
-                obj = JSON.parse(data);
-                if (obj.status == "ok"){
+            success: function (data) {
+                const obj = JSON.parse(data);
+                if (obj.status === "ok") {
                     // ok
-                }else{
-                    mdui.snackbar({message:'请先登录'});
+                } else {
+                    mdui.snackbar({message: '请先登录'});
                     window.location = "login.html";
                 }
             }
         });
     }
+
     authenticateToken();
     document.getElementById('myname').innerHTML = getUserName(getCookie("user_id"));
     refreshFriendlist();
     refreshGrouplist();
-    setInterval(function() {
+    setInterval(function () {
         getTodolist();
         inputStorage();
-    }, 2000); 
-    setInterval(function() {
-        var height1 = $(window).height()-90;
-        var height2 = $(window).height()-190;
+    }, 2000);
+    setInterval(function () {
+        var height1 = $(window).height() - 90;
+        var height2 = $(window).height() - 190;
         document.getElementById("main-area").style.height = height1 + "px";
         document.getElementById("commentdata2").style.height = height1 + "px";
         document.getElementById("contentarea").style.height = height2 + "px";
-    }, 100); 
+    }, 100);
     window.onblur = function () {
         bubbleNotification = "on";
     }
-    
+
     window.onfocus = function () {
         bubbleNotification = "off";
     }
-  </script>
+</script>
 </body>
 </html>

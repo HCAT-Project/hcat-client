@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
 // 加好友
 function addFriend(){
     mdui.prompt('请输入您要添加的好友ID', '添加好友',
@@ -44,18 +45,7 @@ function addFriendReal(name,info){
         url: apiAddress + "/friend/add_friend",
         data: {user_id: name, add_info: info},
         dataType: 'text',
-        success: function(data){
-            obj = JSON.parse(data);
-            if (obj.status == "ok"){
-                mdui.snackbar({message:'成功' + obj.message});
-            }else if(obj.status == "error"){
-                mdui.snackbar({message:'失败：' + obj.message});
-            }else if(obj.status == "null"){
-                mdui.snackbar({message:'账号不存在'});
-            }else{
-                mdui.snackbar({message:'未知错误'});
-            }
-        }
+        success: statusProcess
     });
 }
 
