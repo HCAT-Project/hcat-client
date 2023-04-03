@@ -41,10 +41,11 @@ function authenticateToken() {
         type: 'get',
         url: apiAddress + "/account/authenticate_token",
         data: {},
+        async: false,
         dataType: 'text',
         success: function (data) {
             result = data
         }
     });
-    return result;
+    return statusProcess(result);
 }

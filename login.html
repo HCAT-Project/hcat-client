@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="css/main.css"/>
     <script src="https://cdn.staticfile.org/mdui/1.0.2/js/mdui.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/utils.js"></script>
     <script src="https://cdn.staticfile.org/jquery/3.6.1/jquery.min.js"></script>
     <!--<link href="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/css/bootstrap.min.css" rel="stylesheet">-->
     <!--<script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/js/bootstrap.bundle.min.js"></script>-->
@@ -62,7 +63,7 @@
                             type="password" name="password" onkeyup="value=value.replace(/[\W]/g,'')"/>
                 </div>
                 <br>
-                <input id="login-button" onclick="loginHandler()"
+                <input id="login-button"
                        class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent-100"
                        type="submit" value="登录"><br>
                 <button onclick="window.location='register.html'"
@@ -120,6 +121,7 @@
             }
         });
     }
+
     if (authenticateToken()) {
         mdui.snackbar({message: '您已登录'});
         window.location = "index.html";
