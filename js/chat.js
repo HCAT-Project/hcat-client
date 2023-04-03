@@ -30,7 +30,7 @@ function sendPhoto() {
         sendMessage('{"msg_chain":[{"type":"img","msg":"'+value+'"}]}');
       },
       function (value) {
-        
+
       }
     );
 }
@@ -64,10 +64,11 @@ function selectAndConvertToBase64(callback) {
 function sendTexture(){
     mdui.prompt('请输入文本', '发送多行文本',
       function (value) {
+        // 有bug,不过别修了,下次上富文本编辑器
         sendMessage('{"msg_chain":[{"type":"text","msg":"'+value+'"}]}');
       },
       function (value) {
-        
+
       },
       {
         type: 'textarea'
