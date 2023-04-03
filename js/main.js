@@ -18,14 +18,13 @@
 // 设置后台地址 请设置您的地址 最好别跨域
 
 
-
 let apiAddress = "";
 
 /**
  * 拉到最底部。
  */
 function contentScroll() {
-    document.getElementById('contentarea').scrollTop = document.getElementById('contentarea').scrollHeight;
+    document.getElementById('content-area').scrollTop = document.getElementById('content-area').scrollHeight;
 }
 
 /**
@@ -152,7 +151,7 @@ function keyUpSubmit(e) {
     let evt = window.event || e;
     //这可能会有bug,留意一下
     if (evt.key === 'Enter') {
-        let message = $("#inputmessage").val();
+        let message = $("#input-message").val();
         sendMessage('{"msg_chain":[{"type":"text","msg":"' + message + '"}]}');
     }
 }
@@ -219,7 +218,7 @@ function sendMessage(message) {
                     im += '<div class="username" mdui-tooltip="{content: &apos;' + getCookie("user_id") + ' ' + dateFormat(Date.parse(new Date())) + '&apos;}">' + document.getElementById('myname').innerHTML + '</div><div class="bubble">' + unzipMessage(message, MsgDisplayType.FULL_TEXT) + '</div>';
                     msg[chatting] = im;
                     document.getElementById("content").innerHTML = msg[chatting];
-                    document.getElementById("inputmessage").value = "";
+                    document.getElementById("input-message").value = "";
                     contentScroll();
                     sending = false;
                     putTop(chatting);
@@ -243,7 +242,7 @@ function sendMessage(message) {
                     im += '<div class="username">' + getCookie("user_id") + '  (' + dateFormat(Date.parse(new Date())) + ')</div><div class="bubble">' + unzipMessage(message, MsgDisplayType.FULL_TEXT) + '</div>';
                     msg[chatting] = im;
                     document.getElementById("content").innerHTML = msg[chatting];
-                    document.getElementById("inputmessage").value = "";
+                    document.getElementById("input-message").value = "";
                     contentScroll();
                     sending = false;
                     putTop(chatting);
@@ -552,7 +551,7 @@ function getTodolist() {
 
 // 新增会话
 function addChattinglist(name, type) {
-    let out = document.getElementById("chattinglist").innerHTML;
+    let out = document.getElementById("chatting-list").innerHTML;
     if (!exist(name + "_chatting")) {
         if (type === "friend") {
             out += '<li class="mdui-list-item mdui-ripple" onclick="openChatting(&quot;' + name + '&quot;,&quot;friend&quot;)" id="' + name + '-inlist"><i class="mdui-list-item-avatar mdui-icon material-icons">person</i><div class="mdui-list-item-content"><div class="mdui-list-item-title" id="' + name + '-list">' + getUserName(name) + '</div><div class="mdui-list-item-text mdui-list-item-one-line"><span id="' + name + '_chatting" class="">无信息</span></div></div></li>';
@@ -566,7 +565,7 @@ function addChattinglist(name, type) {
         } else {
 
         }
-        document.getElementById("chattinglist").innerHTML = out;
+        document.getElementById("chatting-list").innerHTML = out;
     }
 }
 
@@ -674,7 +673,7 @@ let outputtedStorage;
 function inputStorage() {
     if (outputtedStorage === "ok") {
         localStorage.setItem(getCookie("user_id") + "-msg", JSON.stringify(msg));
-        localStorage.setItem(getCookie("user_id") + "-chattinglist", document.getElementById("chattinglist").innerHTML);
+        localStorage.setItem(getCookie("user_id") + "-chattinglist", document.getElementById("chatting-list").innerHTML);
         localStorage.setItem(getCookie("user_id") + "-storage", "ok");
     }
 }
@@ -683,7 +682,7 @@ function inputStorage() {
 function outputStorage() {
     if (localStorage.getItem(getCookie("user_id") + "-storage") === "ok") {
         msg = JSON.parse(localStorage.getItem(getCookie("user_id") + "-msg"));
-        document.getElementById("chattinglist").innerHTML = localStorage.getItem(getCookie("user_id") + "-chattinglist");
+        document.getElementById("chatting-list").innerHTML = localStorage.getItem(getCookie("user_id") + "-chattinglist");
     }
     if (localStorage.getItem(getCookie("user_id") + "-background") !== null) {
         $('body').css("background-image", "url(" + localStorage.getItem(getCookie("user_id") + "-background") + ")");
@@ -699,7 +698,7 @@ function deleteStorage() {
             localStorage.removeItem(getCookie("user_id") + "-msg");
             localStorage.removeItem(getCookie("user_id") + "-chattinglist");
             closeChatting();
-            document.getElementById("chattinglist").innerHTML = "";
+            document.getElementById("chatting-list").innerHTML = "";
         },
         function () {
             mdui.snackbar({message: '已取消'});
@@ -728,7 +727,7 @@ function developMode() {
                                         setCookie("user_id", account, 180);
                                         document.getElementById('myname').innerHTML = getUserName(getCookie("user_id"));
                                         closeChatting();
-                                        document.getElementById("chattinglist").innerHTML = "";
+                                        document.getElementById("chatting-list").innerHTML = "";
                                         refreshFriendlist();
                                         refreshGrouplist();
                                     } else if (obj.status === "error") {

@@ -60,7 +60,7 @@
     padding: 0px 3px 0px 3px;
 }
 
-.inputcontent {
+.input-content {
     width: 100%;
     height: 50px;
     background: transparent;
@@ -147,28 +147,28 @@ input::-webkit-input-placeholder {
     height: 100%;
 }
 
-.commentdata {
+.comment-data {
     width: 100%;
     height: 550px;
     overflow-y: auto;
 }
 
-.commentdata2 {
+.comment-data-2 {
     width: 100%;
     height: 650px;
 }
 
-.msgcontent .headimg {
+.msg-content .headimg {
     display: inline-block;
     width: 32px;
 }
 
-.msgcontent .headimg img {
+.msg-content .headimg img {
     width: 100%;
     border-radius: 50%;
 }
 
-.msgcontent {
+.msg-content {
     display: block;
     line-height: 10px;
 }
@@ -250,7 +250,7 @@ a,div,span,i {
     line-height: 48px;
 }
 
-#chattinglist {
+#chatting-list {
     border-radius: 25px;
     backdrop-filter: blur(5px);
     background-color: rgba(255,255,255, 0.8)!important;
@@ -261,7 +261,7 @@ a,div,span,i {
     user-select: auto;
 }
 
-#chattinglist:hover {
+#chatting-list:hover {
     background-color: rgb(255 255 255 / 0.75)!important;
 }
 

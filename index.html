@@ -185,21 +185,21 @@
 <div class="mdui-container-fluid" id="main-area">
     <div class="mdui-row mb10 h100 main-area mdui-center">
         <div class="mdui-col-xs-3 mb10 h100 opacity" style="opacity: 1;">
-            <ul class="mdui-list mb10 h100 list" style="background-color: #E8EAF6;overflow-y: auto;" id="chattinglist">
+            <ul class="mdui-list mb10 h100 list" style="background-color: #E8EAF6;overflow-y: auto;" id="chatting-list">
             </ul>
         </div>
         <div class="mdui-col-xs-9 mb10 h100 opacity" style="opacity: 1;">
-            <div class="commentdata2" id="commentdata2">
-                <div class="comments mdui-card" style="background-color:#E8EAF6;" id="chattinglist">
+            <div class="comment-data-2" id="comment-data-2">
+                <div class="comments mdui-card" style="background-color:#E8EAF6;" id="chatting-list">
                     <div class="CardTitle">
                         <div id="chatting-title"></div>
                     </div>
-                    <div class="CardBody commentdata" id="contentarea">
-                        <div class="msgcontent" id="content"></div>
+                    <div class="CardBody comment-data" id="content-area">
+                        <div class="msg-content" id="content"></div>
                     </div>
                     <div>
-                        <input type="text" autocomplete="off" class="inputcontent" max="128"
-                               placeholder="按回车键发送信息" onkeydown="keyUpSubmit(event);" id="inputmessage">
+                        <input type="text" autocomplete="off" class="input-content" max="128"
+                               placeholder="按回车键发送信息" onkeydown="keyUpSubmit(event);" id="input-message">
                     </div>
                 </div>
             </div>
@@ -313,7 +313,7 @@
     outputStorage();
 
 
-    if (!authenticateToken()) {
+    if (!authenticateToken(false)) {
         mdui.snackbar({message: '请先登录'});
         window.location = "login.html";
     }
@@ -326,12 +326,13 @@
         inputStorage();
     }, 2000);
     setInterval(function () {
-        var height1 = $(window).height() - 90;
-        var height2 = $(window).height() - 190;
-        document.getElementById("main-area").style.height = height1 + "px";
-        document.getElementById("commentdata2").style.height = height1 + "px";
-        document.getElementById("contentarea").style.height = height2 + "px";
+        const mainAreaHeight = $(window).height() - 90;
+        const contenAreaHeight = $(window).height() - 190;
+        document.getElementById("main-area").style.height = mainAreaHeight + "px";
+        document.getElementById("comment-data-2").style.height = mainAreaHeight + "px";
+        document.getElementById("content-area").style.height = contenAreaHeight + "px";
     }, 100);
+
     window.onblur = function () {
         bubbleNotification = "on";
     }

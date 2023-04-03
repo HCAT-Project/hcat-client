@@ -17,25 +17,32 @@
 /**
  * 状态处理函数
  * @param {string} data - json文本
+ * @param {boolean} display
  * @returns {boolean} 是否成功
  */
-function statusProcess(data) {
+function statusProcess(data, display = true) {
 
     const jsonObj = JSON.parse(data);
-    if (jsonObj.status === "ok") {
-        mdui.snackbar({message: '成功' + jsonObj.message});
-    } else if (jsonObj.status === "error") {
-        mdui.snackbar({message: '失败：' + jsonObj.message});
-    } else if (jsonObj.status === "null") {
-        mdui.snackbar({message: '账号不存在'});
-    } else {
-        mdui.snackbar({message: '未知错误'});
+    if (display) {
+        if (jsonObj.status === "ok") {
+            mdui.snackbar({message: '成功' + jsonObj.message});
+        } else if (jsonObj.status === "error") {
+            mdui.snackbar({message: '失败：' + jsonObj.message});
+        } else if (jsonObj.status === "null") {
+            mdui.snackbar({message: '账号不存在'});
+        } else {
+            mdui.snackbar({message: '未知错误'});
+        }
     }
     return jsonObj.status === "ok";
 }
 
-// token验证
-function authenticateToken() {
+/**
+ * 验证token
+ * @param {boolean} display
+ * @returns {boolean}
+ */
+function authenticateToken(display = true) {
     let result = null;
     $.ajax({
         type: 'get',
@@ -47,5 +54,5 @@ function authenticateToken() {
             result = data
         }
     });
-    return statusProcess(result);
+    return statusProcess(result, display);
 }
