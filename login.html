@@ -31,7 +31,7 @@
     <!--<script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/js/bootstrap.bundle.min.js"></script>-->
 </head>
 <body class="mdui-theme-primary-indigo mdui-theme-accent-indigo background">
-<div class="mdui-appbar mb10" style="box-shadow: 0px 0px;z-index:10000;position: sticky;">
+<div class="mdui-appbar mb10" style="box-shadow: 0 0;z-index:10000;position: sticky;">
     <div class="mdui-toolbar mdui-color-indigo-50" id="toolbar">
         <a class="mdui-typo-headline" href="">HCAT</a>
         <a class="mdui-typo-title">登录</a>
@@ -45,19 +45,22 @@
             <form id="login-form" class="mdui-textfield" style="padding: 16px 20%;">
 
                 <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">account_circle</i><label
-                        class="mdui-textfield-label" style="margin-left: 48px;">账号</label><input id="login_account"
-                                                                                                   required=""
-                                                                                                   class="mdui-textfield-input"
-                                                                                                   style="margin-left: 48px;"
-                                                                                                   type="text"
-                                                                                                   name="uid"
-                                                                                                   onkeyup="value=value.replace(/[\W]/g,'')"/>
+                        class="mdui-textfield-label" style="margin-left: 48px;">账号</label>
+                    <input id="login_account"
+                           required=""
+                           class="mdui-textfield-input"
+                           style="margin-left: 48px;"
+                           type="text"
+                           name="uid"
+                           onkeyup="value=value.replace(/[\W]/g,'')"/>
                 </div>
                 <div class="mdui-textfield mdui-textfield-floating-label"><i
                         class="mdui-icon material-icons">lock</i><label class="mdui-textfield-label"
-                                                                        style="margin-left: 48px;">密码</label><input
-                        id="login_passwd" required="" class="mdui-textfield-input" style="margin-left: 48px;"
-                        type="password" name="password" onkeyup="value=value.replace(/[\W]/g,'')"/></div>
+                                                                        style="margin-left: 48px;">密码</label>
+                    <input
+                            id="login_passwd" required="" class="mdui-textfield-input" style="margin-left: 48px;"
+                            type="password" name="password" onkeyup="value=value.replace(/[\W]/g,'')"/>
+                </div>
                 <br>
                 <input id="login-button" onclick="loginHandler()"
                        class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent-100"
@@ -71,18 +74,19 @@
                 <p><strong>通知：由于更新后端，数据已于2023/3/18重置！<br><span id="runtime_span"></span>
                     <script type="text/javascript">function show_runtime() {
                         window.setTimeout("show_runtime()", 1000);
-                        X = new Date("10/1/2022 21:00:00");
-                        Y = new Date();
-                        T = (Y.getTime() - X.getTime());
-                        M = 24 * 60 * 60 * 1000;
-                        a = T / M;
-                        A = Math.floor(a);
-                        b = (a - A) * 24;
-                        B = Math.floor(b);
-                        c = (b - B) * 60;
-                        C = Math.floor((b - B) * 60);
-                        D = Math.floor((c - C) * 60);
-                        runtime_span.innerHTML = "网站已开启测试" + A + "天" + B + "小时" + C + "分" + D + "秒"
+                        let startDate = new Date("10/1/2022 21:00:00");
+                        let nowDate = new Date();
+                        let elapsedTime = (nowDate.getTime() - startDate.getTime());
+                        const DAY_IN_MILLISECOND = 24 * 60 * 60 * 1000;
+                        let dayInFloat = elapsedTime / DAY_IN_MILLISECOND;
+                        let day = Math.floor(dayInFloat);
+                        let hourInFloat = (dayInFloat - day) * 24;
+                        let hour = Math.floor(hourInFloat);
+                        let minuteInFloat = (hourInFloat - hour) * 60;
+                        let minute = Math.floor(minuteInFloat);
+                        let second = Math.floor((minuteInFloat - minute) * 60);
+                        document.getElementById("runtime_span").innerHTML = "网站已开启测试" + day + "天" + hour + "小时" + minute + "分" + second + "秒";
+
                     }
 
                     show_runtime();</script>
