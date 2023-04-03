@@ -85,7 +85,7 @@ function setCookie(cName, cValue, exDays) {
     // 设置一个@Yummy_Cookies_S
     // XD,曲奇别打我(光速逃
     // > 夹带私货的hsn就是逊啦!
-    document.cookie = `${cName}=${cValue}; ${expires}; SameSite=None`;
+    document.cookie = `${cName}=${cValue}; ${expires}`;
 }
 
 /**
