@@ -306,32 +306,18 @@
 <script>
 
     //初始化
-    var chattingType;
-    var msg = {};
-    var chatting;
-    var bubbleNotification;
+    let chattingType;
+    let msg = {};
+    let chatting;
+    let bubbleNotification;
     outputStorage();
 
-    // token验证
-    function authenticateToken() {
-        $.ajax({
-            type: 'get',
-            url: apiAddress + "/account/authenticate_token",
-            data: {},
-            dataType: 'text',
-            success: function (data) {
-                const obj = JSON.parse(data);
-                if (obj.status === "ok") {
-                    // ok
-                } else {
-                    mdui.snackbar({message: '请先登录'});
-                    window.location = "login.html";
-                }
-            }
-        });
+
+    if (!authenticateToken()) {
+        mdui.snackbar({message: '请先登录'});
+        window.location = "login.html";
     }
 
-    authenticateToken();
     document.getElementById('myname').innerHTML = getUserName(getCookie("user_id"));
     refreshFriendlist();
     refreshGrouplist();

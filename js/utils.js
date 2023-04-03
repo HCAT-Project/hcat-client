@@ -33,3 +33,18 @@ function statusProcess(data) {
     }
     return jsonObj.status === "ok";
 }
+
+// token验证
+function authenticateToken() {
+    let result = null;
+    $.ajax({
+        type: 'get',
+        url: apiAddress + "/account/authenticate_token",
+        data: {},
+        dataType: 'text',
+        success: function (data) {
+            result = data
+        }
+    });
+    return result;
+}

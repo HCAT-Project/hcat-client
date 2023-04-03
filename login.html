@@ -101,52 +101,29 @@
 
 <script>
     function loginHandler() {
-        var user = $("#login_account").val();
-        var pwd = $("#login_passwd").val();
-        if (user === "" || pwd === "") {
+        const userID = $("#login_account").val();
+        const password = $("#login_passwd").val();
+        if (userID === "" || password === "") {
             mdui.snackbar({message: '请填写内容'});
             return;
         }
         $.ajax({
             type: 'post',
             url: apiAddress + "/account/login",
-            data: {user_id: user, password: pwd},
+            data: {user_id: userID, password: password},
             dataType: 'text',
             success: function (data) {
-                obj = JSON.parse(data);
-                if (obj.status === "ok") {
-                    mdui.snackbar({message: '登录成功'});
-                    setCookie("user_id", user, 180);
-                    window.location = "index.html";
-                } else if (obj.status === "error") {
-                    mdui.snackbar({message: '登录失败，错误原因：' + obj.message});
-                } else if (obj.status === "null") {
-                    mdui.snackbar({message: '账号不存在'});
-                } else {
-                    mdui.snackbar({message: '未知错误'});
-                }
-            }
-        });
-    }
-
-    // token验证
-    function authenticateToken() {
-        $.ajax({
-            type: 'get',
-            url: apiAddress + "/account/authenticate_token",
-            data: {},
-            dataType: 'text',
-            success: function (data) {
-                obj = JSON.parse(data);
-                if (obj.status === "ok") {
-                    mdui.snackbar({message: '您已登录'});
+                if (statusProcess(data)) {
+                    setCookie("user_id", userID, 180);
                     window.location = "index.html";
                 }
             }
         });
     }
-
-    authenticateToken();
+    if (authenticateToken()) {
+        mdui.snackbar({message: '您已登录'});
+        window.location = "index.html";
+    }
 </script>
 <script>
     const form = document.getElementById("login-form");
