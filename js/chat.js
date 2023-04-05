@@ -75,3 +75,47 @@ function sendTexture(){
       }
     );
 }
+
+// 以下部分为拖拽上传
+const dropArea = document.getElementById('comment-data-2');
+
+// 阻止默认行为以便支持拖拽上传
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+  dropArea.addEventListener(eventName, preventDefaults, false);
+  document.body.addEventListener(eventName, preventDefaults, false);
+});
+
+// 处理拖拽上传事件
+dropArea.addEventListener('drop', handleDrop, false);
+
+// 防止浏览器默认事件
+function preventDefaults (e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+// 处理拖拽上传事件
+function handleDrop(e) {
+  const dt = e.dataTransfer;
+  const files = dt.files;
+
+  // 如果有文件，则处理上传
+  if (files.length > 0) {
+    handleFiles(files);
+  } else {
+    mdui.alert('暂不支持文件上传', '失败');
+  }
+}
+
+// 处理上传文件
+function handleFiles(files) {
+  // 处理文件，转换成 base64 格式并返回
+  const reader = new FileReader();
+  reader.readAsDataURL(files[0]);
+  reader.onload = function () {
+    const base64String = reader.result.split(',')[1];
+    mdui.alert('<img src="data:image/png;base64,' + base64String + '" class="mdui-center" style="height: 300px">', '确认发送？', function(){
+      sendMessage('{"msg_chain":[{"type":"img","msg":"data:image/png;base64,'+base64String+'"}]}');
+    });
+  };
+}
