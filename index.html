@@ -164,7 +164,7 @@
             </li>
             <li class="mdui-menu-item">
                 <a href="javascript:sendBase64Photo();" class="mdui-ripple">
-                    <i class="mdui-menu-item-icon mdui-icon material-icons">photo</i>上传图片
+                    <i class="mdui-menu-item-icon mdui-icon material-icons">file_upload</i>上传图片
                 </a>
             </li>
             <li class="mdui-menu-item">
@@ -190,6 +190,11 @@
                     </div>
                     <div class="CardBody comment-data" id="content-area">
                         <div class="msg-content" id="content"></div>
+                    </div>
+                    <div class="ToolsArea">
+                        <a href="javascript:sendBase64Photo();"><i class="mdui-menu-item-icon mdui-icon material-icons" mdui-tooltip="{content: '上传图片'}">file_upload</i></a>
+                        <a href="javascript:sendBase64Photo();"><i class="mdui-menu-item-icon mdui-icon material-icons" mdui-tooltip="{content: '外链图片'}">photo</i></a>
+                        <a href="javascript:closeChatting();"><i class="mdui-menu-item-icon mdui-icon material-icons" mdui-tooltip="{content: '关闭会话'}">close</i></a>
                     </div>
                     <div>
                         <input type="text" autocomplete="off" class="input-content" max="128"
@@ -329,7 +334,7 @@
     }, 2000);
     setInterval(function () {
         const mainAreaHeight = $(window).height() - 90;
-        const contenAreaHeight = $(window).height() - 190;
+        const contenAreaHeight = $(window).height() - 240;
         document.getElementById("main-area").style.height = mainAreaHeight + "px";
         document.getElementById("comment-data-2").style.height = mainAreaHeight + "px";
         document.getElementById("content-area").style.height = contenAreaHeight + "px";
