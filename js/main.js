@@ -18,7 +18,7 @@
 // 设置后台地址 请设置您的地址 最好别跨域
 
 
-let apiAddress = "";
+let apiAddress = "api";
 
 /**
  * 拉到最底部。
@@ -484,7 +484,7 @@ function getTodolist() {
                         refreshFriendlist();
                     } else if (todoList[i].type === "group_deleted") {
                         systemNotification('您被移出了' + todoList[i].group_id, todoList[i].time);
-                        refreshGrouplist();
+                        refreshGroupList();
                     } else if (todoList[i].type === "group_rename") {
                         //noinspection JSUnresolvedVariable
                         systemNotification(todoList[i].group_id + '更改了他们的群名：' + todoList[i].old_name + '→' + todoList[i].new_name, todoList[i].time);
@@ -557,7 +557,7 @@ function addChattinglist(name, type) {
             out += '<li class="mdui-list-item mdui-ripple" onclick="openChatting(&quot;' + name + '&quot;,&quot;friend&quot;)" id="' + name + '-inlist"><i class="mdui-list-item-avatar mdui-icon material-icons">person</i><div class="mdui-list-item-content"><div class="mdui-list-item-title" id="' + name + '-list">' + getUserName(name) + '</div><div class="mdui-list-item-text mdui-list-item-one-line"><span id="' + name + '_chatting" class="">无信息</span></div></div></li>';
 
         } else if (type === "group") {
-            out += '<li class="mdui-list-item mdui-ripple" onclick="openChatting(&quot;' + name + '&quot;,&quot;group&quot;)" id="' + name + '-inlist"><i class="mdui-list-item-avatar mdui-icon material-icons">group</i><div class="mdui-list-item-content"><div class="mdui-list-item-title" id="' + name + '-list">' + getGroupname(name) + '</div><div class="mdui-list-item-text mdui-list-item-one-line"><span id="' + name + '_chatting" class="">无信息</span></div></div></li>';
+            out += '<li class="mdui-list-item mdui-ripple" onclick="openChatting(&quot;' + name + '&quot;,&quot;group&quot;)" id="' + name + '-inlist"><i class="mdui-list-item-avatar mdui-icon material-icons">group</i><div class="mdui-list-item-content"><div class="mdui-list-item-title" id="' + name + '-list">' + getGroupName(name) + '</div><div class="mdui-list-item-text mdui-list-item-one-line"><span id="' + name + '_chatting" class="">无信息</span></div></div></li>';
 
         } else if (type === "system") {
             out += '<li class="mdui-list-item mdui-ripple" onclick="openChatting(&quot;' + name + '&quot;,&quot;system&quot;)" id="' + name + '-inlist"><i class="mdui-list-item-avatar mdui-icon material-icons">notifications</i><div class="mdui-list-item-content"><div class="mdui-list-item-title" id="' + name + '-list">' + name + '</div><div class="mdui-list-item-text mdui-list-item-one-line"><span id="' + name + '_chatting" class="">无信息</span></div></div></li>';
@@ -585,17 +585,17 @@ function openChatting(name, type) {
         contentScroll();
         document.getElementById(name + '-list').innerHTML = getUserName(name);
     } else if (type === "group") {
-        let permission = getGroupPermission(name);
+        let permission = getSelfPmsInGroup(name);
         let other = '';
         let change = '';
         if (permission === 'owner' || permission === 'admin') {
             other = '<a href="javascript:manageGroup();"><i class="mdui-icon material-icons">settings</i></a>';
             change = '<a href="javascript:changeGroupName(&quot;' + name + '&quot;);"><i class="mdui-icon material-icons">edit</i></a>';
         }
-        document.getElementById("chatting-title").innerHTML = getGroupname(name) + change + '<span class="mdui-float-right">' + other + '<a href="javascript:getGroupInfo(&quot;' + name + '&quot;,&quot;' + permission + '&quot;);"><i class="mdui-icon material-icons">more_horiz</i></a></span>';
+        document.getElementById("chatting-title").innerHTML = getGroupName(name) + change + '<span class="mdui-float-right">' + other + '<a href="javascript:getGroupInfo(&quot;' + name + '&quot;,&quot;' + permission + '&quot;);"><i class="mdui-icon material-icons">more_horiz</i></a></span>';
         document.getElementById("content").innerHTML = msg[name];
         contentScroll();
-        document.getElementById(name + '-list').innerHTML = getGroupname(name);
+        document.getElementById(name + '-list').innerHTML = getGroupName(name);
     } else if (type === "system") {
         document.getElementById("chatting-title").innerHTML = name;
         document.getElementById("content").innerHTML = msg[name];
@@ -729,7 +729,7 @@ function developMode() {
                                         closeChatting();
                                         document.getElementById("chatting-list").innerHTML = "";
                                         refreshFriendlist();
-                                        refreshGrouplist();
+                                        refreshGroupList();
                                     } else if (obj.status === "error") {
                                         mdui.snackbar({message: '登录失败，错误原因：' + obj.message});
                                     } else if (obj.status === "null") {

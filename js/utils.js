@@ -18,22 +18,25 @@
  * 状态处理函数
  * @param {string} data - json文本
  * @param {boolean} display
+ * @param displayTexts
  * @returns {boolean} 是否成功
  */
-function statusProcess(data, display = true) {
+function statusProcess(data, display = true, displayTexts = ["成功", "失败: ", "账号不存在", "未知错误"]) {
 
     const jsonObj = JSON.parse(data);
-    if (display) {
-        if (jsonObj.status === "ok") {
-            mdui.snackbar({message: '成功' + jsonObj.message});
-        } else if (jsonObj.status === "error") {
-            mdui.snackbar({message: '失败：' + jsonObj.message});
-        } else if (jsonObj.status === "null") {
-            mdui.snackbar({message: '账号不存在'});
-        } else {
-            mdui.snackbar({message: '未知错误'});
+
+    if (jsonObj.status === "ok") {
+        if (display) {
+            mdui.snackbar({message: displayTexts[0] + jsonObj.message});
         }
+    } else if (jsonObj.status === "error") {
+        mdui.snackbar({message: displayTexts[1] + jsonObj.message});
+    } else if (jsonObj.status === "null") {
+        mdui.snackbar({message: displayTexts[2]});
+    } else {
+        mdui.snackbar({message: displayTexts[3]});
     }
+
     return jsonObj.status === "ok";
 }
 

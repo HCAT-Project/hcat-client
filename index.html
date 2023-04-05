@@ -184,7 +184,7 @@
         </div>
         <div class="mdui-col-xs-9 mb10 h100 opacity" style="opacity: 1;">
             <div class="comment-data-2" id="comment-data-2">
-                <div class="comments mdui-card" style="background-color:#E8EAF6;" id="chatting-list">
+                <div class="comments mdui-card" style="background-color:#E8EAF6;" id="chatting-panel">
                     <div class="CardTitle">
                         <div id="chatting-title"></div>
                     </div>
@@ -227,7 +227,7 @@
         </ul>
     </div>
     <div class="mdui-dialog-actions">
-        <button class="mdui-btn mdui-ripple" onclick="refreshGrouplist()">刷新列表</button>
+        <button class="mdui-btn mdui-ripple" onclick="refreshGroupList()">刷新列表</button>
         <button class="mdui-btn mdui-ripple" mdui-dialog-close>关闭</button>
     </div>
 </div>
@@ -327,7 +327,7 @@
 
     document.getElementById('myname').innerHTML = getUserName(getCookie("user_id"));
     refreshFriendlist();
-    refreshGrouplist();
+    refreshGroupList();
     setInterval(function () {
         getTodolist();
         inputStorage();
