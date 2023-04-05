@@ -332,3 +332,12 @@ body {
     user-select: none;
     background-position: 50%;
 }
+
+#drop-area {
+  position: relative;
+  z-index: 9999;
+}
+
+#drop-area.highlight {
+  background-color: #e9f2fe;
+}
