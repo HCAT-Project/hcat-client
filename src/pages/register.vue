@@ -22,11 +22,6 @@ async function register() {
   await axios.post(
     `${IP}/account/register`,
     form,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    },
   ).then((res) => {
     if (res.data.status === 'ok')
       router.push('/login')
