@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ChatBubble: typeof import('./src/components/ChatBubble.vue')['default']
     GroupChatCard: typeof import('./src/components/GroupChatCard.vue')['default']
+    Modal: typeof import('./src/components/Modal.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TextButton: typeof import('./src/components/TextButton.vue')['default']

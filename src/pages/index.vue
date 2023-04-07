@@ -3,25 +3,14 @@ import axios from 'axios'
 import { deleteCookie } from '~/composables'
 import { IP } from '~/constant'
 
-const router = useRouter()
-const createGroupName = $ref('')
-let modalVisible = $ref(false)
-
-onMounted(async () => {
-  if (!await authenticateToken())
-    router.push('/login')
-
-  fetchGroups()
-})
-
-interface Group {
-  id: number
-  name: string
-  members: User[]
+interface GroupList {
+  [key: string]: Group
 }
 
-interface User {
-  name: string
+interface Group {
+  group_name: string
+  nick: string
+  remark: string
 }
 
 interface SidebarButton {
@@ -29,31 +18,8 @@ interface SidebarButton {
   text: string
 }
 
-const userList: User[] = [
-  {
-    name: 'User',
-  },
-  {
-    name: 'User 2',
-  },
-  {
-    name: 'User 3',
-  },
-]
-
-const groupList: Group[] = [
-  {
-    id: 1,
-    name: 'Group 1',
-    members: userList,
-  },
-  {
-    id: 2,
-    name: 'Group 2',
-    members: userList.slice(0, 2),
-  },
-]
-
+const router = useRouter()
+const createGroupName = $ref('')
 const sideBarButtonList: SidebarButton[] = [
   {
     icon: 'i-carbon-group',
@@ -72,10 +38,34 @@ const sideBarButtonList: SidebarButton[] = [
     text: '查找',
   },
 ]
+let modalVisible = $ref(false)
+let selectedGroup = $ref('-1')
+let groupList: GroupList = $ref({
+  1: {
+    group_name: 'Group 1',
+    nick: 'Nick 1',
+    remark: 'Remark 1',
+  },
+  2: {
+    group_name: 'Group 2',
+    nick: 'Nick 2',
+    remark: 'Remark 2',
+  },
+  3: {
+    group_name: 'Group 3',
+    nick: 'Nick 3',
+    remark: 'Remark 3',
+  },
+})
 
-let selectedGroup = $ref<number>(-1)
+onMounted(async () => {
+  if (!await authenticateToken())
+    router.push('/login')
 
-function selectGroup(id: number) {
+  fetchGroups()
+})
+
+function selectGroup(id: string) {
   selectedGroup = id
 }
 
@@ -86,8 +76,14 @@ async function fetchGroups() {
       withCredentials: true,
     },
   ).then((res) => {
-    // if (res.data.status === 'ok')
-    // TODO: fetch groups
+    if (res.data.status === 'ok') {
+      const mergedObj = {}
+      Object.assign(mergedObj, groupList, res.data.data as Group)
+      groupList = mergedObj
+    }
+    else {
+      // TODO: 处理错误
+    }
   }).catch((_) => {
 
   })
@@ -108,9 +104,11 @@ async function createGroup() {
     },
   ).then((res) => {
     if (res.data.status === 'ok') {
-      // TODO: create group
       fetchGroups()
       modalVisible = false
+    }
+    else {
+      // TODO: 处理错误
     }
   }).catch((_) => {
 
@@ -173,25 +171,22 @@ async function logOut() {
           </div>
           <button text-text-secondary hover="text-text-light" bg-back-light w-10 h-10 rounded-lg flex items-center justify-center @click="modalVisible = true">
             <div i-carbon-add />
-            <!-- Modal -->
-            <div v-if="modalVisible" cursor-auto z-50 absolute inset-0 bg="black op80" flex items-center justify-center>
-              <div w-90 h-80 bg-back-gray flex="~ col" p="5" rounded>
-                <div flex="~" justify-end>
-                  <button @click.stop="modalVisible = false">
-                    <div w-6 h-6 i-carbon-close />
-                  </button>
-                </div>
+            <!-- Create group Modal -->
+            <Modal v-model:visible="modalVisible">
+              <div flex="~ col" gap-10>
                 <div flex-1 flex="~ col" items-center>
                   <img w-20 h-20 src="/logo.png" my5>
                   <TextInput v-model="createGroupName" text-sm label="群组名" />
                 </div>
                 <TextButton text="创建" @click="createGroup" />
               </div>
-            </div>
+            </Modal>
           </button>
         </div>
         <!-- Chat card -->
-        <GroupChatCard v-for="item in groupList" :key="item.id" :selected="selectedGroup === item.id" :name="item.name" :new-message-number="99" @click="selectGroup(item.id)" />
+        <div flex="~ col">
+          <GroupChatCard v-for="item, key in groupList" :key="item.group_name" :selected="selectedGroup === key" :name="item.group_name" :new-message-number="99" @click="selectGroup(key as string)" />
+        </div>
       </div>
       <div col-span-8 flex="~ col" p="x8 t5" of-hidden>
         <!-- Group title -->
@@ -199,11 +194,11 @@ async function logOut() {
           <div flex="~ col">
             <div flex="~ col" gap-1>
               <p text="lg start" font-bold>
-                {{ groupList.find((item) => item.id === selectedGroup)?.name }}
+                {{ groupList[selectedGroup]?.group_name ?? '群组' }}
               </p>
-              <p text="text-secondary sm">
+              <!-- <p text="text-secondary sm">
                 {{ groupList.find((item) => item.id === selectedGroup)?.members.length }} members
-              </p>
+              </p> -->
             </div>
           </div>
           <div flex gap-5>
