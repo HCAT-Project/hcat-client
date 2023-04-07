@@ -4,6 +4,8 @@ import { deleteCookie } from '~/composables'
 import { IP } from '~/constant'
 
 const router = useRouter()
+const createGroupName = $ref('')
+let modalVisible = $ref(false)
 
 onMounted(async () => {
   if (!await authenticateToken())
@@ -91,6 +93,30 @@ async function fetchGroups() {
   })
 }
 
+async function createGroup() {
+  if (createGroupName === '')
+  // TODO: 处理错误
+    return
+
+  const form = new FormData()
+  form.append('group_name', createGroupName)
+  await axios.post(
+    `${IP}/group/create_group`,
+    form,
+    {
+      withCredentials: true,
+    },
+  ).then((res) => {
+    if (res.data.status === 'ok') {
+      // TODO: create group
+      fetchGroups()
+      modalVisible = false
+    }
+  }).catch((_) => {
+
+  })
+}
+
 async function logOut() {
   await axios.post(
     `${IP}/account/logout`,
@@ -138,7 +164,33 @@ async function logOut() {
     </div>
     <!-- Chat -->
     <div grid="~ cols-12" rounded-2xl bg-back-gray col-span-8 of-hidden>
-      <div col-span-4 flex="~ col" p="y5 x5">
+      <div col-span-4 flex="~ col" p="y5 x5" gap-5>
+        <!-- Search bar -->
+        <div flex gap-3>
+          <div flex-1 px-5 rounded-lg gap-3 h-10 flex items-center bg="back-light">
+            <div text-text-secondary i-carbon-search />
+            <input w-full outline-none bg-transparent>
+          </div>
+          <button text-text-secondary hover="text-text-light" bg-back-light w-10 h-10 rounded-lg flex items-center justify-center @click="modalVisible = true">
+            <div i-carbon-add />
+            <!-- Modal -->
+            <div v-if="modalVisible" cursor-auto z-50 absolute inset-0 bg="black op80" flex items-center justify-center>
+              <div w-90 h-80 bg-back-gray flex="~ col" p="5" rounded>
+                <div flex="~" justify-end>
+                  <button @click.stop="modalVisible = false">
+                    <div w-6 h-6 i-carbon-close />
+                  </button>
+                </div>
+                <div flex-1 flex="~ col" items-center>
+                  <img w-20 h-20 src="/logo.png" my5>
+                  <TextInput v-model="createGroupName" text-sm label="群组名" />
+                </div>
+                <TextButton text="创建" @click="createGroup" />
+              </div>
+            </div>
+          </button>
+        </div>
+        <!-- Chat card -->
         <GroupChatCard v-for="item in groupList" :key="item.id" :selected="selectedGroup === item.id" :name="item.name" :new-message-number="99" @click="selectGroup(item.id)" />
       </div>
       <div col-span-8 flex="~ col" p="x8 t5" of-hidden>
