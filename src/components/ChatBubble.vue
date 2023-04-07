@@ -1,6 +1,6 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
-  fromSelf: boolean
+  fromSelf?: boolean
   message: string
 }>(), {
   fromSelf: false,

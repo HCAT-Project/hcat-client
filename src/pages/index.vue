@@ -1,4 +1,17 @@
 <script setup lang="ts" generic="T extends any, O extends any">
+import axios from 'axios'
+import { deleteCookie } from '~/composables'
+import { IP } from '~/constant'
+
+const router = useRouter()
+
+onMounted(async () => {
+  if (!await authenticateToken())
+    router.push('/login')
+
+  fetchGroups()
+})
+
 interface Group {
   id: number
   name: string
@@ -63,6 +76,40 @@ let selectedGroup = $ref<number>(-1)
 function selectGroup(id: number) {
   selectedGroup = id
 }
+
+async function fetchGroups() {
+  await axios.get(
+    `${IP}/group/get_groups`,
+    {
+      withCredentials: true,
+    },
+  ).then((res) => {
+    // if (res.data.status === 'ok')
+    // TODO: fetch groups
+  }).catch((_) => {
+
+  })
+}
+
+async function logOut() {
+  await axios.post(
+    `${IP}/account/logout`,
+    {},
+    {
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      withCredentials: true,
+    },
+  ).then((res) => {
+    if (res.data.status === 'ok') {
+      deleteCookie('user_id')
+      router.push('/login')
+    }
+  }).catch((_) => {
+
+  })
+}
 </script>
 
 <template>
@@ -78,9 +125,16 @@ function selectGroup(id: number) {
           <p>{{ item.text }}</p>
         </button>
       </div>
-      <button>
-        <div i-carbon-settings />
-      </button>
+      <div flex="~ col" gap-5 text="xs text-secondary">
+        <button flex="~ col" items-center gap-2 hover="text-light" @click="logOut">
+          <div w-6 h-6 i-carbon-logout />
+          <p> 注销</p>
+        </button>
+        <button flex="~ col" items-center gap-2 hover="text-light">
+          <div w-6 h-6 i-carbon-settings />
+          <p> 设置</p>
+        </button>
+      </div>
     </div>
     <!-- Chat -->
     <div grid="~ cols-12" rounded-2xl bg-back-gray col-span-8 of-hidden>
@@ -113,7 +167,7 @@ function selectGroup(id: number) {
           </div>
         </div>
         <!-- Group chat -->
-        <div flex="~ col" of-scroll flex-1 p="y10" gap-5>
+        <div flex="~ col" of="y-auto" flex-1 p="y10" gap-5 class="no-scrollbar">
           <ChatBubble v-for="item in 10" :key="item" message="你好这条消息来自HCAT,我希望它能够在互联网传递给每一个友善的人。" />
         </div>
         <!-- Input -->
@@ -132,3 +186,14 @@ function selectGroup(id: number) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+</style>

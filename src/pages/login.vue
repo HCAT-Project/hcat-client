@@ -1,12 +1,42 @@
 <script setup lang="ts" generic="T extends any, O extends any">
+import axios from 'axios'
+import { authenticateToken, setCookie } from '~/composables'
+import { IP } from '~/constant'
+
 const router = useRouter()
 
-function navToPage(path: string) {
-  router.push(path)
-}
+const userID = $ref('')
+const password = $ref('')
 
-function loginIn() {
-  navToPage('/')
+onMounted(async () => {
+  const is_login = await authenticateToken()
+  if (is_login)
+    router.push('/')
+})
+
+async function loginIn() {
+  if (userID === '' || password === '') {
+    alert('用户名或密码不能为空')
+    return
+  }
+  const form = new FormData()
+  form.append('user_id', userID)
+  form.append('password', password)
+
+  await axios.post(
+    `${IP}/account/login`,
+    form,
+  ).then((res) => {
+    if (res.data.status === 'ok') {
+      setCookie('user_id', userID, 180)
+      router.push('/')
+    }
+    else {
+      alert(res.data.message)
+    }
+  }).catch((_) => {
+
+  })
 }
 </script>
 
@@ -17,14 +47,14 @@ function loginIn() {
         <h1 text-2xl font-bold>
           登录 <span md:hidden inline-flex text-primary>H</span><span md:hidden inline-flex>CAT</span>
         </h1>
-        <TextInput label="用户名" :is-required="true" />
-        <TextInput label="密码" :is-required="true" type="password">
+        <TextInput v-model="userID" label="用户名" :is-required="true" />
+        <TextInput v-model="password" label="密码" :is-required="true" type="password">
           <a text-sm href="" max-w-20 text-link>忘记密码?</a>
         </TextInput>
         <div flex="~ col" gap-1 w-full>
           <TextButton text="登录" @click="loginIn" />
           <p w-full text="sm start">
-            需要新的账号？<a text-link cursor-pointer @click="navToPage('/register')">注册</a>
+            需要新的账号？<a text-link cursor-pointer @click="router.push('/register')">注册</a>
           </p>
         </div>
       </div>
