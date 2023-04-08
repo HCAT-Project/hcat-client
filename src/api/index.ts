@@ -71,3 +71,9 @@ export function changeGroupSettingApi() {
     method: 'POST',
   })
 }
+
+export function getGroupMembersApi() {
+  return useAxiosApi('/group/get_members', {
+    method: 'POST',
+  })
+}

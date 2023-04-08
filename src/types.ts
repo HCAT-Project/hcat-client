@@ -7,6 +7,7 @@ export interface ActiveChat {
   id: string
   permission?: groupPermission
   setting?: GroupSetting
+  members?: GroupMembers
 }
 
 export interface Message {
@@ -20,4 +21,20 @@ export interface GroupSetting {
   answer: string
   question: string
   verification_method: groupVerificationMethod
+}
+
+export interface GroupList {
+  [key: string]: Group
+}
+
+export interface Group {
+  group_name: string
+  nick: string
+  remark: string
+}
+
+export interface GroupMembers {
+  [key: string]: {
+    permission: groupPermission
+  }
 }

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, joinGroupApi, loginApi, logoutApi, registerApi, sendGroupMsgApi } from '~/api'
+import { authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, joinGroupApi, loginApi, logoutApi, registerApi, sendGroupMsgApi } from '~/api'
 import { setCookie } from '~/composables'
-import type { ActiveChat, GroupSetting } from '~/types'
+import type { ActiveChat, Group, GroupList, GroupMembers, GroupSetting } from '~/types'
 
 interface LoginForm {
   user_id: string
@@ -42,6 +42,23 @@ export const useStore = defineStore('stores', {
       type: null,
       id: '',
     } as ActiveChat,
+    groupList: {
+      1: {
+        group_name: 'Group 1',
+        nick: 'Nick 1',
+        remark: 'Remark 1',
+      },
+      2: {
+        group_name: 'Group 2',
+        nick: 'Nick 2',
+        remark: 'Remark 2',
+      },
+      3: {
+        group_name: 'Group 3',
+        nick: 'Nick 3',
+        remark: 'Remark 3',
+      },
+    } as GroupList,
   }),
   actions: {
     login(form: LoginForm) {
@@ -106,13 +123,16 @@ export const useStore = defineStore('stores', {
       })
     },
     getGroupList() {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve: (value: Group) => void, reject) => {
         const { execute } = getGroupListApi()
         execute().then((res) => {
-          if (res.data.value.status === 'ok')
+          if (res.data.value.status === 'ok') {
+            const mergedObj = {}
+            Object.assign(mergedObj, this.groupList, res.data.value.data as Group)
+            this.groupList = mergedObj
             resolve(res.data.value.data)
-          else
-            reject(res.data.value.message)
+          }
+          else { reject(res.data.value.message) }
         })
       })
     },
@@ -177,6 +197,17 @@ export const useStore = defineStore('stores', {
         execute({ data: form }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    getGroupMembers(groupId: string) {
+      return new Promise((resolve: (value: GroupMembers) => void, reject) => {
+        const { execute } = getGroupMembersApi()
+        execute({ data: { group_id: groupId } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value.data)
           else
             reject(res.data.value.message)
         })
