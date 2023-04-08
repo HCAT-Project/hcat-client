@@ -53,3 +53,21 @@ export function joinGroupApi() {
     method: 'POST',
   })
 }
+
+export function getSelfPmsInGroupApi() {
+  return useAxiosApi('/group/get_permission', {
+    method: 'POST',
+  })
+}
+
+export function getGroupSettingApi() {
+  return useAxiosApi('/group/get_setting', {
+    method: 'POST',
+  })
+}
+
+export function changeGroupSettingApi() {
+  return useAxiosApi('/group/change_group_setting', {
+    method: 'POST',
+  })
+}

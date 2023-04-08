@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-import { authTokenApi, createGroupApi, getGroupListApi, getGroupVerificationApi, joinGroupApi, loginApi, logoutApi, registerApi, sendGroupMsgApi } from '~/api'
+import { authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, joinGroupApi, loginApi, logoutApi, registerApi, sendGroupMsgApi } from '~/api'
 import { setCookie } from '~/composables'
+import type { ActiveChat, GroupSetting } from '~/types'
 
 interface LoginForm {
   user_id: string
@@ -24,6 +25,10 @@ interface JoinGroupForm {
   add_info: string
 }
 
+interface GroupSettingForm {
+  group_id: string
+  setting: string
+}
 // type status = 'ok' | 'null'
 
 // interface basicResponse {
@@ -33,7 +38,10 @@ interface JoinGroupForm {
 
 export const useStore = defineStore('stores', {
   state: () => ({
-
+    activeChat: {
+      type: null,
+      id: '',
+    } as ActiveChat,
   }),
   actions: {
     login(form: LoginForm) {
@@ -133,6 +141,39 @@ export const useStore = defineStore('stores', {
     joinGroup(form: JoinGroupForm) {
       return new Promise((resolve, reject) => {
         const { execute } = joinGroupApi()
+        execute({ data: form }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    getSelfPmsInGroup(groupId: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = getSelfPmsInGroupApi()
+        execute({ data: { group_id: groupId } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value.data)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    getGroupSetting(groupId: string) {
+      return new Promise((resolve: (value: GroupSetting) => void, reject) => {
+        const { execute } = getGroupSettingApi()
+        execute({ data: { group_id: groupId } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value.data as GroupSetting)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    changeGroupSetting(form: GroupSettingForm) {
+      return new Promise((resolve, reject) => {
+        const { execute } = changeGroupSettingApi()
         execute({ data: form }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value)

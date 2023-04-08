@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="T extends any, O extends any">
 import { getCookie, getDisplayTime } from '~/composables'
 import { useStore } from '~/stores/store'
-import type { ActiveChat, Message, chatType } from '~/types'
+import type { Message, chatType } from '~/types'
 
 interface GroupList {
   [key: string]: Group
@@ -41,9 +41,12 @@ const sideBarButtonList: SidebarButton[] = [
     text: '查找',
   },
 ]
-const activeChat = $ref<ActiveChat>({
-  type: null,
-  id: '',
+const messageList = $ref<Message[]>([])
+const verificationMethod = $ref({
+  fr: '自由加入',
+  ac: '需要验证',
+  aw: '回答问题',
+  na: '禁止加入',
 })
 let createGPModalVisible = $ref(false)
 let joinGPModalVisible = $ref(false)
@@ -66,7 +69,6 @@ let groupList: GroupList = $ref({
   },
 })
 let inputMessage = $ref('')
-const messageList = $ref<Message[]>([])
 
 onMounted(async () => {
   await store.authToken()
@@ -82,9 +84,19 @@ function selectGroup(id: string) {
   changeActiveChat('group', id)
 }
 
-function changeActiveChat(type: chatType, id: string) {
-  activeChat.type = type
-  activeChat.id = id
+async function changeActiveChat(type: chatType, id: string) {
+  // TODO:区分群聊和私聊
+  store.activeChat.type = type
+  store.activeChat.id = id
+  await store.getSelfPmsInGroup(id).then((res: any) => {
+    store.activeChat.permission = res
+  }).catch((_) => {
+  })
+  await store.getGroupSetting(id).then((res) => {
+    store.activeChat.setting = res
+  }).catch((_) => {
+    // store.activeChat.setting = null
+  })
 }
 
 async function getGroupList() {
@@ -168,17 +180,17 @@ async function sendMessage() {
   if (inputMessage.trim() === '')
     return
 
-  if (activeChat.type === 'group') {
+  if (store.activeChat.type === 'group') {
     const msg = {
       msg_chain: [{ type: 'text', msg: inputMessage }],
     }
     const form = {
-      group_id: activeChat.id,
+      group_id: store.activeChat.id,
       msg: JSON.stringify(msg),
     }
     await store.sendGroupMsg(form).then((res) => {
       messageList.push({
-        group_id: activeChat.id,
+        group_id: store.activeChat.id,
         user_id: getCookie('user_id')!,
         msg: inputMessage,
         time: getDisplayTime(),
@@ -191,6 +203,20 @@ async function sendMessage() {
   }
   // TODO: 好友消息
 }
+
+async function changeGroupSetting() {
+  const setting = toRaw(store.activeChat.setting!)
+  const form = {
+    group_id: store.activeChat.id,
+    setting: JSON.stringify(setting),
+  }
+  await store.changeGroupSetting(form).then((res) => {
+    alert('修改成功')
+  }).catch((err) => {
+    alert(err)
+  })
+}
+
 async function logout() {
   await store.logout().then((_) => {
     router.push('/login')
@@ -292,10 +318,10 @@ async function logout() {
         </div>
         <!-- Input -->
         <div flex items-center m="y5" gap-3 text="text-secondary">
-          <button :disabled="activeChat.type === null">
+          <button :disabled="store.activeChat.type === null">
             <div i-carbon-attachment />
           </button>
-          <input v-model="inputMessage" :disabled="activeChat.type === null" placeholder="说点什么吧" flex-1 bg-transparent outline-none @keydown.enter="sendMessage">
+          <input v-model="inputMessage" :disabled="store.activeChat.type === null" placeholder="说点什么吧" flex-1 bg-transparent outline-none @keydown.enter="sendMessage">
         </div>
       </div>
     </div>
@@ -312,13 +338,27 @@ async function logout() {
         <button hover="bg-back-light" w-13 h-13 bg-back-gray flex items-center justify-center rounded-xl>
           <div i-carbon-notification />
         </button>
-      </div>
-      <div flex-1 />
-      <div flex>
-        <button bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important>
-          离开群组
+        <button hover="bg-back-light" w-13 h-13 bg-back-gray flex items-center justify-center rounded-xl>
+          <div i-carbon-copy />
         </button>
       </div>
+      <div flex-1 />
+      <div v-if="store.activeChat.permission === 'owner' || store.activeChat.permission === 'admin'" flex="~ col" text-start gap-1>
+        <p>加群方式</p>
+        <div px="3" flex bg-back-gray rounded-lg hover="bg-back-light">
+          <select v-if="store.activeChat.setting" v-model="store.activeChat.setting.verification_method" flex-1 p=" y3" bg-transparent outline-none @change="changeGroupSetting">
+            <option v-for="item, key in verificationMethod" :key="key" :value="key">
+              {{ item }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <button v-if="store.activeChat.permission === 'owner'" bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important>
+        转让群组
+      </button>
+      <button v-if="store.activeChat.permission !== 'owner'" bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important>
+        离开群组
+      </button>
     </div>
   </div>
 </template>
