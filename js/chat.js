@@ -119,3 +119,22 @@ function handleFiles(files) {
     });
   };
 }
+
+
+// 发送截图
+async function sendScreenshot() {
+  const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+  const video = document.createElement('video');
+  video.srcObject = stream;
+  await video.play();
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+  const dataURL = canvas.toDataURL('image/png');
+  stream.getTracks().forEach(track => track.stop());
+  const base64String = dataURL.replace(/^data:image\/(png|jpg);base64,/, '');
+  mdui.alert('<img src="data:image/png;base64,' + base64String + '" class="mdui-center" style="height: 300px">', '确认发送？', function(){
+    sendMessage('{"msg_chain":[{"type":"img","msg":'+base64String+'"}]}');
+  });
+}
