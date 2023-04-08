@@ -135,6 +135,41 @@ async function sendScreenshot() {
   stream.getTracks().forEach(track => track.stop());
   const base64String = dataURL.replace(/^data:image\/(png|jpg);base64,/, '');
   mdui.alert('<img src="data:image/png;base64,' + base64String + '" class="mdui-center" style="height: 300px">', '确认发送？', function(){
-    sendMessage('{"msg_chain":[{"type":"img","msg":'+base64String+'"}]}');
+    sendMessage('{"msg_chain":[{"type":"img","msg":"data:image/png;base64,'+base64String+'"}]}');
   });
+}
+
+// 放大预览图片
+function enlargeImage(img) {
+  // 创建一个新的 <div> 元素
+  const overlay = document.createElement("div");
+  overlay.style.position = "fixed";
+  overlay.style.top = 0;
+  overlay.style.left = 0;
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "rgba(0,0,0,0.8)";
+  overlay.style.zIndex = 9999;
+
+  // 创建一个新的 <img> 元素，并设置其 src 属性
+  const imgLarge = document.createElement("img");
+  imgLarge.src = img.src;
+  imgLarge.style.position = "absolute";
+  imgLarge.style.top = "50%";
+  imgLarge.style.left = "50%";
+  imgLarge.style.transform = "translate(-50%, -50%)";
+  imgLarge.style.maxWidth = "90%";
+  imgLarge.style.maxHeight = "90%";
+  imgLarge.style.borderRadius = "4px";
+
+  // 将 <img> 元素添加到 <div> 中
+  overlay.appendChild(imgLarge);
+
+  // 将 <div> 添加到文档中
+  document.body.appendChild(overlay);
+
+  // 点击 <div> 以关闭放大的图像
+  overlay.onclick = function() {
+    document.body.removeChild(overlay);
+  };
 }
