@@ -152,7 +152,7 @@ async function leaveGroup() {
       <div flex-1 flex="~ col">
         <!-- Members -->
         <div v-for="item, key in store.activeChat.members!" :key="key" flex items-center gap-3 hover="bg-back-gray" rounded-lg p="x3 y2">
-          <img src="/avator.jpeg" w-10 h-10 rounded-full>
+          <img src="/avatar.jpeg" w-10 h-10 rounded-full>
           <p text="lg" font-bold>
             {{ key }}
           </p>
