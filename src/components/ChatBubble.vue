@@ -2,19 +2,22 @@
 withDefaults(defineProps<{
   fromSelf?: boolean
   message: string
+  time: string
 }>(), {
   fromSelf: false,
 })
 </script>
 
 <template>
-  <div flex items-end gap-3>
+  <div flex items-end gap-3 :class="{ 'flex-row-reverse': fromSelf }">
     <img w-10 h-10 rounded-lg src="/logo.png">
     <div bg-back-light p="x-3 y3" rounded-lg max-w="2/3" text="sm start" flex="~ col" gap-2>
-      <p>{{ message }}</p>
-      <div flex justify-between items-center>
+      <div break-all>
+        {{ message }}
+      </div>
+      <div flex justify-between items-center gap-10>
         <p text="xs text-secondary">
-          12:00:00
+          {{ time }}
         </p>
         <div flex gap-3 items-center>
           <button>

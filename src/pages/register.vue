@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import axios from 'axios'
-import { IP } from '~/constant'
+import { useStore } from '~/stores/store'
 
 const router = useRouter()
+const store = useStore()
 
 const userID = $ref('')
 const password = $ref('')
@@ -13,24 +13,16 @@ async function register() {
     alert('用户名或密码不能为空')
     return
   }
-  const form = new FormData()
-  form.append('user_id', userID)
-  form.append('password', password)
-  form.append('username', username)
-  form.append('lang', '简体中文')
-
-  await axios.post(
-    `${IP}/account/register`,
-    form,
-  ).then((res) => {
-    if (res.data.status === 'ok')
-      router.push('/login')
-    else if (res.data.status === 'error')
-      alert(res.data.message)
-    else
-      alert('未知错误')
-  }).catch((_) => {
-
+  const form = {
+    user_id: userID,
+    password,
+    username,
+    lang: '简体中文',
+  }
+  await store.register(form).then((res) => {
+    router.push('/login')
+  }).catch((err) => {
+    alert(err)
   })
 }
 </script>

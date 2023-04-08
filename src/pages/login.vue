@@ -1,41 +1,32 @@
 <script setup lang="ts" generic="T extends any, O extends any">
-import axios from 'axios'
-import { authenticateToken, setCookie } from '~/composables'
-import { IP } from '~/constant'
+import { useStore } from '~/stores/store'
 
 const router = useRouter()
+const store = useStore()
 
 const userID = $ref('')
 const password = $ref('')
 
 onMounted(async () => {
-  const is_login = await authenticateToken()
-  if (is_login)
+  await store.authToken().then((res) => {
     router.push('/')
+  }).catch((_) => {
+  })
 })
 
-async function loginIn() {
+async function login() {
   if (userID === '' || password === '') {
     alert('用户名或密码不能为空')
     return
   }
-  const form = new FormData()
-  form.append('user_id', userID)
-  form.append('password', password)
-
-  await axios.post(
-    `${IP}/account/login`,
-    form,
-  ).then((res) => {
-    if (res.data.status === 'ok') {
-      setCookie('user_id', userID, 180)
-      router.push('/')
-    }
-    else {
-      alert(res.data.message)
-    }
-  }).catch((_) => {
-
+  const form = {
+    user_id: userID,
+    password,
+  }
+  await store.login(form).then((res) => {
+    router.push('/')
+  }).catch((err) => {
+    alert(err)
   })
 }
 </script>
@@ -48,11 +39,11 @@ async function loginIn() {
           登录 <span md:hidden inline-flex text-primary>H</span><span md:hidden inline-flex>CAT</span>
         </h1>
         <TextInput v-model="userID" label="用户名" :is-required="true" />
-        <TextInput v-model="password" label="密码" :is-required="true" type="password">
+        <TextInput v-model="password" label="密码" :is-required="true" type="password" @keydown.enter="login">
           <a text-sm href="" max-w-20 text-link>忘记密码?</a>
         </TextInput>
         <div flex="~ col" gap-1 w-full>
-          <TextButton text="登录" @click="loginIn" />
+          <TextButton text="登录" @click="login" />
           <p w-full text="sm start">
             需要新的账号？<a text-link cursor-pointer @click="router.push('/register')">注册</a>
           </p>

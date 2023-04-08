@@ -1,9 +1,7 @@
 <script setup lang="ts" generic="T extends any, O extends any">
-import axios from 'axios'
-import { deleteCookie } from '~/composables'
-import { IP } from '~/constant'
-
-axios.defaults.withCredentials = true
+import { getCookie, getDisplayTime } from '~/composables'
+import { useStore } from '~/stores/store'
+import type { ActiveChat, Message, chatType } from '~/types'
 
 interface GroupList {
   [key: string]: Group
@@ -20,9 +18,11 @@ interface SidebarButton {
   text: string
 }
 
+const store = useStore()
 const router = useRouter()
 const createGroupName = $ref('')
 const joinGroupID = $ref('')
+const addMessage = $ref('')
 const sideBarButtonList: SidebarButton[] = [
   {
     icon: 'i-carbon-group',
@@ -41,9 +41,12 @@ const sideBarButtonList: SidebarButton[] = [
     text: '查找',
   },
 ]
+const activeChat = $ref<ActiveChat>({
+  type: null,
+  id: '',
+})
 let createGPModalVisible = $ref(false)
 let joinGPModalVisible = $ref(false)
-const addMessage = $ref('')
 let selectedGroup = $ref('-1')
 let groupList: GroupList = $ref({
   1: {
@@ -62,32 +65,33 @@ let groupList: GroupList = $ref({
     remark: 'Remark 3',
   },
 })
+let inputMessage = $ref('')
+const messageList = $ref<Message[]>([])
 
 onMounted(async () => {
-  if (!await authenticateToken())
-    router.push('/login')
-
-  fetchGroups()
+  await store.authToken()
+    .catch((_) => {
+      alert('请先登录')
+      router.push('/login')
+    })
+  getGroupList()
 })
 
 function selectGroup(id: string) {
   selectedGroup = id
+  changeActiveChat('group', id)
 }
 
-async function fetchGroups() {
-  await axios.get(
-    `${IP}/group/get_groups`,
-  ).then((res) => {
-    if (res.data.status === 'ok') {
-      const mergedObj = {}
-      Object.assign(mergedObj, groupList, res.data.data as Group)
-      groupList = mergedObj
-    }
-    else {
-      // TODO: 处理错误
-    }
-  }).catch((_) => {
+function changeActiveChat(type: chatType, id: string) {
+  activeChat.type = type
+  activeChat.id = id
+}
 
+async function getGroupList() {
+  await store.getGroupList().then((res) => {
+    const mergedObj = {}
+    Object.assign(mergedObj, groupList, res as Group)
+    groupList = mergedObj
   })
 }
 
@@ -96,91 +100,53 @@ async function createGroup() {
   // TODO: 处理错误
     return
 
-  const form = new FormData()
-  form.append('group_name', createGroupName)
-  await axios.post(
-    `${IP}/group/create_group`,
-    form,
-    {
-      withCredentials: true,
-    },
-  ).then((res) => {
-    if (res.data.status === 'ok') {
-      fetchGroups()
-      createGPModalVisible = false
-    }
-    else {
-      // TODO: 处理错误
-    }
-  }).catch((_) => {
-
+  await store.createGroup(createGroupName).then((res) => {
+    getGroupList()
+    createGPModalVisible = false
+  }).catch((err) => {
+    alert(err)
   })
 }
 
 async function joinGroup() {
   // TODO: 自由进出与需要验证分开处理
-  if (joinGroupID === '') {
+  if (joinGroupID.trim() === '') {
     // TODO: 处理错误
     return
   }
 
-  const form = new FormData()
-  form.append('group_id', joinGroupID)
-  await axios.post(
-    `${IP}/group/get_verification_method`,
-    form,
-  ).then(async (res) => {
-    if (res.data.status === 'ok') {
-      const joinForm = new FormData()
-      joinForm.append('group_id', joinGroupID)
-      joinForm.append('add_info', addMessage)
-
-      switch (res.data.data.verification_method) {
-        case 'fr':
-          await axios.post(
-            `${IP}/group/join_group`,
-            joinForm,
-            {
-              withCredentials: true,
-            },
-          ).then((res) => {
-            if (res.data.status === 'ok') {
-              fetchGroups()
-              joinGPModalVisible = false
-            }
-            else {
-              // TODO: 处理错误
-            }
-          })
-          break
-        case 'ac':
-          axios.post(
-              `${IP}/group/join_group`,
-              joinForm,
-          ).then((res) => {
-            if (res.data.status === 'ok') {
-              fetchGroups()
-              joinGPModalVisible = false
-            }
-            else {
-              // TODO: 处理错误
-              alert(res.data.message)
-            }
-          })
-          break
-        case 'na':
-          // TODO:
-          break
-        case 'aw':
-          // TODO:
-          break
-      }
-      // fetchGroups()
-      // joinGPModalVisible = false
+  await store.getGroupVerification(joinGroupID).then(async (method) => {
+    const form = {
+      group_id: joinGroupID,
+      add_info: addMessage,
     }
-    else {
-      // TODO: 处理错误
+    switch (method) {
+      case 'fr':
+        await store.joinGroup(form).then((res) => {
+          getGroupList()
+          joinGPModalVisible = false
+        }).catch((err) => {
+          alert(err)
+        })
+        break
+      case 'ac':
+        await store.joinGroup(form).then((res) => {
+          alert('已发送入群申请')
+          getGroupList()
+          joinGPModalVisible = false
+        }).catch((err) => {
+          alert(err)
+        })
+        break
+      case 'na':
+        // TODO:
+        break
+      case 'aw':
+        // TODO:
+        break
     }
+  }).catch((err) => {
+    alert(err)
   })
 }
 
@@ -198,25 +164,42 @@ function sideBarAction(index: number) {
   }
 }
 
-async function logOut() {
-  await axios.post(
-    `${IP}/account/logout`,
-  ).then((res) => {
-    if (res.data.status === 'ok') {
-      deleteCookie('user_id')
-      router.push('/login')
-    }
-    else {
-      // TODO: 处理错误
-    }
-  }).catch((_) => {
+async function sendMessage() {
+  if (inputMessage.trim() === '')
+    return
 
+  if (activeChat.type === 'group') {
+    const msg = {
+      msg_chain: [{ type: 'text', msg: inputMessage }],
+    }
+    const form = {
+      group_id: activeChat.id,
+      msg: JSON.stringify(msg),
+    }
+    await store.sendGroupMsg(form).then((res) => {
+      messageList.push({
+        group_id: activeChat.id,
+        user_id: getCookie('user_id')!,
+        msg: inputMessage,
+        time: getDisplayTime(),
+      })
+      inputMessage = ''
+    },
+    ).catch((err) => {
+      alert(err)
+    })
+  }
+  // TODO: 好友消息
+}
+async function logout() {
+  await store.logout().then((_) => {
+    router.push('/login')
   })
 }
 </script>
 
 <template>
-  <div h-full grid="~ cols-24">
+  <div h-full grid="~ cols-12">
     <!-- Sidebar -->
     <div col-span-1 flex="~ col" p="y5" justify-between items-center>
       <p text-xl font-bold mb-10>
@@ -240,7 +223,7 @@ async function logOut() {
         </Modal>
       </div>
       <div flex="~ col" gap-5 text="xs text-secondary">
-        <button flex="~ col" items-center gap-2 hover="text-light" @click="logOut">
+        <button flex="~ col" items-center gap-2 hover="text-light" @click="logout">
           <div w-6 h-6 i-carbon-logout />
           <p> 注销</p>
         </button>
@@ -251,7 +234,7 @@ async function logOut() {
       </div>
     </div>
     <!-- Chat -->
-    <div grid="~ cols-12" rounded-2xl bg-back-gray col-span-16 of-hidden>
+    <div grid="~ cols-12" rounded-2xl bg-back-gray col-span-8 of-hidden>
       <div col-span-4 flex="~ col" p="y5 x5" gap-5>
         <!-- Search bar -->
         <div flex gap-3>
@@ -275,7 +258,7 @@ async function logOut() {
         </div>
         <!-- Chat card -->
         <div flex="~ col">
-          <GroupChatCard v-for="item, key in groupList" :key="item.group_name" :selected="selectedGroup === key" :name="item.group_name" :new-message-number="99" @click="selectGroup(key as string)" />
+          <GroupChatCard v-for="item, key in groupList" :key="item.group_name" :group_id="key" :selected="selectedGroup === key" :name="item.group_name" :new-message-number="99" @click="selectGroup(key as string)" />
         </div>
       </div>
       <div col-span-8 flex="~ col" p="x8 t5" of-hidden>
@@ -305,20 +288,36 @@ async function logOut() {
         </div>
         <!-- Group chat -->
         <div flex="~ col" of="y-auto" flex-1 p="y10" gap-5 class="no-scrollbar">
-          <ChatBubble v-for="item in 10" :key="item" message="你好这条消息来自HCAT,我希望它能够在互联网传递给每一个友善的人。" />
+          <ChatBubble v-for="item in messageList" :key="item.msg" :time="item.time" :from-self="item.user_id === getCookie('user_id')!" :message="item.msg" />
         </div>
         <!-- Input -->
         <div flex items-center m="y5" gap-3 text="text-secondary">
-          <button>
+          <button :disabled="activeChat.type === null">
             <div i-carbon-attachment />
           </button>
-          <input placeholder="说点什么吧" flex-1 bg-transparent outline-none>
+          <input v-model="inputMessage" :disabled="activeChat.type === null" placeholder="说点什么吧" flex-1 bg-transparent outline-none @keydown.enter="sendMessage">
         </div>
       </div>
     </div>
-    <div col-span-7 flex="~ col" justify-center items-center>
-      <div text-text-secondary>
-        Placeholder
+    <div col-span-3 flex="~ col" p-5 gap-5>
+      <div flex="~" justify-between>
+        <h1 text="lg" font-bold>
+          聊天设定
+        </h1>
+      </div>
+      <div flex justify-start gap-3>
+        <button hover="bg-back-light" w-13 h-13 bg-back-gray flex items-center justify-center rounded-xl>
+          <div i-carbon-text-annotation-toggle />
+        </button>
+        <button hover="bg-back-light" w-13 h-13 bg-back-gray flex items-center justify-center rounded-xl>
+          <div i-carbon-notification />
+        </button>
+      </div>
+      <div flex-1 />
+      <div flex>
+        <button bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important>
+          离开群组
+        </button>
       </div>
     </div>
   </div>

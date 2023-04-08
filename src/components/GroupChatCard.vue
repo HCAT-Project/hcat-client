@@ -1,6 +1,7 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
   name: string
+  group_id: string | number
   newMessageNumber: number
   selected: boolean
 }>(), {
@@ -13,7 +14,10 @@ withDefaults(defineProps<{
   <div h-20 p="3" rounded-2xl :class="{ 'bg-back-light': selected }" hover="bg-back-light" flex w-full gap-3 items-center select-none>
     <img w-8 h-8 src="/logo.png" alt="">
     <div flex="~ col" flex-1 text="start" truncate>
-      <p>{{ name }}</p>
+      <p>
+        {{ name }}
+        <span mx-3 text="xs text-secondary op40">{{ group_id }}</span>
+      </p>
       <p text="xs text-secondary" truncate>
         Hi there! I'm a friendly Chinese guy!
       </p>
