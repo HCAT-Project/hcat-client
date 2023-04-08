@@ -62,7 +62,6 @@ instance.interceptors.response.use(
     }
   },
   (error) => {
-    console.log(1111!)
     console.log(`err${error}`)
     // Toast(error.message)
     return Promise.reject(error.message)

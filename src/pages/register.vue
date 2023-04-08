@@ -45,3 +45,9 @@ async function register() {
     </div>
   </div>
 </template>
+
+<route lang="yaml">
+name: register
+meta:
+  requiresAuth: false
+</route>

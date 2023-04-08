@@ -8,10 +8,10 @@ const userID = $ref('')
 const password = $ref('')
 
 onMounted(async () => {
-  await store.authToken().then((res) => {
-    router.push('/')
-  }).catch((_) => {
-  })
+  // await store.authToken().then((res) => {
+  //   router.push('/')
+  // }).catch((_) => {
+  // })
 })
 
 async function login() {
@@ -58,3 +58,9 @@ async function login() {
     </div>
   </div>
 </template>
+
+<route lang="yaml">
+name: login
+meta:
+  requiresAuth: false
+</route>

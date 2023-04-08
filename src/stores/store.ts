@@ -43,21 +43,6 @@ export const useStore = defineStore('stores', {
       id: '',
     } as ActiveChat,
     groupList: {
-      1: {
-        group_name: 'Group 1',
-        nick: 'Nick 1',
-        remark: 'Remark 1',
-      },
-      2: {
-        group_name: 'Group 2',
-        nick: 'Nick 2',
-        remark: 'Remark 2',
-      },
-      3: {
-        group_name: 'Group 3',
-        nick: 'Nick 3',
-        remark: 'Remark 3',
-      },
     } as GroupList,
   }),
   actions: {
@@ -116,7 +101,7 @@ export const useStore = defineStore('stores', {
         const { execute } = authTokenApi()
         execute().then((res) => {
           if (res.data.value.status === 'ok')
-            resolve(res.data.value)
+            resolve(res.data.value.status)
           else
             reject(res.data.value.message)
         })

@@ -9,3 +9,9 @@
     </p>
   </div>
 </template>
+
+<route lang="yaml">
+name: index
+meta:
+  requiresAuth: true
+</route>

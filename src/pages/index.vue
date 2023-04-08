@@ -32,11 +32,11 @@ const sideBarButtonList: SidebarButton[] = [
 let joinGPModalVisible = $ref(false)
 
 onMounted(async () => {
-  await store.authToken()
-    .catch((_) => {
-      alert('请先登录')
-      router.push('/login')
-    })
+  // await store.authToken()
+  //   .catch((_) => {
+  //     alert('请先登录')
+  //     router.push('/login')
+  //   })
 })
 
 async function joinGroup() {
