@@ -81,6 +81,17 @@ async function changeGroupSetting() {
     alert(err)
   })
 }
+
+async function leaveGroup() {
+  await store.leaveGroup(store.activeChat.id).then((res) => {
+    // alert('已退出群聊')
+    // store.getGroupList()
+    // store.activeChat.type = 'none'
+    // store.activeChat.id = ''
+  }).catch((err) => {
+    alert(err)
+  })
+}
 </script>
 
 <template>
@@ -157,11 +168,15 @@ async function changeGroupSetting() {
             </option>
           </select>
         </div>
+        <!-- <div v-if="(store.activeChat.permission === 'owner' || store.activeChat.permission === 'admin') && store.activeChat.setting?.verification_method === 'aw'" flex="~ col" gap-1>
+          <TextInput v-model="store.activeChat.setting!.question" label="问题" />
+          <TextInput v-model="store.activeChat.setting!.answer" label="答案" />
+        </div> -->
       </div>
       <button v-if="store.activeChat.permission === 'owner'" bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important>
         转让群组
       </button>
-      <button bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important>
+      <button v-if="store.activeChat.permission !== 'owner'" bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important @click="leaveGroup">
         离开群组
       </button>
     </div>

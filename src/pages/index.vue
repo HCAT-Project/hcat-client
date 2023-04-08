@@ -8,6 +8,7 @@ interface SidebarButton {
 
 const store = useStore()
 const router = useRouter()
+const route = useRoute()
 const joinGroupID = $ref('')
 const addMessage = $ref('')
 const sideBarButtonList: SidebarButton[] = [
@@ -31,12 +32,9 @@ const sideBarButtonList: SidebarButton[] = [
 
 let joinGPModalVisible = $ref(false)
 
-onMounted(async () => {
-  // await store.authToken()
-  //   .catch((_) => {
-  //     alert('请先登录')
-  //     router.push('/login')
-  //   })
+onMounted(() => {
+  if (route.path.includes('groups'))
+    store.activeTab = 0
 })
 
 async function joinGroup() {
@@ -84,11 +82,16 @@ async function joinGroup() {
 function sideBarAction(index: number) {
   switch (index) {
     case 0:
+      store.activeTab = 0
       router.push('/groups')
       break
     case 1:
+      store.activeTab = 1
+      router.push('/friends')
       break
     case 2:
+      store.activeTab = 2
+      router.push('/notifications')
       break
     case 3:
       joinGPModalVisible = true
@@ -111,7 +114,7 @@ async function logout() {
         <span text-primary>H</span>CAT
       </button>
       <div flex-1 flex="~ col" gap-5>
-        <button v-for="item, index in sideBarButtonList" :key="item.text" flex="~ col" items-center text-xs gap-2 @click="sideBarAction(index)">
+        <button v-for="item, index in sideBarButtonList" :key="item.text" :class="[store.activeTab === index ? 'text-text-light' : 'text-text-secondary']" flex="~ col" items-center text-xs gap-2 @click="sideBarAction(index)">
           <div w-6 h-6 :class="item.icon" />
           <p>{{ item.text }}</p>
         </button>

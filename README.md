@@ -10,7 +10,6 @@ hcat-client客户端的vue版本，仍在开发中。
 
 # 预览
 <!-- 插入图片 -->
-![](./public/login.png)
 ![](./public/chat.png)
 
 # 功能

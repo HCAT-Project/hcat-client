@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, joinGroupApi, loginApi, logoutApi, registerApi, sendGroupMsgApi } from '~/api'
+import { authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, joinGroupApi, leaveGroupApi, loginApi, logoutApi, registerApi, sendGroupMsgApi } from '~/api'
 import { setCookie } from '~/composables'
 import type { ActiveChat, Group, GroupList, GroupMembers, GroupSetting } from '~/types'
 
@@ -44,6 +44,7 @@ export const useStore = defineStore('stores', {
     } as ActiveChat,
     groupList: {
     } as GroupList,
+    activeTab: -1,
   }),
   actions: {
     login(form: LoginForm) {
@@ -193,6 +194,17 @@ export const useStore = defineStore('stores', {
         execute({ data: { group_id: groupId } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value.data)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    leaveGroup(groupId: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = leaveGroupApi()
+        execute({ data: { group_id: groupId } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value)
           else
             reject(res.data.value.message)
         })

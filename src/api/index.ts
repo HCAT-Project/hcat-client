@@ -77,3 +77,9 @@ export function getGroupMembersApi() {
     method: 'POST',
   })
 }
+
+export function leaveGroupApi() {
+  return useAxiosApi('/group/leave', {
+    method: 'POST',
+  })
+}
