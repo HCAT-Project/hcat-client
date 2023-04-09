@@ -1,12 +1,34 @@
 <script setup lang="ts">
+import { useStore } from '~/stores/store'
+
+const selected = $ref(-1)
+const store = useStore()
+const router = useRouter()
+
+onMounted(async () => {
+  await store.getTodoList()
+})
 </script>
 
 <template>
-  <div w-full h-full flex="~ col" items-center justify-center gap2>
-    <img src="/logo.png" w-20 h-20>
-    <p text="2xl primary" font-bold>
-      N<span text-light>OTIFICATIONS</span>
-    </p>
+  <!-- Chat -->
+  <div flex>
+    <div w="70" rounded="l-2xl" bg-back-gray of-hidden>
+      <div flex="~ col" p="y5 x5" gap-5>
+        <!-- Chat card -->
+        <div flex="~ col">
+          <div p3 rounded-2xl h-15 :class="{ 'bg-back-light': selected === 0 }" hover="bg-back-light" flex="~" justify-between w-full gap-3 items-center select-none @click="router.push('/notifications/friend-notification')">
+            <p>好友通知</p>
+            <div i-carbon-chevron-right />
+          </div>
+          <div p3 rounded-2xl h-15 :class="{ 'bg-back-light': selected === 1 }" hover="bg-back-light" flex="~" justify-between w-full gap-3 items-center select-none @click="router.push('/notifications/group-notification')">
+            <p>群通知</p>
+            <div i-carbon-chevron-right />
+          </div>
+        </div>
+      </div>
+    </div>
+    <RouterView flex-1 />
   </div>
 </template>
 

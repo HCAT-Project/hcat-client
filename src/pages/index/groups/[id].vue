@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getDisplayTime } from '~/composables'
 import { useStore } from '~/stores/store'
-import type { Message, chatType } from '~/types'
+import type { ChatType, Message } from '~/types'
 
 const props = defineProps<{
   id: string
@@ -21,7 +21,7 @@ watch(() => props.id, () => {
   changeActiveChat('group', props.id)
 }, { immediate: true })
 
-async function changeActiveChat(type: chatType, id: string) {
+async function changeActiveChat(type: ChatType, id: string) {
   // TODO:区分群聊和私聊
   store.activeChat.type = type
   store.activeChat.id = id
