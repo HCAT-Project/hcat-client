@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, leaveGroupApi, loginApi, logoutApi, registerApi, sendGroupMsgApi } from '~/api'
+import { addAdminApi, agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, leaveGroupApi, loginApi, logoutApi, registerApi, removeAdminApi, sendGroupMsgApi } from '~/api'
 import { setCookie } from '~/composables'
 import type { ActiveChat, GpJoinRequest, Group, GroupList, GroupMembers, GroupMessage, GroupSetting, Todo } from '~/types'
 
@@ -43,8 +43,8 @@ interface GroupMessages {
 export const useStore = defineStore('stores', {
   state: () => ({
     activeChat: {
-      type: null,
       id: '',
+      members: [],
     } as ActiveChat,
     groupList: {
     } as GroupList,
@@ -160,10 +160,10 @@ export const useStore = defineStore('stores', {
         })
       })
     },
-    getSelfPmsInGroup(groupId: string) {
+    getSelfPmsInGroup() {
       return new Promise((resolve, reject) => {
         const { execute } = getSelfPmsInGroupApi()
-        execute({ data: { group_id: groupId } }).then((res) => {
+        execute({ data: { group_id: this.activeChat.id } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value.data)
           else
@@ -171,10 +171,10 @@ export const useStore = defineStore('stores', {
         })
       })
     },
-    getGroupSetting(groupId: string) {
+    getGroupSetting() {
       return new Promise((resolve: (value: GroupSetting) => void, reject) => {
         const { execute } = getGroupSettingApi()
-        execute({ data: { group_id: groupId } }).then((res) => {
+        execute({ data: { group_id: this.activeChat.id } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value.data as GroupSetting)
           else
@@ -193,10 +193,10 @@ export const useStore = defineStore('stores', {
         })
       })
     },
-    getGroupMembers(groupId: string) {
+    getGroupMembers() {
       return new Promise((resolve: (value: GroupMembers) => void, reject) => {
         const { execute } = getGroupMembersApi()
-        execute({ data: { group_id: groupId } }).then((res) => {
+        execute({ data: { group_id: this.activeChat.id } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value.data)
           else
@@ -219,6 +219,28 @@ export const useStore = defineStore('stores', {
       return new Promise((resolve, reject) => {
         const { execute } = leaveGroupApi()
         execute({ data: { group_id: groupId } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    addAdmin(member_id: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = addAdminApi()
+        execute({ data: { group_id: this.activeChat.id, member_id } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    removeAdmin(admin_id: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = removeAdminApi()
+        execute({ data: { group_id: this.activeChat.id, admin_id } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value)
           else
@@ -254,6 +276,9 @@ export const useStore = defineStore('stores', {
     },
     removeGroupNotification(rid: string) {
       this.gpJoinReqList = this.gpJoinReqList.filter(item => item.rid !== rid)
+    },
+    clearMessageStorage() {
+      this.groupMessages = {}
     },
 
   },

@@ -1,5 +1,5 @@
 export type ChatType = 'friend' | 'group'
-export type GroupPermission = 'owner' | 'admin' | 'guest'
+export type GroupPermission = 'owner' | 'admin' | 'member'
 export type GroupVerificationMethod = 'ac' | 'fr' | 'na' | 'aw'
 const todoTypeList = [
   'friend_request',
@@ -21,11 +21,11 @@ export type TodoType = typeof todoTypeList[number]
 
 export interface ActiveChat {
   // TODO:check
-  type: ChatType | null
+  type?: ChatType
   id: string
   permission?: GroupPermission
   setting?: GroupSetting
-  members?: GroupMembers
+  members: GroupMember[]
 }
 
 // 接收到的群消息接口
@@ -65,10 +65,16 @@ export interface Group {
   remark: string
 }
 
+// api返回的群列表接口
 export interface GroupMembers {
   [key: string]: {
     permission: GroupPermission
   }
+}
+
+export interface GroupMember {
+  user_id: string
+  permission: GroupPermission
 }
 
 export interface Todo {

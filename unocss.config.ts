@@ -13,6 +13,7 @@ export default defineConfig({
       primary: { DEFAULT: '#4050B5', light: '#5D63BE' },
       important: { DEFAULT: '#CE5457' },
       warning: { DEFAULT: '#FFC05B' },
+      safe: { DEFAULT: '#00C9A7' },
       input: { DEFAULT: '#FFFFFF' },
       link: '#0086D1',
       text: { DEFAULT: '#000000', light: '#FFFFFF', secondary: '#828387' },

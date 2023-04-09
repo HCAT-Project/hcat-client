@@ -71,3 +71,14 @@ export function getGroupNameApi() {
     method: 'POST',
   })
 }
+export function addAdminApi() {
+  return useAxiosApi('/group/add_admin', {
+    method: 'POST',
+  })
+}
+
+export function removeAdminApi() {
+  return useAxiosApi('/group/remove_admin', {
+    method: 'POST',
+  })
+}
