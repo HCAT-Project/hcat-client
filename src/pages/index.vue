@@ -81,7 +81,7 @@ async function joinGroup() {
 function sideBarAction(index: number) {
   switch (index) {
     case 0:
-      router.push('/groups')
+      router.push(`/groups/${store.activeChat.id ?? ''}`)
       break
     case 1:
       router.push('/friends')
