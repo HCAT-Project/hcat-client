@@ -62,7 +62,7 @@ export interface Todo {
   rid?: string
   user_id?: string
   add_info?: string
-  time?: string
+  time?: number
   msg?: string
   friend_nick?: string
   friend_name?: string
@@ -75,4 +75,13 @@ export interface Todo {
   text?: string
   title?: string
   path?: string
+}
+
+export interface GpJoinRequest {
+  add_info: string
+  group_id: string
+  rid: string
+  time: number
+  type: 'group_join_request'
+  user_id: string
 }

@@ -59,3 +59,9 @@ export function leaveGroupApi() {
     method: 'POST',
   })
 }
+
+export function agreeJoinGroupReqApi() {
+  return useAxiosApi('/group/agree_join_group_request', {
+    method: 'POST',
+  })
+}

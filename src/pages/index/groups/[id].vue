@@ -132,7 +132,7 @@ async function leaveGroup() {
       </div>
     </div>
     <!-- Chat setting -->
-    <div min-w-60 flex="~ col" p-5 gap-5>
+    <div min-w-60 flex="md:~ col" p-5 gap-5 hidden>
       <h1 text="lg" font-bold text-start>
         聊天设定
         <span mx-2 text="text-secondary xs" font-sans>{{ id }}</span>

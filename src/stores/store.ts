@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, leaveGroupApi, loginApi, logoutApi, registerApi, sendGroupMsgApi } from '~/api'
+import { agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, leaveGroupApi, loginApi, logoutApi, registerApi, sendGroupMsgApi } from '~/api'
 import { setCookie } from '~/composables'
-import type { ActiveChat, Group, GroupList, GroupMembers, GroupSetting } from '~/types'
+import type { ActiveChat, GpJoinRequest, Group, GroupList, GroupMembers, GroupSetting, Todo } from '~/types'
 
 interface LoginForm {
   user_id: string
@@ -45,6 +45,7 @@ export const useStore = defineStore('stores', {
     groupList: {
     } as GroupList,
     activeTab: -1,
+    gpJoinReqList: [] as GpJoinRequest[],
   }),
   actions: {
     login(form: LoginForm) {
@@ -209,10 +210,9 @@ export const useStore = defineStore('stores', {
       })
     },
     getTodoList() {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve: (value: Todo[]) => void, reject) => {
         const { execute } = getTodoListApi()
         execute().then((res) => {
-          console.log(res)
           if (res.data.value.status === 'ok')
             resolve(res.data.value.data)
           else
@@ -220,6 +220,29 @@ export const useStore = defineStore('stores', {
         })
       })
     },
+    agreeJoinGroupReq(rid: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = agreeJoinGroupReqApi()
+        execute({ data: { rid } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    addGroupNotification(todo: Todo) {
+      this.gpJoinReqList.unshift(todo as GpJoinRequest)
+    },
+    removeGroupNotification(rid: string) {
+      this.gpJoinReqList = this.gpJoinReqList.filter(item => item.rid !== rid)
+    },
+
   },
   getters: {},
+  persist: {
+    key: 'defaultStore',
+    storage: window.localStorage,
+    paths: ['gpJoinReqList'],
+  },
 })

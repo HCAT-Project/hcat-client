@@ -9,6 +9,19 @@ export function getCookie(name: string) {
   return v ? v[2] : null
 }
 
+export function convertTimeStampToTime(timeStamp: number): string {
+  const date = new Date(timeStamp * 1000)
+  const dateString = date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  })
+  return dateString.replace(',', '').replace(/(\d+)\/(\d+)\/(\d+)/, '$3/$1/$2')
+}
+
 export function getDisplayTime() {
   // 获取当前日期和时间
   const now = new Date()

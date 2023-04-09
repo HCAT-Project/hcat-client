@@ -13,6 +13,9 @@ dependencies:
   pinia:
     specifier: ^2.0.34
     version: 2.0.34(typescript@5.0.3)(vue@3.2.47)
+  pinia-plugin-persistedstate:
+    specifier: ^3.1.0
+    version: 3.1.0(pinia@2.0.34)
   vue:
     specifier: ^3.2.47
     version: 3.2.47
@@ -4643,6 +4646,14 @@ packages:
     engines: {node: '>=0.10'}
     hasBin: true
     dev: true
+
+  /pinia-plugin-persistedstate@3.1.0(pinia@2.0.34):
+    resolution: {integrity: sha512-8UN+vYMEPBdgNLwceY08mi5olI0wkYaEb8b6hD6xW7SnBRuPydWHlEhZvUWgNb/ibuf4PvufpvtS+dmhYjJQOw==}
+    peerDependencies:
+      pinia: ^2.0.0
+    dependencies:
+      pinia: 2.0.34(typescript@5.0.3)(vue@3.2.47)
+    dev: false
 
   /pinia@2.0.34(typescript@5.0.3)(vue@3.2.47):
     resolution: {integrity: sha512-cgOoGUiyqX0SSgX8XelK9+Ri4XA2/YyNtgjogwfzIx1g7iZTaZPxm7/bZYMCLU2qHRiHhxG7SuQO0eBacFNc2Q==}

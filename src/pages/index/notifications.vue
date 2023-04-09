@@ -1,19 +1,12 @@
 <script setup lang="ts">
-import { useStore } from '~/stores/store'
-
 const selected = $ref(-1)
-const store = useStore()
 const router = useRouter()
-
-onMounted(async () => {
-  await store.getTodoList()
-})
 </script>
 
 <template>
   <!-- Chat -->
   <div flex>
-    <div w="70" rounded="l-2xl" bg-back-gray of-hidden>
+    <div w="70" rounded="l-2xl" bg-back-gray of-hidden hidden md:block>
       <div flex="~ col" p="y5 x5" gap-5>
         <!-- Chat card -->
         <div flex="~ col">

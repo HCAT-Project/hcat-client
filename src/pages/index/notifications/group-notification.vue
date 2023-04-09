@@ -1,4 +1,18 @@
 <script setup lang="ts">
+import GroupJoinReqCard from './components/GroupJoinReqCard.vue'
+import { useStore } from '~/stores/store'
+import type { Todo } from '~/types'
+
+const store = useStore()
+
+onMounted(async () => {
+  await store.getTodoList().then((res) => {
+    res.forEach((item: Todo) => {
+      if (item.type === 'group_join_request')
+        store.addGroupNotification(item)
+    })
+  })
+})
 </script>
 
 <template>
@@ -7,30 +21,8 @@
       群通知
     </div>
     <div flex="~ col" gap-5 items-center of-auto p="5">
-      <div flex="~" items-center text-start gap-3 text-sm p-3 bg="back-gray" w-full max-w-150 rounded="lg">
-        <img src="/avatar.jpeg" w-15 h-15 rounded="full">
-        <div flex="~ col" gap-1>
-          <p flex items-end gap-2 text="warning">
-            XMZOVO
-            <span text="text-secondary"> 12:14</span>
-          </p>
-          <p>
-            申请加入
-            <span text="warning">HCAT Official</span>
-          </p>
-          <p text="text-secondary xs">
-            留言:
-            <span>Hello, I'm XMZOVO</span>
-          </p>
-        </div>
-        <div flex-1 />
-        <button border="~ back-light" rounded p="x3 y1" hover="bg-back-light">
-          同意
-        </button>
-        <button border="~ back-light" rounded p="x3 y1" hover="bg-back-light">
-          拒绝
-        </button>
-      </div>
+      <!-- Notification card -->
+      <GroupJoinReqCard v-for="item in store.gpJoinReqList" :key="item.rid" :item="item" />
     </div>
   </div>
 </template>

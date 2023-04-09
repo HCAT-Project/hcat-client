@@ -33,7 +33,7 @@ async function createGroup() {
 <template>
   <!-- Chat -->
   <div flex>
-    <div w="70" rounded="l-2xl" bg-back-gray of-hidden>
+    <div w="70" rounded="l-2xl" bg-back-gray of-hidden hidden md:block>
       <div flex="~ col" p="y5 x5" gap-5>
         <!-- Search bar -->
         <div flex gap-3>
