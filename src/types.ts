@@ -28,11 +28,25 @@ export interface ActiveChat {
   members?: GroupMembers
 }
 
-export interface Message {
-  group_id: string
-  user_id: string
-  msg: string
-  time: string
+// 接收到的群消息接口
+export interface GroupMessage {
+  group_id?: string
+  member_name?: string
+  member_nick?: string
+  msg?: Msg
+  rid?: string
+  time: number
+  type?: TodoType
+  user_id?: string
+}
+
+export interface Msg {
+  msg_chain: MsgChain[]
+}
+
+export interface MsgChain {
+  msg?: string
+  type: string
 }
 
 export interface GroupSetting {
@@ -63,7 +77,7 @@ export interface Todo {
   user_id?: string
   add_info?: string
   time?: number
-  msg?: string
+  msg?: Msg
   friend_nick?: string
   friend_name?: string
   group_id?: string
@@ -75,6 +89,7 @@ export interface Todo {
   text?: string
   title?: string
   path?: string
+  member_name?: string
 }
 
 export interface GpJoinRequest {

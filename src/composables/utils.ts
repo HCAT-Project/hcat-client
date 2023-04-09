@@ -22,9 +22,9 @@ export function convertTimeStampToTime(timeStamp: number): string {
   return dateString.replace(',', '').replace(/(\d+)\/(\d+)\/(\d+)/, '$3/$1/$2')
 }
 
-export function getDisplayTime() {
+export function getDisplayTime(timeStamp: number): string {
   // 获取当前日期和时间
-  const now = new Date()
+  const now = new Date(timeStamp)
 
   // 判断是否为今天
   const isToday = now.toDateString() === new Date().toDateString()

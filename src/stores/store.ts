@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, leaveGroupApi, loginApi, logoutApi, registerApi, sendGroupMsgApi } from '~/api'
+import { agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, leaveGroupApi, loginApi, logoutApi, registerApi, sendGroupMsgApi } from '~/api'
 import { setCookie } from '~/composables'
-import type { ActiveChat, GpJoinRequest, Group, GroupList, GroupMembers, GroupSetting, Todo } from '~/types'
+import type { ActiveChat, GpJoinRequest, Group, GroupList, GroupMembers, GroupMessage, GroupSetting, Todo } from '~/types'
 
 interface LoginForm {
   user_id: string
@@ -29,6 +29,10 @@ interface GroupSettingForm {
   group_id: string
   setting: string
 }
+
+interface GroupMessages {
+  [key: string]: GroupMessage[]
+}
 // type status = 'ok' | 'null'
 
 // interface basicResponse {
@@ -46,6 +50,8 @@ export const useStore = defineStore('stores', {
     } as GroupList,
     activeTab: -1,
     gpJoinReqList: [] as GpJoinRequest[],
+    groupMessages: {
+    } as GroupMessages,
   }),
   actions: {
     login(form: LoginForm) {
@@ -198,6 +204,17 @@ export const useStore = defineStore('stores', {
         })
       })
     },
+    getGroupName(groupId: string) {
+      return new Promise((resolve: (value: string) => void, reject) => {
+        const { execute } = getGroupNameApi()
+        execute({ data: { group_id: groupId } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value.group_name)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
     leaveGroup(groupId: string) {
       return new Promise((resolve, reject) => {
         const { execute } = leaveGroupApi()
@@ -209,6 +226,7 @@ export const useStore = defineStore('stores', {
         })
       })
     },
+    // TODO: 未完成
     getTodoList() {
       return new Promise((resolve: (value: Todo[]) => void, reject) => {
         const { execute } = getTodoListApi()
@@ -243,6 +261,6 @@ export const useStore = defineStore('stores', {
   persist: {
     key: 'defaultStore',
     storage: window.localStorage,
-    paths: ['gpJoinReqList'],
+    paths: ['gpJoinReqList', 'groupMessages'],
   },
 })

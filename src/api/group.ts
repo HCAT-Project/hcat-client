@@ -65,3 +65,9 @@ export function agreeJoinGroupReqApi() {
     method: 'POST',
   })
 }
+
+export function getGroupNameApi() {
+  return useAxiosApi('/group/get_name', {
+    method: 'POST',
+  })
+}

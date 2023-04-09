@@ -2,10 +2,11 @@
 import { useAxios } from '@vueuse/integrations/useAxios'
 import type { AxiosRequestConfig } from 'axios'
 import axios from 'axios'
+import { IP } from '~/constant'
 
 // create an axios instance
 const instance = axios.create({
-  baseURL: 'http://localhost:8081/api',
+  baseURL: IP,
   withCredentials: true,
   timeout: 5000,
   headers: {

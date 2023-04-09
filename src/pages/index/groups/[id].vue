@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { getDisplayTime } from '~/composables'
 import { useStore } from '~/stores/store'
-import type { ChatType, Message } from '~/types'
+import type { ChatType, GroupMessage } from '~/types'
 
 const props = defineProps<{
   id: string
 }>()
 
 const store = useStore()
-const messageList = $ref<Message[]>([])
 const verificationMethod = $ref({
   fr: '自由加入',
   ac: '需要验证',
@@ -49,17 +47,23 @@ async function sendMessage() {
     const msg = {
       msg_chain: [{ type: 'text', msg: inputMessage }],
     }
+
     const form = {
       group_id: store.activeChat.id,
       msg: JSON.stringify(msg),
     }
-    await store.sendGroupMsg(form).then((res) => {
-      messageList.push({
-        group_id: store.activeChat.id,
-        user_id: getCookie('user_id')!,
-        msg: inputMessage,
-        time: getDisplayTime(),
-      })
+    await store.sendGroupMsg(form).then((res: any) => {
+      const user_id = getCookie('user_id')!
+      store.groupMessages[store.activeChat.id] = [
+        ...store.groupMessages[store.activeChat.id] ?? [],
+        {
+          group_id: store.activeChat.id,
+          user_id,
+          member_name: user_id,
+          msg,
+          time: Date.now() / 1000,
+        },
+      ]
       inputMessage = ''
     },
     ).catch((err) => {
@@ -92,6 +96,24 @@ async function leaveGroup() {
     alert(err)
   })
 }
+
+async function fetchTodo() {
+  await store.getTodoList().then((res) => {
+    res.filter(item => item.type === 'group_msg').forEach((item) => {
+      const msg = item as GroupMessage
+      store.groupMessages[store.activeChat.id] = [
+        ...store.groupMessages[store.activeChat.id] ?? [],
+        msg,
+      ]
+    })
+  }).catch((err) => {
+    alert(err)
+  })
+}
+
+function clearMessages() {
+  store.groupMessages[store.activeChat.id] = []
+}
 </script>
 
 <template>
@@ -108,7 +130,7 @@ async function leaveGroup() {
           </div>
         </div>
         <div flex gap-5>
-          <button>
+          <button @click="clearMessages">
             <div text-text-secondary i-carbon-clean />
           </button>
           <button>
@@ -121,7 +143,7 @@ async function leaveGroup() {
       </div>
       <!-- Group chat -->
       <div flex="~ col" of="y-auto" flex-1 p="y10" gap-5 class="no-scrollbar">
-        <ChatBubble v-for="item in messageList" :key="item.msg" :time="item.time" :from-self="item.user_id === getCookie('user_id')!" :message="item.msg" />
+        <ChatBubble v-for="item, idx in store.groupMessages[store.activeChat.id]" :key="idx" :time="convertTimeStampToTime(item.time)" :from-self="item.user_id === getCookie('user_id')!" :message="item.msg!.msg_chain[0].msg!" />
       </div>
       <!-- Input -->
       <div flex items-center m="y5" gap-3 text="text-secondary">
@@ -129,13 +151,15 @@ async function leaveGroup() {
           <div i-carbon-attachment />
         </button>
         <input v-model="inputMessage" :disabled="store.activeChat.type === null" placeholder="说点什么吧" flex-1 bg-transparent outline-none @keydown.enter="sendMessage">
+        <button active="-rotate-180" transition-all @click="fetchTodo">
+          <div i-carbon-rotate-360 />
+        </button>
       </div>
     </div>
     <!-- Chat setting -->
     <div min-w-60 flex="md:~ col" p-5 gap-5 hidden>
       <h1 text="lg" font-bold text-start>
-        聊天设定
-        <span mx-2 text="text-secondary xs" font-sans>{{ id }}</span>
+        聊天设定<span mx-2 text="text-secondary xs" font-sans>{{ id }}</span>
       </h1>
       <div flex justify-between gap-3>
         <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl>

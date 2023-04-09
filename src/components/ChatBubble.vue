@@ -10,7 +10,7 @@ withDefaults(defineProps<{
 
 <template>
   <div flex items-end gap-3 :class="{ 'flex-row-reverse': fromSelf }">
-    <img w-10 h-10 rounded-full src="/avatar.jpeg">
+    <img w-10 h-10 rounded-full :src="fromSelf ? '/avatar.jpeg' : '/hsn.png'">
     <div bg-back-light p="x-3 y3" rounded-lg max-w="2/3" text="sm start" flex="~ col" gap-2>
       <div break-all>
         {{ message }}
