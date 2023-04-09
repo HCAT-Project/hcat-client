@@ -7,10 +7,6 @@ const props = defineProps<{
   id: string
 }>()
 
-onMounted(async () => {
-  await changeActiveChat('group', props.id)
-})
-
 const store = useStore()
 const messageList = $ref<Message[]>([])
 const verificationMethod = $ref({
@@ -20,6 +16,10 @@ const verificationMethod = $ref({
   na: '禁止加入',
 })
 let inputMessage = $ref('')
+
+watch(() => props.id, () => {
+  changeActiveChat('group', props.id)
+}, { immediate: true })
 
 async function changeActiveChat(type: chatType, id: string) {
   // TODO:区分群聊和私聊
@@ -97,7 +97,7 @@ async function leaveGroup() {
 <template>
   <div flex>
     <!-- Chat window -->
-    <div w="8/12" flex="~ col" p="x8 t5" rounded="r-2xl" bg-back-gray of-hidden>
+    <div flex-1 flex="~ col" p="x8 t5" rounded="r-2xl" bg-back-gray of-hidden>
       <!-- Group title -->
       <div flex justify-between items-center>
         <div flex="~ col">
@@ -132,20 +132,19 @@ async function leaveGroup() {
       </div>
     </div>
     <!-- Chat setting -->
-    <div w="4/12" flex="~ col" p-5 gap-5>
-      <div flex="~" justify-between>
-        <h1 text="lg" font-bold>
-          聊天设定
-        </h1>
-      </div>
-      <div flex justify-start gap-3>
-        <button hover="bg-back-light" w-13 h-13 bg-back-gray flex items-center justify-center rounded-xl>
+    <div min-w-60 flex="~ col" p-5 gap-5>
+      <h1 text="lg" font-bold text-start>
+        聊天设定
+        <span mx-2 text="text-secondary xs" font-sans>{{ id }}</span>
+      </h1>
+      <div flex justify-between gap-3>
+        <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl>
           <div i-carbon-text-annotation-toggle />
         </button>
-        <button hover="bg-back-light" w-13 h-13 bg-back-gray flex items-center justify-center rounded-xl>
+        <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl>
           <div i-carbon-notification />
         </button>
-        <button hover="bg-back-light" w-13 h-13 bg-back-gray flex items-center justify-center rounded-xl>
+        <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl>
           <div i-carbon-copy />
         </button>
       </div>

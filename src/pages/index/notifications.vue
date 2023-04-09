@@ -11,7 +11,8 @@
 </template>
 
 <route lang="yaml">
-name: notification
+name: notifications
 meta:
   requiresAuth: true
+  tab: 2
 </route>

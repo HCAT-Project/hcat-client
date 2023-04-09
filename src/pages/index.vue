@@ -32,10 +32,9 @@ const sideBarButtonList: SidebarButton[] = [
 
 let joinGPModalVisible = $ref(false)
 
-onMounted(() => {
-  if (route.path.includes('groups'))
-    store.activeTab = 0
-})
+watch(() => route.meta.tab, () => {
+  store.activeTab = route.meta.tab as number ?? -1
+}, { immediate: true })
 
 async function joinGroup() {
   // TODO: 自由进出与需要验证分开处理
@@ -82,15 +81,12 @@ async function joinGroup() {
 function sideBarAction(index: number) {
   switch (index) {
     case 0:
-      store.activeTab = 0
       router.push('/groups')
       break
     case 1:
-      store.activeTab = 1
       router.push('/friends')
       break
     case 2:
-      store.activeTab = 2
       router.push('/notifications')
       break
     case 3:
@@ -109,7 +105,7 @@ async function logout() {
 <template>
   <div h-full flex="~">
     <!-- Sidebar -->
-    <div w="1/12" flex="~ col" p="y5" justify-between items-center>
+    <div w="20" flex="~ col" p="y5" justify-between items-center>
       <button text-xl font-bold mb-10 @click="router.push('/')">
         <span text-primary>H</span>CAT
       </button>
@@ -141,7 +137,7 @@ async function logout() {
         </button>
       </div>
     </div>
-    <RouterView w="11/12" />
+    <RouterView flex-1 />
   </div>
 </template>
 

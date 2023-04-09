@@ -32,8 +32,8 @@ async function createGroup() {
 
 <template>
   <!-- Chat -->
-  <div flex w-full>
-    <div w="3/12" rounded="l-2xl" bg-back-gray of-hidden>
+  <div flex>
+    <div w="70" rounded="l-2xl" bg-back-gray of-hidden>
       <div flex="~ col" p="y5 x5" gap-5>
         <!-- Search bar -->
         <div flex gap-3>
@@ -69,4 +69,5 @@ async function createGroup() {
 name: groups
 meta:
   requiresAuth: true
+  tab: 0
 </route>

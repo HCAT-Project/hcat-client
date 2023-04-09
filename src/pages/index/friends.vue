@@ -14,4 +14,5 @@
 name: friends
 meta:
   requiresAuth: true
+  tab: 1
 </route>

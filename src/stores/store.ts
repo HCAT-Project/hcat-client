@@ -113,9 +113,7 @@ export const useStore = defineStore('stores', {
         const { execute } = getGroupListApi()
         execute().then((res) => {
           if (res.data.value.status === 'ok') {
-            const mergedObj = {}
-            Object.assign(mergedObj, this.groupList, res.data.value.data as Group)
-            this.groupList = mergedObj
+            this.groupList = res.data.value.data
             resolve(res.data.value.data)
           }
           else { reject(res.data.value.message) }

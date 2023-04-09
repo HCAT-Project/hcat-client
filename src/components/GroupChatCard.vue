@@ -16,7 +16,6 @@ withDefaults(defineProps<{
     <div flex="~ col" flex-1 text="start" truncate>
       <p>
         {{ name }}
-        <span mx-3 text="xs text-secondary op40">{{ group_id }}</span>
       </p>
       <p text="xs text-secondary" truncate>
         Hi there! I'm a friendly Chinese guy!
