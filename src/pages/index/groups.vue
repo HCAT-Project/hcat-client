@@ -13,7 +13,7 @@ onMounted(async () => {
 
 function selectGroup(id: string) {
   store.activeChat.id = id
-  router.push(`/groups/${id}`)
+  router.replace(`/groups/${id}`)
 }
 
 async function createGroup() {

@@ -88,3 +88,9 @@ export function kickMemberApi() {
     method: 'POST',
   })
 }
+
+export function transferOwnershipApi() {
+  return useAxiosApi('/group/transfer_ownership', {
+    method: 'POST',
+  })
+}

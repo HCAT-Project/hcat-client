@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { addAdminApi, agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, loginApi, logoutApi, registerApi, removeAdminApi, sendGroupMsgApi } from '~/api'
+import { addAdminApi, agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, loginApi, logoutApi, registerApi, removeAdminApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
 import { setCookie } from '~/composables'
-import type { ActiveChat, Group, GroupList, GroupMembers, GroupMessage, GroupSetting, Todo } from '~/types'
+import type { ActiveChat, Group, GroupList, GroupMembers, GroupMessage, GroupSetting, GroupVerification, Todo } from '~/types'
 
 interface LoginForm {
   user_id: string
@@ -45,6 +45,7 @@ export const useStore = defineStore('stores', {
     activeChat: {
       id: '',
       members: [],
+      setting: {} as GroupSetting,
     } as ActiveChat,
     groupList: {
     } as GroupList,
@@ -139,11 +140,11 @@ export const useStore = defineStore('stores', {
       })
     },
     getGroupVerification(groupId: string) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve: (value: GroupVerification) => void, reject) => {
         const { execute } = getGroupVerificationApi()
         execute({ data: { group_id: groupId } }).then((res) => {
           if (res.data.value.status === 'ok')
-            resolve(res.data.value.data.verification_method)
+            resolve(res.data.value.data)
           else
             reject(res.data.value.message)
         })
@@ -253,7 +254,6 @@ export const useStore = defineStore('stores', {
       return new Promise((resolve: (value: Todo[]) => void, reject) => {
         const { execute } = getTodoListApi()
         execute().then((res) => {
-          console.log(res)
           if (res.data.value.status === 'ok')
             resolve(res.data.value.data)
           else
@@ -275,6 +275,17 @@ export const useStore = defineStore('stores', {
     kickMember(member_id: string) {
       return new Promise((resolve, reject) => {
         const { execute } = kickMemberApi()
+        execute({ data: { group_id: this.activeChat.id, member_id } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    transferOwnership(member_id: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = transferOwnershipApi()
         execute({ data: { group_id: this.activeChat.id, member_id } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value)

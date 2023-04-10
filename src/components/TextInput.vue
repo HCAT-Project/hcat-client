@@ -4,10 +4,12 @@ const props = withDefaults(defineProps<{
   type?: string
   isRequired?: boolean
   modelValue: string
+  disabled?: boolean
 }>(), {
   type: 'text',
   isRequired: false,
   modelValue: '',
+  disabled: false,
 })
 
 const emits = defineEmits(['update:modelValue'])
@@ -18,8 +20,8 @@ const value = useVModel(props, 'modelValue', emits)
 <template>
   <div flex="~ col" w-full gap-1 text-start>
     <p>{{ label }}<span v-if="isRequired" text-important>*</span></p>
-    <div bg-input rounded px-3 text-text h-10>
-      <input v-model="value" outline-none h-full w-full :type="type">
+    <div :class="[disabled ? 'bg-back text-text-light' : 'bg-input text-text']" rounded px-3 h-10>
+      <input v-model="value" :disabled="disabled" :class="{ 'text-text-light': disabled }" bg-transparent outline-none h-full w-full :type="type">
     </div>
     <slot />
   </div>

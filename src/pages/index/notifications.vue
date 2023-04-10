@@ -10,11 +10,11 @@ const router = useRouter()
       <div flex="~ col" p="y5 x5" gap-5>
         <!-- Chat card -->
         <div flex="~ col">
-          <div p3 rounded-2xl h-15 :class="{ 'bg-back-light': selected === 0 }" hover="bg-back-light" flex="~" justify-between w-full gap-3 items-center select-none @click="router.push('/notifications/friend-notification')">
+          <div p3 rounded-2xl h-15 :class="{ 'bg-back-light': selected === 0 }" hover="bg-back-light" flex="~" justify-between w-full gap-3 items-center select-none @click="router.replace('/notifications/friend-notification')">
             <p>好友通知</p>
             <div i-carbon-chevron-right />
           </div>
-          <div p3 rounded-2xl h-15 :class="{ 'bg-back-light': selected === 1 }" hover="bg-back-light" flex="~" justify-between w-full gap-3 items-center select-none @click="router.push('/notifications/group-notification')">
+          <div p3 rounded-2xl h-15 :class="{ 'bg-back-light': selected === 1 }" hover="bg-back-light" flex="~" justify-between w-full gap-3 items-center select-none @click="router.replace('/notifications/group-notification')">
             <p>群通知</p>
             <div i-carbon-chevron-right />
           </div>

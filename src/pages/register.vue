@@ -20,7 +20,7 @@ async function register() {
     lang: '简体中文',
   }
   await store.register(form).then((res) => {
-    router.push('/login')
+    router.replace('/login')
   }).catch((err) => {
     alert(err)
   })
@@ -39,7 +39,7 @@ async function register() {
         <TextInput v-model="username" label="昵称" />
         <div flex="~ col" gap-1 w-full text-start>
           <TextButton text="注册" @click="register" />
-          <a text-link text-sm cursor-pointer @click="router.push('/login')">已经拥有账号？</a>
+          <a text-link text-sm cursor-pointer @click="router.replace('/login')">已经拥有账号？</a>
         </div>
       </div>
     </div>

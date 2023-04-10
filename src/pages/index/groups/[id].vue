@@ -14,6 +14,8 @@ const verificationMethod = $ref({
   aw: '回答问题',
   na: '禁止加入',
 })
+let transferModalVisible = $ref(false)
+let questionModalVisible = $ref(false)
 let inputMessage = $ref('')
 
 watch(() => props.id, async () => {
@@ -98,13 +100,13 @@ async function sendMessage() {
 }
 
 async function changeGroupSetting() {
-  const setting = toRaw(store.activeChat.setting!)
+  const setting = toRaw(store.activeChat.setting)
   const form = {
     group_id: store.activeChat.id,
     setting: JSON.stringify(setting),
   }
   await store.changeGroupSetting(form).then((res) => {
-    alert('修改成功')
+
   }).catch((err) => {
     alert(err)
   })
@@ -157,6 +159,21 @@ async function kickMember(userId: string) {
   }).catch((err) => {
     alert(err)
   })
+}
+
+async function transferOwnership(userId: string) {
+  await store.transferOwnership(userId).then(async (res) => {
+    transferModalVisible = false
+    store.activeChat.permission = 'admin'
+    await getGroupMembers()
+  }).catch((err) => {
+    alert(err)
+  })
+}
+
+async function saveQuestion() {
+  await changeGroupSetting()
+  questionModalVisible = false
 }
 
 function clearMessages() {
@@ -213,8 +230,19 @@ function clearMessages() {
         <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl>
           <div i-carbon-text-annotation-toggle />
         </button>
-        <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl>
-          <div i-carbon-notification />
+        <button :disabled="store.activeChat.setting.verification_method !== 'aw'" hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl @click="questionModalVisible = true">
+          <div i-carbon-password />
+          <Modal v-model:visible="questionModalVisible" title="修改验证问题">
+            <div flex="~ col" gap-5 p="x5 y5">
+              <div flex="~ col" gap-3>
+                <TextInput v-model="store.activeChat.setting.question" label="问题" />
+                <TextInput v-model="store.activeChat.setting.answer" label="答案" />
+              </div>
+              <div flex justify-end gap-3>
+                <TextButton text="保存" @click="saveQuestion" />
+              </div>
+            </div>
+          </Modal>
         </button>
         <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl>
           <div i-carbon-copy />
@@ -239,7 +267,7 @@ function clearMessages() {
               <div text-text-secondary i-carbon-user-admin />
             </button>
             <!--  -->
-            <button v-if="item.permission !== 'owner' && store.activeChat.permission !== 'member'" @click="kickMember(item.user_id)">
+            <button v-if="item.permission !== 'owner' && store.activeChat.permission !== 'member' && item.user_id !== getCookie('user_id')" @click="kickMember(item.user_id)">
               <div text="important xs" i-carbon-trash-can />
             </button>
           </div>
@@ -254,17 +282,34 @@ function clearMessages() {
             </option>
           </select>
         </div>
-        <!-- <div v-if="(store.activeChat.permission === 'owner' || store.activeChat.permission === 'admin') && store.activeChat.setting?.verification_method === 'aw'" flex="~ col" gap-1>
-          <TextInput v-model="store.activeChat.setting!.question" label="问题" />
-          <TextInput v-model="store.activeChat.setting!.answer" label="答案" />
-        </div> -->
       </div>
-      <button v-if="store.activeChat.permission === 'owner'" bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important>
+      <button v-if="store.activeChat.permission === 'owner'" bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important @click="transferModalVisible = true">
         转让群组
       </button>
       <button v-else bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important @click="leaveGroup">
         离开群组
       </button>
+      <Modal v-model:visible="transferModalVisible" text="text-light" title="转让群组">
+        <div flex="~ col" gap-5>
+          <div flex-1 flex="~ col">
+            <!-- Members -->
+            <div v-for="item, key in store.activeChat.members" :key="key" flex items-center justify-between hover="bg-back-light" rounded-lg p="x3 y2">
+              <div flex items-center gap-3>
+                <img src="/avatar.jpeg" w-10 h-10 rounded-full>
+                <p text="lg" font-bold>
+                  {{ item.user_id }}
+                </p>
+              </div>
+              <div flex gap-2 items-end>
+                <!--  -->
+                <button v-if="item.permission !== 'owner'" @click="transferOwnership(item.user_id)">
+                  <div i-carbon-study-skip />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   </div>
 </template>

@@ -25,12 +25,17 @@ export interface ActiveChat {
   type?: ChatType
   id: string
   permission?: GroupPermission
-  setting?: GroupSetting
+  setting: GroupSetting
   members: GroupMember[]
 }
 
 export interface GroupSetting {
   answer: string
+  question: string
+  verification_method: GroupVerificationMethod
+}
+
+export interface GroupVerification {
   question: string
   verification_method: GroupVerificationMethod
 }

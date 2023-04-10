@@ -9,7 +9,7 @@ const password = $ref('')
 
 onMounted(async () => {
   // await store.authToken().then((res) => {
-  //   router.push('/')
+  //   router.replace('/')
   // }).catch((_) => {
   // })
 })
@@ -24,7 +24,7 @@ async function login() {
     password,
   }
   await store.login(form).then((res) => {
-    router.push('/')
+    router.replace('/')
   }).catch((err) => {
     alert(err)
   })
@@ -45,7 +45,7 @@ async function login() {
         <div flex="~ col" gap-1 w-full>
           <TextButton text="登录" @click="login" />
           <p w-full text="sm start">
-            需要新的账号？<a text-link cursor-pointer @click="router.push('/register')">注册</a>
+            需要新的账号？<a text-link cursor-pointer @click="router.replace('/register')">注册</a>
           </p>
         </div>
       </div>
