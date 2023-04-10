@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { addAdminApi, agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, leaveGroupApi, loginApi, logoutApi, registerApi, removeAdminApi, sendGroupMsgApi } from '~/api'
+import { addAdminApi, agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, loginApi, logoutApi, registerApi, removeAdminApi, sendGroupMsgApi } from '~/api'
 import { setCookie } from '~/composables'
-import type { ActiveChat, GpJoinRequest, Group, GroupList, GroupMembers, GroupMessage, GroupSetting, Todo } from '~/types'
+import type { ActiveChat, Group, GroupList, GroupMembers, GroupMessage, GroupSetting, Todo } from '~/types'
 
 interface LoginForm {
   user_id: string
@@ -49,7 +49,7 @@ export const useStore = defineStore('stores', {
     groupList: {
     } as GroupList,
     activeTab: -1,
-    gpJoinReqList: [] as GpJoinRequest[],
+    gpNotificationList: [] as any[],
     groupMessages: {
     } as GroupMessages,
   }),
@@ -253,6 +253,7 @@ export const useStore = defineStore('stores', {
       return new Promise((resolve: (value: Todo[]) => void, reject) => {
         const { execute } = getTodoListApi()
         execute().then((res) => {
+          console.log(res)
           if (res.data.value.status === 'ok')
             resolve(res.data.value.data)
           else
@@ -271,11 +272,22 @@ export const useStore = defineStore('stores', {
         })
       })
     },
+    kickMember(member_id: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = kickMemberApi()
+        execute({ data: { group_id: this.activeChat.id, member_id } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
     addGroupNotification(todo: Todo) {
-      this.gpJoinReqList.unshift(todo as GpJoinRequest)
+      this.gpNotificationList.unshift(todo)
     },
     removeGroupNotification(rid: string) {
-      this.gpJoinReqList = this.gpJoinReqList.filter(item => item.rid !== rid)
+      this.gpNotificationList = this.gpNotificationList.filter(item => item.rid !== rid)
     },
     clearMessageStorage() {
       this.groupMessages = {}
@@ -286,6 +298,6 @@ export const useStore = defineStore('stores', {
   persist: {
     key: 'defaultStore',
     storage: window.localStorage,
-    paths: ['gpJoinReqList', 'groupMessages'],
+    paths: ['gpNotificationList', 'groupMessages'],
   },
 })

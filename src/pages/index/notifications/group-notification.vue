@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GroupJoinReqCard from './components/GroupJoinReqCard.vue'
+import GroupNotificationCard from './components/GroupNotificationCard.vue'
 import { useStore } from '~/stores/store'
 import type { Todo } from '~/types'
 
@@ -8,7 +8,7 @@ const store = useStore()
 onMounted(async () => {
   await store.getTodoList().then((res) => {
     res.forEach((item: Todo) => {
-      if (item.type === 'group_join_request')
+      if (item.type === 'group_join_request' || item.type === 'admin_removed' || item.type === 'admin_added' || item.type === 'member_removed')
         store.addGroupNotification(item)
     })
   })
@@ -22,7 +22,7 @@ onMounted(async () => {
     </div>
     <div flex="~ col" gap-5 items-center of-auto p="5">
       <!-- Notification card -->
-      <GroupJoinReqCard v-for="item in store.gpJoinReqList" :key="item.rid" :item="item" />
+      <GroupNotificationCard v-for="item in store.gpNotificationList" :key="item.rid" :item="item" />
     </div>
   </div>
 </template>

@@ -7,6 +7,7 @@ const props = defineProps<{
 }>()
 
 const store = useStore()
+const router = useRouter()
 const verificationMethod = $ref({
   fr: '自由加入',
   ac: '需要验证',
@@ -16,6 +17,7 @@ const verificationMethod = $ref({
 let inputMessage = $ref('')
 
 watch(() => props.id, async () => {
+  // TODO:确认当前路由id是否为群聊id
   await changeActiveChat('group', props.id)
 }, { immediate: true })
 
@@ -76,9 +78,12 @@ async function sendMessage() {
       store.groupMessages[store.activeChat.id] = [
         ...store.groupMessages[store.activeChat.id] ?? [],
         {
+          type: 'group_msg',
           group_id: store.activeChat.id,
           user_id,
           member_name: user_id,
+          member_nick: '',
+          rid: '',
           msg,
           time: Date.now() / 1000,
         },
@@ -107,10 +112,10 @@ async function changeGroupSetting() {
 
 async function leaveGroup() {
   await store.leaveGroup(store.activeChat.id).then((res) => {
-    // alert('已退出群聊')
-    // store.getGroupList()
-    // store.activeChat.type = 'none'
-    // store.activeChat.id = ''
+    alert('已退出群聊')
+    store.getGroupList()
+    store.activeChat.id = ''
+    router.replace('/groups')
   }).catch((err) => {
     alert(err)
   })
@@ -138,9 +143,16 @@ async function giveAdmin(userId: string) {
   })
 }
 
-// TODO: 后端无效
 async function removeAdmin(userId: string) {
   await store.removeAdmin(userId).then(async (res) => {
+    await getGroupMembers()
+  }).catch((err) => {
+    alert(err)
+  })
+}
+
+async function kickMember(userId: string) {
+  await store.kickMember(userId).then(async (res) => {
     await getGroupMembers()
   }).catch((err) => {
     alert(err)
@@ -179,7 +191,7 @@ function clearMessages() {
       </div>
       <!-- Group chat -->
       <div flex="~ col" of="y-auto" flex-1 p="y10" gap-5 class="no-scrollbar">
-        <ChatBubble v-for="item, idx in store.groupMessages[store.activeChat.id]" :key="idx" :time="convertTimeStampToTime(item.time)" :from-self="item.user_id === getCookie('user_id')!" :message="item.msg!.msg_chain[0].msg!" />
+        <ChatBubble v-for="item, idx in store.groupMessages[store.activeChat.id]" :key="idx" :time="convertTimeStampToTime(item.time)" :from-self="item.user_id === getCookie('user_id')!" :message="item.msg.msg_chain[0].msg" />
       </div>
       <!-- Input -->
       <div flex items-center m="y5" gap-3 text="text-secondary">
@@ -217,13 +229,20 @@ function clearMessages() {
               {{ item.user_id }}
             </p>
           </div>
-          <div v-if="item.permission === 'owner'" text-warning i-carbon-user-certification />
-          <button v-else-if="item.permission === 'admin'" :disabled="store.activeChat.permission !== 'owner'" @click="removeAdmin(item.user_id)">
-            <div text-safe i-carbon-user-sponsor />
-          </button>
-          <button v-else :disabled="store.activeChat.permission !== 'owner'" @click="giveAdmin(item.user_id)">
-            <div text-text-secondary i-carbon-user-admin />
-          </button>
+          <div flex gap-2 items-end>
+            <!--  -->
+            <div v-if="item.permission === 'owner'" text-warning i-carbon-user-certification />
+            <button v-else-if="item.permission === 'admin'" :disabled="store.activeChat.permission !== 'owner'" @click="removeAdmin(item.user_id)">
+              <div text-safe i-carbon-user-sponsor />
+            </button>
+            <button v-else :disabled="store.activeChat.permission !== 'owner'" @click="giveAdmin(item.user_id)">
+              <div text-text-secondary i-carbon-user-admin />
+            </button>
+            <!--  -->
+            <button v-if="item.permission !== 'owner' && store.activeChat.permission !== 'member'" @click="kickMember(item.user_id)">
+              <div text="important xs" i-carbon-trash-can />
+            </button>
+          </div>
         </div>
       </div>
       <div v-if="store.activeChat.permission === 'owner' || store.activeChat.permission === 'admin'" flex="~ col" text-start gap-1>

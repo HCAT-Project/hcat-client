@@ -13,9 +13,10 @@ const todoTypeList = [
   'group_rename',
   'banned',
   'admin_removed',
-  'admin_add',
+  'admin_added',
   'owner_replaced',
   'question',
+  'member_removed',
 ] as const
 export type TodoType = typeof todoTypeList[number]
 
@@ -26,27 +27,6 @@ export interface ActiveChat {
   permission?: GroupPermission
   setting?: GroupSetting
   members: GroupMember[]
-}
-
-// 接收到的群消息接口
-export interface GroupMessage {
-  group_id?: string
-  member_name?: string
-  member_nick?: string
-  msg?: Msg
-  rid?: string
-  time: number
-  type?: TodoType
-  user_id?: string
-}
-
-export interface Msg {
-  msg_chain: MsgChain[]
-}
-
-export interface MsgChain {
-  msg?: string
-  type: string
 }
 
 export interface GroupSetting {
@@ -77,6 +57,15 @@ export interface GroupMember {
   permission: GroupPermission
 }
 
+export interface Msg {
+  msg_chain: MsgChain[]
+}
+
+export interface MsgChain {
+  msg: string
+  type: string
+}
+
 export interface Todo {
   type: TodoType
   rid?: string
@@ -96,13 +85,46 @@ export interface Todo {
   title?: string
   path?: string
   member_name?: string
+  member_nick?: string
+  name?: string
 }
 
-export interface GpJoinRequest {
+// 接收到的群消息接口
+export type GroupMessage = Todo & {
+  type: 'group_msg'
+  group_id: string
+  member_name: string
+  member_nick: string
+  msg: Msg
+  rid: string
+  time: number
+  user_id: string
+}
+
+// 接收到的管理员变动接口
+export type GroupAdminChange = Todo & {
+  type: 'admin_added' | 'admin_removed'
+  group_id: string
+  name?: string
+  admin_id?: string
+  rid: string
+  time: number
+}
+
+// 接收到的管理员变动接口
+export type MemberRemoved = Todo & {
+  type: 'member_removed'
+  group_id: string
+  member_id: string
+  rid: string
+  time: number
+}
+
+export type GroupJoinRequest = Todo & {
+  type: 'group_join_request'
   add_info: string
   group_id: string
   rid: string
   time: number
-  type: 'group_join_request'
   user_id: string
 }

@@ -82,3 +82,9 @@ export function removeAdminApi() {
     method: 'POST',
   })
 }
+
+export function kickMemberApi() {
+  return useAxiosApi('/group/kick', {
+    method: 'POST',
+  })
+}
