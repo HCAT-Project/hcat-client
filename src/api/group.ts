@@ -94,3 +94,15 @@ export function transferOwnershipApi() {
     method: 'POST',
   })
 }
+
+export function renameGroupApi() {
+  return useAxiosApi('/group/rename', {
+    method: 'POST',
+  })
+}
+// TODO:后端没有解除禁言的接口
+export function banGroupMemberApi() {
+  return useAxiosApi('/group/ban', {
+    method: 'POST',
+  })
+}

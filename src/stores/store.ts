@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { addAdminApi, agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, loginApi, logoutApi, registerApi, removeAdminApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
+import { addAdminApi, agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, loginApi, logoutApi, registerApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
 import { setCookie } from '~/composables'
 import type { ActiveChat, Group, GroupList, GroupMembers, GroupMessage, GroupSetting, GroupVerification, Todo } from '~/types'
 
@@ -287,6 +287,17 @@ export const useStore = defineStore('stores', {
       return new Promise((resolve, reject) => {
         const { execute } = transferOwnershipApi()
         execute({ data: { group_id: this.activeChat.id, member_id } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    renameGroup(group_name: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = renameGroupApi()
+        execute({ data: { group_id: this.activeChat.id, group_name } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value)
           else

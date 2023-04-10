@@ -16,10 +16,15 @@ const verificationMethod = $ref({
 })
 let transferModalVisible = $ref(false)
 let questionModalVisible = $ref(false)
+let renameModalVisible = $ref(false)
 let inputMessage = $ref('')
+const newGroupName = $ref('')
 
 watch(() => props.id, async () => {
-  // TODO:确认当前路由id是否为群聊id
+  if (!store.groupList[props.id]) {
+    router.replace('/groups')
+    return
+  }
   await changeActiveChat('group', props.id)
 }, { immediate: true })
 
@@ -113,9 +118,9 @@ async function changeGroupSetting() {
 }
 
 async function leaveGroup() {
-  await store.leaveGroup(store.activeChat.id).then((res) => {
+  await store.leaveGroup(store.activeChat.id).then(async (res) => {
     alert('已退出群聊')
-    store.getGroupList()
+    await store.getGroupList()
     store.activeChat.id = ''
     router.replace('/groups')
   }).catch((err) => {
@@ -176,6 +181,15 @@ async function saveQuestion() {
   questionModalVisible = false
 }
 
+async function renameGroup() {
+  await store.renameGroup(newGroupName).then(async (res) => {
+    await store.getGroupList()
+    renameModalVisible = false
+  }).catch((err) => {
+    alert(err)
+  })
+}
+
 function clearMessages() {
   store.groupMessages[store.activeChat.id] = []
 }
@@ -227,8 +241,18 @@ function clearMessages() {
         聊天设定<span mx-2 text="text-secondary xs" font-sans>{{ id }}</span>
       </h1>
       <div flex justify-between gap-3>
-        <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl>
+        <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl @click="() => { renameModalVisible = true ;newGroupName = store.groupList[store.activeChat.id].group_name }">
           <div i-carbon-text-annotation-toggle />
+          <Modal v-model:visible="renameModalVisible" title="更改群名">
+            <div flex="~ col" gap-5 p="x5 y5">
+              <div flex="~ col" gap-3>
+                <TextInput v-model="newGroupName" label="群名" />
+              </div>
+              <div flex justify-end gap-3>
+                <TextButton text="保存" @click="renameGroup" />
+              </div>
+            </div>
+          </Modal>
         </button>
         <button :disabled="store.activeChat.setting.verification_method !== 'aw'" hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl @click="questionModalVisible = true">
           <div i-carbon-password />
