@@ -1,17 +1,11 @@
 <script setup lang="ts">
-import GroupNotificationCard from './components/GroupNotificationCard.vue'
+import GroupNotificationCard from '../../../components/notification/GroupNotificationCard.vue'
 import { useStore } from '~/stores/store'
-import type { Todo } from '~/types'
 
 const store = useStore()
 
 onMounted(async () => {
-  await store.getTodoList().then((res) => {
-    res.forEach((item: Todo) => {
-      if (item.type === 'group_join_request' || item.type === 'admin_removed' || item.type === 'admin_added' || item.type === 'member_removed')
-        store.addGroupNotification(item)
-    })
-  })
+  await store.getTodoList()
 })
 </script>
 

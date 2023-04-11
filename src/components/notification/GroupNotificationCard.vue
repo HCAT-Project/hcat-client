@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useStore } from '~/stores/store'
+import { useStore } from '~/stores/store.js'
 import type { GroupAdminChange, GroupJoinRequest, MemberRemoved } from '~/types'
 
 // TODO: 处理不同群组消息

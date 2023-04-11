@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends any, O extends any">
-import { useStore } from '~/stores/store'
+import { useStore } from '~/stores/store.js'
 
 const router = useRouter()
 const store = useStore()
