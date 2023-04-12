@@ -71,7 +71,7 @@ async function uploadFile(file) {
             result = data
         }
     })
-    return result;
+    return await result;
 }
 async function checkIfFileInServer(file) {
     let hash = await calculateSha1(file)
@@ -86,7 +86,7 @@ async function checkIfFileInServer(file) {
             result = data
         }
     })
-    return result;
+    return await result;
 }
 
 function calculateSha1(file) {
