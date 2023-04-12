@@ -59,3 +59,6 @@ function authenticateToken(display = true) {
     });
     return statusProcess(result, display);
 }
+function checkIfFileInServer(){
+
+}
