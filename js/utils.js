@@ -59,6 +59,82 @@ function authenticateToken(display = true) {
     });
     return statusProcess(result, display);
 }
-function checkIfFileInServer(){
+async function uploadFile(file) {
+    let result = null;
+    await $.ajax({
+        type: 'post',
+        url: apiAddress + "/file/upload",
+        data: {file: file},
+        async: true,
+        dataType: 'text',
+        success: function (data) {
+            result = data
+        }
+    })
+    return result;
+}
+async function checkIfFileInServer(file) {
+    let hash = await calculateSha1(file)
+    let result = null;
+    await $.ajax({
+        type: 'get',
+        url: apiAddress + "/file/check_file_exist",
+        data: {sha1: hash},
+        async: true,
+        dataType: 'text',
+        success: function (data) {
+            result = data
+        }
+    })
+    return result;
+}
 
+function calculateSha1(file) {
+    return new Promise((resolve, reject) => {
+        if (!file) {
+            reject(new Error('请提供文件'));
+        }
+
+        const chunkSize = 3 * 1024 * 1024;
+        const chunks = Math.ceil(file.size / chunkSize);
+        let currentChunk = 0;
+        const reader = new FileReader();
+        const blobSlice = File.prototype.webkitSlice || File.prototype.slice || File.prototype.mozSlice;
+        const hasher = CryptoJS.algo.SHA1.create();
+
+        function loadNextChunk() {
+            const start = currentChunk * chunkSize;
+            const end = start + chunkSize >= file.size ? file.size : start + chunkSize;
+            reader.readAsArrayBuffer(blobSlice.call(file, start, end));
+        }
+
+        reader.onload = function (evt) {
+            const fileStr = evt.target.result;
+            const tmpWordArray = arrayBufferToWordArray(fileStr);
+            hasher.update(tmpWordArray);
+            currentChunk += 1;
+
+            if (currentChunk < chunks) {
+                loadNextChunk();
+            } else {
+                const hash = hasher.finalize();
+                resolve(hash.toString());
+            }
+        };
+
+        reader.onerror = function () {
+            reject(new Error('计算SHA1值错误!!!'));
+        };
+
+        loadNextChunk();
+    });
+}
+
+function arrayBufferToWordArray(ab) {
+    const i8a = new Uint8Array(ab);
+    const a = [];
+    for (let i = 0; i < i8a.length; i += 4) {
+        a.push(i8a[i] << 24 | i8a[i + 1] << 16 | i8a[i + 2] << 8 | i8a[i + 3]);
+    }
+    return CryptoJS.lib.WordArray.create(a, i8a.length);
 }

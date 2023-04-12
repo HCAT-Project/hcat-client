@@ -110,7 +110,7 @@ function handleDrop(e) {
 
 // 处理上传文件
 async function handleFiles(files) {
-    console.log(await calculateSha1(files[0]))
+
     // 处理文件，转换成 base64 格式并返回
     const reader = new FileReader();
     reader.readAsDataURL(files[0]);
@@ -118,60 +118,14 @@ async function handleFiles(files) {
         const base64String = reader.result.split(',')[1];
 
         mdui.alert('<img src="data:image/png;base64,' + base64String + '" class="mdui-center" style="height: 300px">', '确认发送？', function () {
-            sendMessage('{"msg_chain":[{"type":"img","msg":"data:image/png;base64,' + base64String + '"}]}');
+            if(!checkIfFileInServer(files[0])){
+                uploadFile(files[0])
+            }
+            sendMessage('{"msg_chain":[{"type":"img","msg":"' + calculateSha1(files[0])+ '"}]}');
         });
     };
 }
 
-function calculateSha1(file) {
-  return new Promise((resolve, reject) => {
-    if (!file) {
-      reject(new Error('请提供文件'));
-    }
-
-    const chunkSize = 3 * 1024 * 1024;
-    const chunks = Math.ceil(file.size / chunkSize);
-    let currentChunk = 0;
-    const reader = new FileReader();
-    const blobSlice = File.prototype.webkitSlice || File.prototype.slice || File.prototype.mozSlice;
-    const hasher = CryptoJS.algo.SHA1.create();
-
-    function loadNextChunk() {
-      const start = currentChunk * chunkSize;
-      const end = start + chunkSize >= file.size ? file.size : start + chunkSize;
-      reader.readAsArrayBuffer(blobSlice.call(file, start, end));
-    }
-
-    reader.onload = function(evt) {
-      const fileStr = evt.target.result;
-      const tmpWordArray = arrayBufferToWordArray(fileStr);
-      hasher.update(tmpWordArray);
-      currentChunk += 1;
-
-      if (currentChunk < chunks) {
-        loadNextChunk();
-      } else {
-        const hash = hasher.finalize();
-        resolve(hash.toString());
-      }
-    };
-
-    reader.onerror = function() {
-      reject(new Error('计算SHA1值错误!!!'));
-    };
-
-    loadNextChunk();
-  });
-}
-
-function arrayBufferToWordArray(ab) {
-  const i8a = new Uint8Array(ab);
-  const a = [];
-  for (let i = 0; i < i8a.length; i += 4) {
-    a.push(i8a[i] << 24 | i8a[i + 1] << 16 | i8a[i + 2] << 8 | i8a[i + 3]);
-  }
-  return CryptoJS.lib.WordArray.create(a, i8a.length);
-}
 
 
 // 发送截图
