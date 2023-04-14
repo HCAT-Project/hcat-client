@@ -61,12 +61,16 @@ function authenticateToken(display = true) {
 }
 async function uploadFile(file) {
     let result = null;
+    let formData=new FormData();
+    formData.append("file",file);
     $.ajax({
         type: 'post',
         url: apiAddress + "/file/upload",
-        data: {file: file},
+        data:  formData,
         async: true,
-        dataType: 'text',
+        dataType: 'json',
+        processData:false,
+        contentType:false,
         success: function (data) {
             result = data
         }
