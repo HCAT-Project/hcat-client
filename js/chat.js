@@ -121,7 +121,9 @@ async function handleFiles(files) {
             if(!checkIfFileInServer(files[0])){
                 uploadFile(files[0])
             }
-            sendMessage('{"msg_chain":[{"type":"img","msg":"' + calculateSha1(files[0])+ '"}]}');
+            calculateSha1(files[0]).then(sha1=>{
+                sendMessage('{"msg_chain":[{"type":"img","msg":"' + sha1 + '"}]}');
+            })
         });
     };
 }
