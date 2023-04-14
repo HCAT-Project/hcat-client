@@ -86,7 +86,7 @@ async function checkIfFileInServer(file) {
             result = data
         }
     })
-    return await result;
+    return await result.status === "ok";
 }
 
 function calculateSha1(file) {
