@@ -61,7 +61,7 @@ function authenticateToken(display = true) {
 }
 async function uploadFile(file) {
     let result = null;
-    await $.ajax({
+    $.ajax({
         type: 'post',
         url: apiAddress + "/file/upload",
         data: {file: file},
@@ -86,7 +86,8 @@ async function checkIfFileInServer(file) {
             result = data
         }
     })
-    return await result.status === "ok";
+
+    return JSON.parse(await result).status === "ok";
 }
 
 function calculateSha1(file) {

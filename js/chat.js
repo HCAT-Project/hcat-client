@@ -118,16 +118,20 @@ async function handleFiles(files) {
         const base64String = reader.result.split(',')[1];
 
         mdui.alert('<img src="data:image/png;base64,' + base64String + '" class="mdui-center" style="height: 300px">', '确认发送？', function () {
-            if(!checkIfFileInServer(files[0])){
-                uploadFile(files[0])
-            }
-            calculateSha1(files[0]).then(sha1=>{
-                sendMessage('{"msg_chain":[{"type":"img","msg":"' + sha1 + '"}]}');
+            checkIfFileInServer(files[0]).then(rst => {
+                if (!rst) {
+                    uploadFile(files[0])
+                }
+            }).finally(() => {
+                calculateSha1(files[0]).then(sha1 => {
+                    sendMessage('{"msg_chain":[{"type":"img","msg":"' + sha1 + '"}]}');
+                })
             })
+
+
         });
     };
 }
-
 
 
 // 发送截图
