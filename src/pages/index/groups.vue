@@ -4,13 +4,17 @@ import { useStore } from '~/stores/store'
 
 const store = useStore()
 const router = useRouter()
+const route = useRoute()
 
 onMounted(async () => {
   await store.getGroupList()
 })
 
+const selectGroupId = computed(() => {
+  return route.path.split('/')[2]
+})
+
 function selectGroup(id: string) {
-  store.activeChat.id = id
   router.replace(`/groups/${id}`)
 }
 </script>
@@ -22,7 +26,7 @@ function selectGroup(id: string) {
       <div flex="~ col" p="y5 x5" gap-5>
         <GroupListHead />
         <div flex="~ col">
-          <GroupCard v-for="item, key in store.groupList" :key="item.group_name" :group_id="key" :selected="store.activeChat.id === key" :name="item.group_name" :new-message-number="99" @click="selectGroup(key as string)" />
+          <ChatCard v-for="item, key in store.groupList" id="==@click=&quot;selectGroup(key" :key="item.group_name" :group_id="key" :name="item.group_name" :new-message-number="99" :selected="selectGroupId === key" @click="selectGroup(key as string)" />
         </div>
       </div>
     </div>

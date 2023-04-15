@@ -10,8 +10,15 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ChatBubble: typeof import('./src/components/ChatBubble.vue')['default']
-    ChatCard: typeof import('./src/components/GroupChatCard.vue')['default']
+    ChatCard: typeof import('./src/components/ChatCard.vue')['default']
     DChatCard: typeof import('./src/components/ChatCard.vue')['default']
+    FriendChatContent: typeof import('./src/components/friend/FriendChatContent.vue')['default']
+    FriendChatHead: typeof import('./src/components/friend/FriendChatHead.vue')['default']
+    FriendChatInput: typeof import('./src/components/friend/FriendChatInput.vue')['default']
+    FriendChatInputPanel: typeof import('./src/components/friend/FriendChatInputPanel.vue')['default']
+    FriendListHead: typeof import('./src/components/friend/FriendListHead.vue')['default']
+    FriendNotificationCard: typeof import('./src/components/notification/FriendNotificationCard.vue')['default']
+    FriendSetting: typeof import('./src/components/friend/FriendSetting.vue')['default']
     GroupCard: typeof import('./src/components/GroupCard.vue')['default']
     GroupChatCard: typeof import('./src/components/GroupChatCard.vue')['default']
     GroupChatContent: typeof import('./src/components/group/GroupChatContent.vue')['default']

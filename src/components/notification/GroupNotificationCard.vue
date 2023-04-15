@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useStore } from '~/stores/store.js'
-import type { GroupAdminChange, GroupJoinRequest, MemberRemoved } from '~/types'
+import type { GroupNotification } from '~/types'
 
 // TODO: 处理不同群组消息
 const props = defineProps<{
-  item: GroupAdminChange | GroupJoinRequest | MemberRemoved
+  item: GroupNotification
 }>()
 
 const store = useStore()

@@ -7,6 +7,12 @@ const route = useRoute()
 watch(() => route.meta.tab, () => {
   store.activeTab = route.meta.tab as number ?? -1
 }, { immediate: true })
+
+onMounted(() => {
+  setInterval(async () => {
+    await store.getTodoList()
+  }, 2000)
+})
 </script>
 
 <template>

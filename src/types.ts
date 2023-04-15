@@ -20,15 +20,6 @@ const todoTypeList = [
 ] as const
 export type TodoType = typeof todoTypeList[number]
 
-export interface ActiveChat {
-  // TODO:check
-  type?: ChatType
-  id: string
-  permission?: GroupPermission
-  setting: GroupSetting
-  members: GroupMember[]
-}
-
 export interface GroupSetting {
   answer: string
   question: string
@@ -42,6 +33,10 @@ export interface GroupVerification {
 
 export interface GroupList {
   [key: string]: Group
+}
+
+export interface FriendList {
+  [key: string]: string
 }
 
 export interface Group {
@@ -71,31 +66,35 @@ export interface MsgChain {
   type: string
 }
 
-export interface Todo {
-  type: TodoType
-  rid?: string
-  user_id?: string
-  add_info?: string
-  time?: number
-  msg?: Msg
-  friend_nick?: string
-  friend_name?: string
-  group_id?: string
-  old_name?: string
-  new_name?: string
-  ban_time?: string
-  old_owner?: string
-  param_name?: string
-  text?: string
-  title?: string
-  path?: string
-  member_name?: string
-  member_nick?: string
-  name?: string
-}
+// export interface Todo {
+//   type: TodoType
+//   rid?: string
+//   user_id?: string
+//   add_info?: string
+//   time?: number
+//   msg?: Msg
+//   friend_nick?: string
+//   friend_name?: string
+//   group_id?: string
+//   old_name?: string
+//   new_name?: string
+//   ban_time?: string
+//   old_owner?: string
+//   param_name?: string
+//   text?: string
+//   title?: string
+//   path?: string
+//   member_name?: string
+//   member_nick?: string
+//   name?: string
+// }
+
+export type Todo = GroupMessage | GroupJoinRequest | GroupAdminChange | MemberRemoved | FriendRequest | FriendMessage
+export type GroupNotification = GroupJoinRequest | GroupAdminChange | MemberRemoved
+export type FriendNotification = FriendRequest
 
 // 接收到的群消息接口
-export type GroupMessage = Todo & {
+export interface GroupMessage {
   type: 'group_msg'
   group_id: string
   member_name: string
@@ -106,8 +105,18 @@ export type GroupMessage = Todo & {
   user_id: string
 }
 
+// 加入群聊的请求接口
+export interface GroupJoinRequest {
+  type: 'group_join_request'
+  add_info: string
+  group_id: string
+  rid: string
+  time: number
+  user_id: string
+}
+
 // 接收到的管理员变动接口
-export type GroupAdminChange = Todo & {
+export interface GroupAdminChange {
   type: 'admin_added' | 'admin_removed'
   group_id: string
   name?: string
@@ -117,7 +126,7 @@ export type GroupAdminChange = Todo & {
 }
 
 // 接收到的管理员变动接口
-export type MemberRemoved = Todo & {
+export interface MemberRemoved {
   type: 'member_removed'
   group_id: string
   member_id: string
@@ -125,10 +134,21 @@ export type MemberRemoved = Todo & {
   time: number
 }
 
-export type GroupJoinRequest = Todo & {
-  type: 'group_join_request'
+export interface FriendRequest {
+  type: 'friend_request'
   add_info: string
-  group_id: string
+  req_user_id: string
+  rid: string
+  time: number
+  user_id: string
+}
+
+export interface FriendMessage {
+  type: 'friend_msg'
+  friend_id: string
+  friend_name: string
+  friend_nick: string
+  msg: Msg
   rid: string
   time: number
   user_id: string

@@ -19,20 +19,22 @@ async function sendMessage() {
   const msg = {
     msg_chain: [{ type: 'text', msg: inputMessage }],
   }
+
   const form = {
-    group_id: props.id,
+    friend_id: props.id,
     msg: JSON.stringify(msg),
   }
-  await store.sendGroupMsg(form).then((res: any) => {
+
+  await store.sendFriendMessage(form).then((res: any) => {
     const user_id = getCookie('user_id')!
-    store.groupMessages[props.id] = [
-      ...store.groupMessages[props.id] ?? [],
+    store.friendMessages[props.id] = [
+      ...store.friendMessages[props.id] ?? [],
       {
-        type: 'group_msg',
-        group_id: props.id,
+        type: 'friend_msg',
+        friend_id: props.id,
         user_id,
-        member_name: user_id,
-        member_nick: '',
+        friend_name: user_id,
+        friend_nick: '',
         rid: '',
         msg,
         time: Date.now() / 1000,
@@ -43,8 +45,6 @@ async function sendMessage() {
   ).catch((err) => {
     alert(err)
   })
-
-  // TODO: 好友消息
 }
 </script>
 

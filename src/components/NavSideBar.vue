@@ -93,7 +93,7 @@ async function submitAnswer() {
 function sideBarAction(index: number) {
   switch (index) {
     case 0:
-      router.replace(`/groups/${store.activeChat.id ?? ''}`)
+      router.replace('/groups')
       break
     case 1:
       router.replace('/friends')
@@ -146,7 +146,7 @@ async function logout() {
       </Modal>
     </div>
     <div flex="~ col" gap-5 text="xs text-secondary">
-      <button flex="~ col" items-center gap-2 hover="text-light" @click="store.clearMessageStorage">
+      <button flex="~ col" items-center gap-2 hover="text-light" @click="store.clearStorage">
         <div w-6 h-6 i-carbon-trash-can />
         <p> 清空</p>
       </button>

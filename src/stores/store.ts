@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { addAdminApi, agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, loginApi, logoutApi, registerApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
+import { addFriendApi, agreeFriendReqApi, getFriendListApi, sendFriendMsgApi } from '~/api/friend'
 import { setCookie } from '~/composables'
-import type { ActiveChat, Group, GroupList, GroupMembers, GroupMessage, GroupSetting, GroupVerification, Todo } from '~/types'
+import type { FriendList, FriendMessage, FriendNotification, GroupList, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, Todo } from '~/types'
 
 interface LoginForm {
   user_id: string
@@ -20,6 +21,11 @@ interface GroupMsgForm {
   msg: string
 }
 
+interface FriendMsgForm {
+  friend_id: string
+  msg: string
+}
+
 interface JoinGroupForm {
   group_id: string
   add_info: string
@@ -33,6 +39,9 @@ interface GroupSettingForm {
 interface GroupMessages {
   [key: string]: GroupMessage[]
 }
+interface FriendMessages {
+  [key: string]: FriendMessage[]
+}
 // type status = 'ok' | 'null'
 
 // interface basicResponse {
@@ -42,17 +51,17 @@ interface GroupMessages {
 
 export const useStore = defineStore('stores', {
   state: () => ({
-    activeChat: {
-      id: '',
-      members: [],
-      setting: {} as GroupSetting,
-    } as ActiveChat,
     groupList: {
     } as GroupList,
+    friendList: {
+    } as FriendList,
     activeTab: -1,
-    gpNotificationList: [] as any[],
+    gpNotificationList: [] as GroupNotification[],
+    fdNotificationList: [] as FriendNotification[],
     groupMessages: {
     } as GroupMessages,
+    friendMessages: {
+    } as FriendMessages,
   }),
   actions: {
     login(form: LoginForm) {
@@ -117,7 +126,7 @@ export const useStore = defineStore('stores', {
       })
     },
     getGroupList() {
-      return new Promise((resolve: (value: Group) => void, reject) => {
+      return new Promise((resolve: (value: GroupList) => void, reject) => {
         const { execute } = getGroupListApi()
         execute().then((res) => {
           if (res.data.value.status === 'ok') {
@@ -161,27 +170,23 @@ export const useStore = defineStore('stores', {
         })
       })
     },
-    getSelfPmsInGroup() {
-      return new Promise((resolve, reject) => {
+    getSelfPmsInGroup(group_id: string) {
+      return new Promise((resolve: (value: GroupPermission) => void, reject) => {
         const { execute } = getSelfPmsInGroupApi()
-        execute({ data: { group_id: this.activeChat.id } }).then((res) => {
-          if (res.data.value.status === 'ok') {
-            this.activeChat.permission = res.data.value.data
+        execute({ data: { group_id } }).then((res) => {
+          if (res.data.value.status === 'ok')
             resolve(res.data.value.data)
-          }
-          else { reject(res.data.value.message) }
+          else reject(res.data.value.message)
         })
       })
     },
-    getGroupSetting() {
+    getGroupSetting(group_id: string) {
       return new Promise((resolve: (value: GroupSetting) => void, reject) => {
         const { execute } = getGroupSettingApi()
-        execute({ data: { group_id: this.activeChat.id } }).then((res) => {
-          if (res.data.value.status === 'ok') {
-            this.activeChat.setting = res.data.value.data
-            resolve(res.data.value.data as GroupSetting)
-          }
-          else { reject(res.data.value.message) }
+        execute({ data: { group_id } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value.data)
+          else reject(res.data.value.message)
         })
       })
     },
@@ -196,10 +201,10 @@ export const useStore = defineStore('stores', {
         })
       })
     },
-    getGroupMembers() {
-      return new Promise((resolve: (value: GroupMembers) => void, reject) => {
+    getGroupMembers(group_id: string) {
+      return new Promise((resolve: (value: GroupMember[]) => void, reject) => {
         const { execute } = getGroupMembersApi()
-        execute({ data: { group_id: this.activeChat.id } }).then((res) => {
+        execute({ data: { group_id } }).then((res) => {
           if (res.data.value.status === 'ok') {
             const data = res.data.value.data
             const owners = []
@@ -211,8 +216,8 @@ export const useStore = defineStore('stores', {
               else
                 members.push(member)
             }
-            this.activeChat.members = owners.concat(members)
-            resolve(res.data.value.data)
+            const groupMembers = owners.concat(members)
+            resolve(groupMembers)
           }
 
           else { reject(res.data.value.message) }
@@ -241,10 +246,10 @@ export const useStore = defineStore('stores', {
         })
       })
     },
-    addAdmin(member_id: string) {
+    addAdmin(group_id: string, member_id: string) {
       return new Promise((resolve, reject) => {
         const { execute } = addAdminApi()
-        execute({ data: { group_id: this.activeChat.id, member_id } }).then((res) => {
+        execute({ data: { group_id, member_id } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value)
           else
@@ -252,10 +257,10 @@ export const useStore = defineStore('stores', {
         })
       })
     },
-    removeAdmin(admin_id: string) {
+    removeAdmin(group_id: string, admin_id: string) {
       return new Promise((resolve, reject) => {
         const { execute } = removeAdminApi()
-        execute({ data: { group_id: this.activeChat.id, admin_id } }).then((res) => {
+        execute({ data: { group_id, admin_id } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value)
           else
@@ -269,17 +274,31 @@ export const useStore = defineStore('stores', {
         const { execute } = getTodoListApi()
         execute().then((res) => {
           if (res.data.value.status === 'ok') {
+            // console.log(res)
             const data = res.data.value.data
             data.forEach((item: Todo) => {
               switch (item.type) {
                 case 'group_msg':
-                  this.groupMessages[this.activeChat.id] = [
-                    ...this.groupMessages[this.activeChat.id] ?? [],
-                    item as GroupMessage,
+                  this.groupMessages[item.group_id] = [
+                    ...this.groupMessages[item.group_id] ?? [],
+                    item,
                   ]
                   break
-                case 'group_join_request' || 'admin_removed' || 'admin_added' || 'member_removed':
+                case 'friend_msg':
+                  this.friendMessages[item.friend_id] = [
+                    ...this.friendMessages[item.friend_id] ?? [],
+                    item,
+                  ]
+                  break
+                case 'friend_request':
+                  this.addFriendNotification(item)
+                  break
+                case 'group_join_request':
+                case 'admin_added':
+                case 'admin_removed':
+                case 'member_removed':
                   this.addGroupNotification(item)
+                  break
               }
             })
             resolve(data)
@@ -299,10 +318,10 @@ export const useStore = defineStore('stores', {
         })
       })
     },
-    kickMember(member_id: string) {
+    kickMember(group_id: string, member_id: string) {
       return new Promise((resolve, reject) => {
         const { execute } = kickMemberApi()
-        execute({ data: { group_id: this.activeChat.id, member_id } }).then((res) => {
+        execute({ data: { group_id, member_id } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value)
           else
@@ -310,10 +329,10 @@ export const useStore = defineStore('stores', {
         })
       })
     },
-    transferOwnership(member_id: string) {
+    transferOwnership(group_id: string, member_id: string) {
       return new Promise((resolve, reject) => {
         const { execute } = transferOwnershipApi()
-        execute({ data: { group_id: this.activeChat.id, member_id } }).then((res) => {
+        execute({ data: { group_id, member_id } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value)
           else
@@ -321,10 +340,10 @@ export const useStore = defineStore('stores', {
         })
       })
     },
-    renameGroup(group_name: string) {
+    renameGroup(group_id: string, group_name: string) {
       return new Promise((resolve, reject) => {
         const { execute } = renameGroupApi()
-        execute({ data: { group_id: this.activeChat.id, group_name } }).then((res) => {
+        execute({ data: { group_id, group_name } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value)
           else
@@ -332,17 +351,73 @@ export const useStore = defineStore('stores', {
         })
       })
     },
-    addGroupNotification(todo: Todo) {
-      this.gpNotificationList.unshift(todo)
+    addFriend(user_id: string, add_info: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = addFriendApi()
+        execute({ data: { user_id, add_info } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value)
+
+          else reject(res.data.value.message)
+        })
+      })
+    },
+    agreeFriendReq(rid: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = agreeFriendReqApi()
+        execute({ data: { rid } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    getFriendList() {
+      return new Promise((resolve, reject) => {
+        const { execute } = getFriendListApi()
+        execute().then((res) => {
+          if (res.data.value.status === 'ok') {
+            this.friendList = res.data.value.data
+            resolve(res.data.value.data)
+          }
+          else { reject(res.data.value.message) }
+        })
+      })
+    },
+    sendFriendMessage(form: FriendMsgForm) {
+      return new Promise((resolve, reject) => {
+        const { execute } = sendFriendMsgApi()
+        execute({ data: form }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    addGroupNotification(notification: GroupNotification) {
+      this.gpNotificationList.unshift(notification)
+    },
+    addFriendNotification(notification: FriendNotification) {
+      this.fdNotificationList.unshift(notification)
     },
     removeGroupNotification(rid: string) {
       this.gpNotificationList = this.gpNotificationList.filter(item => item.rid !== rid)
     },
-    clearGroupMessages() {
-      this.groupMessages[this.activeChat.id] = []
+    removeFriendNotification(rid: string) {
+      this.fdNotificationList = this.fdNotificationList.filter(item => item.rid !== rid)
     },
-    clearMessageStorage() {
+    clearGroupMessages(group_id: string) {
+      this.groupMessages[group_id] = []
+    },
+    clearStorage() {
       this.groupMessages = {}
+      this.friendMessages = {}
+      this.gpNotificationList = []
+      this.fdNotificationList = []
+      this.groupList = {}
+      this.friendList = {}
     },
 
   },
@@ -350,6 +425,6 @@ export const useStore = defineStore('stores', {
   persist: {
     key: 'defaultStore',
     storage: window.localStorage,
-    paths: ['gpNotificationList', 'groupList', 'groupMessages'],
+    paths: ['gpNotificationList', 'fdNotificationList', 'groupList', 'friendList', 'friendMessages', 'groupMessages'],
   },
 })

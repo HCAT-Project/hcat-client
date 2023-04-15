@@ -4,9 +4,9 @@ import { useStore } from '~/stores/store'
 
 const store = useStore()
 
-onMounted(async () => {
-  await store.getTodoList()
-})
+// onMounted(async () => {
+//   await store.getTodoList()
+// })
 </script>
 
 <template>

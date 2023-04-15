@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import { useStore } from '~/stores/store'
-
 defineProps<{
   id: string
 }>()
 
-const store = useStore()
-
 function clearMessages() {
-  store.clearGroupMessages()
+  // store.clearGroupMessages()
 }
 </script>
 
@@ -17,7 +13,7 @@ function clearMessages() {
     <div flex="~ col">
       <div flex="~ col" gap-1>
         <p text="lg start" font-bold>
-          {{ store.groupList[id]?.group_name ?? '群组' }}
+          {{ id ?? '好友' }}
         </p>
       </div>
     </div>
