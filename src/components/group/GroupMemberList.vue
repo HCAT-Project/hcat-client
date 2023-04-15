@@ -28,7 +28,7 @@ async function removeAdmin(userId: string) {
 
 async function kickMember(userId: string) {
   await store.kickMember(props.id, userId).then(async (res) => {
-    await store.getGroupMembers(props.id)
+    // await store.getGroupMembers(props.id)
   }).catch((err) => {
     alert(err)
   })

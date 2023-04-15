@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { addAdminApi, agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, loginApi, logoutApi, registerApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
-import { addFriendApi, agreeFriendReqApi, getFriendListApi, sendFriendMsgApi } from '~/api/friend'
+import { addFriendApi, agreeFriendReqApi, deleteFriendApi, getFriendListApi, sendFriendMsgApi } from '~/api/friend'
 import { setCookie } from '~/composables'
 import type { FriendList, FriendMessage, FriendNotification, GroupList, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, Todo } from '~/types'
 
@@ -321,11 +321,12 @@ export const useStore = defineStore('stores', {
     kickMember(group_id: string, member_id: string) {
       return new Promise((resolve, reject) => {
         const { execute } = kickMemberApi()
-        execute({ data: { group_id, member_id } }).then((res) => {
-          if (res.data.value.status === 'ok')
+        execute({ data: { group_id, member_id } }).then(async (res) => {
+          if (res.data.value.status === 'ok') {
+            await this.getGroupMembers(group_id)
             resolve(res.data.value)
-          else
-            reject(res.data.value.message)
+          }
+          else { reject(res.data.value.message) }
         })
       })
     },
@@ -396,6 +397,18 @@ export const useStore = defineStore('stores', {
         })
       })
     },
+    deleteFriend(friend_id: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = deleteFriendApi()
+        execute({ data: { friend_id } }).then(async (res) => {
+          if (res.data.value.status === 'ok') {
+            await this.getFriendList()
+            resolve(res.data.value)
+          }
+          else { reject(res.data.value.message) }
+        })
+      })
+    },
     addGroupNotification(notification: GroupNotification) {
       this.gpNotificationList.unshift(notification)
     },
@@ -423,7 +436,7 @@ export const useStore = defineStore('stores', {
   },
   getters: {},
   persist: {
-    key: 'defaultStore',
+    key: 'defaultStorage',
     storage: window.localStorage,
     paths: ['gpNotificationList', 'fdNotificationList', 'groupList', 'friendList', 'friendMessages', 'groupMessages'],
   },

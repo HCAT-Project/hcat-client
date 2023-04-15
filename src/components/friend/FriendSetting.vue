@@ -1,15 +1,26 @@
 <script setup lang="ts">
-defineProps<{
+import { useStore } from '~/stores/store'
+
+const props = defineProps<{
   id: string
 }>()
 
-// const store = useStore()
-// const router = useRouter()
+const store = useStore()
+const router = useRouter()
 const renameModalVisible = $ref(false)
 const newNickName = $ref('')
 
 function renameFriend() {
+  // TODO: rename friend
+  alert('not implemented')
+}
 
+function deleteFriend() {
+  store.deleteFriend(props.id).then(() => {
+    router.replace('/friends')
+  }).catch((err) => {
+    alert(err)
+  })
 }
 </script>
 
@@ -34,7 +45,7 @@ function renameFriend() {
       </button>
     </div>
     <div flex-1 />
-    <button bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important @click="() => {}">
+    <button bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important @click="deleteFriend">
       删除好友
     </button>
   </div>

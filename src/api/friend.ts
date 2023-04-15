@@ -23,3 +23,9 @@ export function sendFriendMsgApi() {
     method: 'POST',
   })
 }
+
+export function deleteFriendApi() {
+  return useAxiosApi('/friend/delete_friend', {
+    method: 'POST',
+  })
+}
