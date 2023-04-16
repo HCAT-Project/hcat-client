@@ -175,7 +175,7 @@ function unzipMessage(data, type) {
             }
         } else if (arr[i].type === 'img') {
             if (type === MsgDisplayType.FULL_TEXT) {
-                out += '<img src="/files/' + arr[i].msg + '" style="height: 150px;" onclick="enlargeImage(this)">';
+                out += '<img src="files/' + arr[i].msg + '" style="height: 150px;" onclick="enlargeImage(this)">';
             } else if (type === MsgDisplayType.PLAIN_TEXT) {
                 out += '[图片]';
             }
