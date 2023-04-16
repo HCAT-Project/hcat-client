@@ -20,6 +20,10 @@ watch(files, (files) => {
   const img = files[0]
   const reader = new FileReader() // 创建 FileReader 对象
   reader.readAsDataURL(img) // 读取文件内容
+  if (img.size > 1024 * 1024 * 3) {
+    alert('图片大小不能超过 3MB')
+    return
+  }
   reader.onload = async (e) => {
     const msg = {
       msg_chain: [{ type: 'img', msg: e.target?.result as string }],

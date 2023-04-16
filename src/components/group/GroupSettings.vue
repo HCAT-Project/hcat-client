@@ -83,6 +83,10 @@ async function leaveGroup() {
     alert(err)
   })
 }
+
+function writeToClipboard() {
+  navigator.clipboard.writeText(props.id)
+}
 </script>
 
 <template>
@@ -118,7 +122,7 @@ async function leaveGroup() {
           </div>
         </Modal>
       </button>
-      <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl>
+      <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl @click="writeToClipboard">
         <div i-carbon-copy />
       </button>
     </div>

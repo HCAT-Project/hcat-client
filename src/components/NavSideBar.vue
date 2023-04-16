@@ -147,7 +147,7 @@ async function logout() {
       </Modal>
     </div>
     <div flex="~ col" gap-5 text="xs text-secondary">
-      <button flex="~ col" items-center gap-2 hover="text-light" @click="store.clearStorage">
+      <button flex="~ col" items-center gap-2 hover="text-light" @click="() => { store.clearStorage;router.replace('/') }">
         <div w-6 h-6 i-carbon-trash-can />
         <p> 清空</p>
       </button>

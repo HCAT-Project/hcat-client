@@ -438,6 +438,7 @@ export const useStore = defineStore('stores', {
   persist: {
     key: 'defaultStorage',
     storage: window.localStorage,
+    // TODO: 图片不该存储在本地
     paths: ['gpNotificationList', 'fdNotificationList', 'groupList', 'friendList', 'friendMessages', 'groupMessages'],
   },
 })
