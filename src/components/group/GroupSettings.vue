@@ -135,30 +135,30 @@ async function leaveGroup() {
     </div>
     <button v-if="selfPermission === 'owner'" bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important @click="transferModalVisible = true">
       转让群组
+      <Modal :modal-visible="transferModalVisible" text="text-light" title="转让群组" @close="transferModalVisible = false">
+        <div flex="~ col" gap-5>
+          <div flex-1 flex="~ col">
+            <!-- Members -->
+            <div v-for="item, key in groupMembers" :key="key" flex items-center justify-between hover="bg-back-light" rounded-lg p="x3 y2">
+              <div flex items-center gap-3>
+                <img src="/avatar.jpeg" w-10 h-10 rounded-full>
+                <p text="lg" font-bold>
+                  {{ item.user_id }}
+                </p>
+              </div>
+              <div flex gap-2 items-end>
+                <!--  -->
+                <button v-if="item.permission !== 'owner'" @click="transferOwnership(item.user_id)">
+                  <div i-carbon-study-skip />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </button>
     <button v-else bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important @click="leaveGroup">
       离开群组
     </button>
-    <Modal :modal-visible="transferModalVisible" text="text-light" title="转让群组" @close="transferModalVisible = false">
-      <div flex="~ col" gap-5>
-        <div flex-1 flex="~ col">
-          <!-- Members -->
-          <div v-for="item, key in groupMembers" :key="key" flex items-center justify-between hover="bg-back-light" rounded-lg p="x3 y2">
-            <div flex items-center gap-3>
-              <img src="/avatar.jpeg" w-10 h-10 rounded-full>
-              <p text="lg" font-bold>
-                {{ item.user_id }}
-              </p>
-            </div>
-            <div flex gap-2 items-end>
-              <!--  -->
-              <button v-if="item.permission !== 'owner'" @click="transferOwnership(item.user_id)">
-                <div i-carbon-study-skip />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Modal>
   </div>
 </template>

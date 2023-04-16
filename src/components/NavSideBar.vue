@@ -108,6 +108,7 @@ function sideBarAction(index: number) {
 }
 
 async function logout() {
+  store.clearStorage()
   await store.logout().then((_) => {
     router.replace('/login')
   })
