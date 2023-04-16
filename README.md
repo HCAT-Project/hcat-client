@@ -6,7 +6,7 @@ hcat-client是[HCat](https://hcat.online/)的一个JavaScript客户端，本项�
 
 由于本项目仅为静态客户端资源，您需要配合[re_hcat-server](https://github.com/HCAT-Project/re_hcat-server)使用。[re_hcat-server](https://github.com/HCAT-Project/re_hcat-server)是[HCAT-Project](https://github.com/HCAT-Project)的核心项目，作为服务端使用，您可以前往其仓库学习安装方法。
 
-在安装完成服务端后，您可以将本项目的静态资源上传至您的Web服务器。我们推荐您将服务端反向代理至客户端的子目录下，这样可以防止一些奇怪的跨域问题产生。接着你需要配置`js/main.js`文件中第二行，请注意：一般情况下，您需要填写的服务端地址类似 https://example.com/api ，如果您在反代过程中将链接后半部分隐去，记得正确配置js文件，这些都是Web基础，不做赘述。
+在安装完成服务端后，您可以将本项目的静态资源上传至您的Web服务器。我们推荐您将服务端反向代理至客户端的子目录下，这样可以防止一些奇怪的跨域问题产生。接着你需要配置`js/main.js`文件中第二行，请注意：一般情况下，您需要填写的服务端地址类似 https://example.com/api ，如果您在反代过程中将链接后半部分隐去，记得正确配置js文件。另外如果您希望PWA应用能够正常工作，请在`manifest.json`中将`start_url`改成您实际安装位置的绝对路径。
 
 # 功能
 
