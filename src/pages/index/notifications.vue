@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { useStore } from '~/stores/store'
+
 const selected = $ref(-1)
 const router = useRouter()
+const store = useStore()
 </script>
 
 <template>
@@ -11,11 +14,21 @@ const router = useRouter()
         <!-- Chat card -->
         <div flex="~ col">
           <div p3 rounded-2xl h-15 :class="{ 'bg-back-light': selected === 0 }" hover="bg-back-light" flex="~" justify-between w-full gap-3 items-center select-none @click="router.replace('/notifications/friend-notification')">
-            <p>好友通知</p>
+            <div flex items-center gap-2>
+              <p>好友通知</p>
+              <div v-show="store.hasNewFRNotify" rounded-full p="x2 y0.5" text-xs bg-primary>
+                New
+              </div>
+            </div>
             <div i-carbon-chevron-right />
           </div>
           <div p3 rounded-2xl h-15 :class="{ 'bg-back-light': selected === 1 }" hover="bg-back-light" flex="~" justify-between w-full gap-3 items-center select-none @click="router.replace('/notifications/group-notification')">
-            <p>群通知</p>
+            <div flex items-center gap-2>
+              <p>群通知</p>
+              <div v-show="store.hasNewGPNotify" rounded-full p="x2 y0.5" text-xs bg-primary>
+                New
+              </div>
+            </div>
             <div i-carbon-chevron-right />
           </div>
         </div>

@@ -1,10 +1,14 @@
 <script setup lang="ts">
-defineProps<{
+import { useStore } from '~/stores/store'
+
+const props = defineProps<{
   id: string
 }>()
 
+const store = useStore()
+
 function clearMessages() {
-  // store.clearGroupMessages()
+  store.clearFriendMessages(props.id)
 }
 </script>
 

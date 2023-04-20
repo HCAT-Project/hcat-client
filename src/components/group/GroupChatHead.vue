@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { useStore } from '~/stores/store'
 
-defineProps<{
+const props = defineProps<{
   id: string
 }>()
 
 const store = useStore()
 
 function clearMessages() {
-  store.clearGroupMessages()
+  store.clearGroupMessages(props.id)
 }
 </script>
 
 <template>
-  <div flex justify-between items-center>
+  <div flex justify-between items-center px8>
     <div flex="~ col">
       <div flex="~ col" gap-1>
         <p text="lg start" font-bold>

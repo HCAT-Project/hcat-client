@@ -10,7 +10,10 @@ watch(() => route.meta.tab, () => {
 
 onMounted(() => {
   setInterval(async () => {
-    await store.getTodoList()
+    await store.getTodoList().then((res) => {
+      if (!store.hasNewNotify && res[1])
+        store.hasNewNotify = true
+    })
   }, 2000)
 })
 </script>

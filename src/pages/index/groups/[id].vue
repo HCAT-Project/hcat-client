@@ -43,7 +43,7 @@ async function sendMessage(msg: Msg) {
 
 <template>
   <div flex>
-    <div flex-1 flex="~ col" p="x8 t5" rounded="r-2xl" bg-back-gray of-hidden>
+    <div flex-1 flex="~ col" p="t5" rounded="r-2xl" bg-back-gray of-hidden>
       <GroupChatHead :id="id" />
       <GroupChatContent :id="id" />
       <ChatInputPanel :id="id" @send="sendMessage" />

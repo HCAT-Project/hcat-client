@@ -27,7 +27,7 @@ async function sendMessage(msg: Msg) {
         type: 'friend_msg',
         friend_id: props.id,
         user_id,
-        friend_name: props.id,
+        friend_name: user_id,
         friend_nick: '',
         rid: '',
         msg,

@@ -7,13 +7,6 @@ const store = useStore()
 const userID = $ref('')
 const password = $ref('')
 
-onMounted(async () => {
-  // await store.authToken().then((res) => {
-  //   router.replace('/')
-  // }).catch((_) => {
-  // })
-})
-
 async function login() {
   if (userID === '' || password === '') {
     alert('用户名或密码不能为空')

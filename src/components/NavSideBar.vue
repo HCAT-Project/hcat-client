@@ -1,38 +1,33 @@
 <script setup lang="ts">
+import gsap from 'gsap'
 import { useStore } from '~/stores/store'
-
-interface SidebarButton {
-  icon: string
-  text: string
-}
 
 const router = useRouter()
 const store = useStore()
 const answer = $ref('')
 const joinGroupID = $ref('')
 const addMessage = $ref('')
-const sideBarButtonList: SidebarButton[] = [
-  {
-    icon: 'i-carbon-group',
-    text: '群聊',
-  },
-  {
-    icon: 'i-carbon-chat-bot',
-    text: '好友',
-  },
-  {
-    icon: 'i-carbon-notification-new',
-    text: '通知',
-  },
-  {
-    icon: 'i-carbon-search-advanced',
-    text: '查找',
-  },
-]
+const notifyButton = ref<HTMLDivElement | null>(null)
+const tl = gsap.timeline({ paused: true })
 
 let question = $ref('')
 let joinGPModalVisible = $ref(false)
 let showQA = $ref(false)
+
+onMounted(() => {
+  tl.to(notifyButton.value,
+    { rotation: 30, duration: 0.6, repeat: -1, yoyo: true, transformOrigin: '50% 0', ease: 'sine.inOut' })
+    .to(notifyButton.value, {
+      rotation: -30, duration: 0.6, repeat: -1, yoyo: true, transformOrigin: '50% 0', ease: 'sine.inOut',
+    })
+})
+
+watch(() => store.hasNewNotify, (newVal) => {
+  if (newVal)
+    tl.play()
+
+  else tl.pause(0)
+}, { immediate: true })
 
 async function joinGroup() {
   // TODO: 自由进出与需要验证分开处理
@@ -121,9 +116,21 @@ async function logout() {
       <span text-primary>H</span>CAT
     </button>
     <div flex-1 flex="~ col" gap-5>
-      <button v-for="item, index in sideBarButtonList" :key="item.text" :class="[store.activeTab === index ? 'text-text-light' : 'text-text-secondary']" flex="~ col" items-center text-xs gap-2 @click="sideBarAction(index)">
-        <div w-6 h-6 :class="item.icon" />
-        <p>{{ item.text }}</p>
+      <button :class="[store.activeTab === 0 ? 'text-text-light' : 'text-text-secondary']" flex="~ col" items-center text-xs gap-2 @click="sideBarAction(0)">
+        <div w-6 h-6 i-carbon-group />
+        <p>群聊</p>
+      </button>
+      <button :class="[store.activeTab === 1 ? 'text-text-light' : 'text-text-secondary']" flex="~ col" items-center text-xs gap-2 @click="sideBarAction(1)">
+        <div w-6 h-6 i-carbon-chat-bot />
+        <p>好友</p>
+      </button>
+      <button :class="[store.activeTab === 2 ? 'text-text-light' : 'text-text-secondary']" flex="~ col" items-center text-xs gap-2 @click="sideBarAction(2)">
+        <div ref="notifyButton" w-6 h-6 i-carbon-notification :class="{ 'text-primary': store.hasNewNotify }" />
+        <p>通知</p>
+      </button>
+      <button :class="[store.activeTab === 3 ? 'text-text-light' : 'text-text-secondary']" flex="~ col" items-center text-xs gap-2 @click="sideBarAction(3)">
+        <div w-6 h-6 i-carbon-search-advanced />
+        <p>查找</p>
       </button>
       <!-- Join Modal -->
       <Modal :modal-visible="joinGPModalVisible" :child-page-visible="showQA" @close="() => { joinGPModalVisible = false, showQA = false }">

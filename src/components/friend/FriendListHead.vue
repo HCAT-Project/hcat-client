@@ -8,7 +8,8 @@ const addInfo = $ref('')
 let addModalVisible = $ref(false)
 
 async function addFriend() {
-  await store.addFriend(userId, addInfo)
+  await store.addFriend(userId, addInfo).then()
+    .catch(err => alert(err))
   addModalVisible = false
 }
 </script>

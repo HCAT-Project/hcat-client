@@ -62,6 +62,8 @@ export const useStore = defineStore('stores', {
     } as GroupMessages,
     friendMessages: {
     } as FriendMessages,
+    hasNewFRNotify: false,
+    hasNewGPNotify: false,
   }),
   actions: {
     login(form: LoginForm) {
@@ -275,8 +277,8 @@ export const useStore = defineStore('stores', {
         execute().then((res) => {
           if (res.data.value.status === 'ok') {
             // console.log(res)
-            const data = res.data.value.data
-            data.forEach((item: Todo) => {
+            const data = res.data.value.data as Todo[]
+            data.forEach((item) => {
               switch (item.type) {
                 case 'group_msg':
                   this.groupMessages[item.group_id] = [
@@ -291,12 +293,14 @@ export const useStore = defineStore('stores', {
                   ]
                   break
                 case 'friend_request':
+                  this.hasNewFRNotify = true
                   this.addFriendNotification(item)
                   break
                 case 'group_join_request':
                 case 'admin_added':
                 case 'admin_removed':
                 case 'member_removed':
+                  this.hasNewGPNotify = true
                   this.addGroupNotification(item)
                   break
               }
@@ -421,8 +425,17 @@ export const useStore = defineStore('stores', {
     removeFriendNotification(rid: string) {
       this.fdNotificationList = this.fdNotificationList.filter(item => item.rid !== rid)
     },
+    clearGroupNotification() {
+      this.gpNotificationList = []
+    },
+    clearFriendNotification() {
+      this.fdNotificationList = []
+    },
     clearGroupMessages(group_id: string) {
       this.groupMessages[group_id] = []
+    },
+    clearFriendMessages(friend_id: string) {
+      this.friendMessages[friend_id] = []
     },
     clearStorage() {
       this.groupMessages = {}
@@ -434,7 +447,11 @@ export const useStore = defineStore('stores', {
     },
 
   },
-  getters: {},
+  getters: {
+    hasNewNotify(state) {
+      return state.hasNewFRNotify || state.hasNewGPNotify
+    },
+  },
   persist: {
     key: 'defaultStorage',
     storage: window.localStorage,
