@@ -1,5 +1,7 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
+import { useStore } from '~/stores'
+
+const props = withDefaults(defineProps<{
   name: string
   itemId: string | number
   newMessageNumber: number
@@ -8,6 +10,13 @@ withDefaults(defineProps<{
 }>(), {
   newMessageNumber: 0,
   selected: false,
+})
+
+const store = useStore()
+
+watch(() => props.selected, (val) => {
+  if (store.notReadMsg[props.itemId])
+    store.notReadMsg[props.itemId].number = 0
 })
 </script>
 
