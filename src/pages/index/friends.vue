@@ -25,7 +25,9 @@ function selectFriend(friendId: string) {
         <FriendListHead />
         <div flex="~ col">
           <ChatCard
-            v-for="item, key in store.friendList" :key="item" :group_id="key" :selected="selectFriendId === item" :name="item" :new-message-number="99"
+            v-for="item, key in store.friendList" :key="key" :item-id="item" :name="item as string"
+            :new-message-number="route.path.includes(item as string) || !store.notReadMsg[item] ? 0 : store.notReadMsg[item].number" :selected="selectFriendId === item"
+            :new-message=" !store.notReadMsg[item] ? '' : store.notReadMsg[item].lastMsg"
             @click="selectFriend(item as string)"
           />
         </div>

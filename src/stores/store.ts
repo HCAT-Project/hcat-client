@@ -29,6 +29,12 @@ interface GroupMessages {
 interface FriendMessages {
   [key: string]: FriendMessage[]
 }
+interface NotReadMsg {
+  [key: string]: {
+    number: number
+    lastMsg: string
+  }
+}
 
 export const useStore = defineStore('stores', {
   state: () => ({
@@ -45,6 +51,7 @@ export const useStore = defineStore('stores', {
     } as FriendMessages,
     hasNewFRNotify: false,
     hasNewGPNotify: false,
+    notReadMsg: {} as NotReadMsg,
   }),
   actions: {
 
@@ -217,12 +224,40 @@ export const useStore = defineStore('stores', {
                     ...this.groupMessages[item.group_id] ?? [],
                     item,
                   ]
+                  if (this.notReadMsg[item.group_id]) {
+                    this.notReadMsg[item.group_id].number += 1
+                    this.notReadMsg[item.group_id].lastMsg = item.msg.msg_chain[0].type === 'text'
+                      ? item.msg.msg_chain[0].msg
+                      : '[图片]'
+                  }
+                  else {
+                    this.notReadMsg[item.group_id] = {
+                      number: 1,
+                      lastMsg: item.msg.msg_chain[0].type === 'text'
+                        ? item.msg.msg_chain[0].msg
+                        : '[图片]',
+                    }
+                  }
                   break
                 case 'friend_msg':
                   this.friendMessages[item.friend_id] = [
                     ...this.friendMessages[item.friend_id] ?? [],
                     item,
                   ]
+                  if (this.notReadMsg[item.friend_id]) {
+                    this.notReadMsg[item.friend_id].number += 1
+                    this.notReadMsg[item.friend_id].lastMsg = item.msg.msg_chain[0].type === 'text'
+                      ? item.msg.msg_chain[0].msg
+                      : '[图片]'
+                  }
+                  else {
+                    this.notReadMsg[item.friend_id] = {
+                      number: 1,
+                      lastMsg: item.msg.msg_chain[0].type === 'text'
+                        ? item.msg.msg_chain[0].msg
+                        : '[图片]',
+                    }
+                  }
                   break
                 case 'friend_request':
                   this.hasNewFRNotify = true

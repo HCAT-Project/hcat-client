@@ -1,8 +1,9 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
   name: string
-  group_id: string | number
+  itemId: string | number
   newMessageNumber: number
+  newMessage: string
   selected: boolean
 }>(), {
   newMessageNumber: 0,
@@ -18,7 +19,7 @@ withDefaults(defineProps<{
         {{ name }}
       </p>
       <p text="xs text-secondary" truncate>
-        Hi there! I'm a friendly Chinese guy!
+        {{ newMessage }}
       </p>
     </div>
     <p v-if="newMessageNumber !== 0" bg-primary rounded-full p="x-1.5 y0.5" flex items-center text-xs justify-center>

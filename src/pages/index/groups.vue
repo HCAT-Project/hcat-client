@@ -26,7 +26,12 @@ function selectGroup(id: string) {
       <div flex="~ col" p="y5 x5" gap-5>
         <GroupListHead />
         <div flex="~ col">
-          <ChatCard v-for="item, key in store.groupList" id="==@click=&quot;selectGroup(key" :key="item.group_name" :group_id="key" :name="item.group_name" :new-message-number="99" :selected="selectGroupId === key" @click="selectGroup(key as string)" />
+          <ChatCard
+            v-for="item, key in store.groupList" :key="item.group_name" :item-id="key" :name="item.group_name"
+            :new-message-number="route.path.includes(key as string) || !store.notReadMsg[key] ? 0 : store.notReadMsg[key].number" :selected="selectGroupId === key"
+            :new-message=" !store.notReadMsg[key] ? '' : store.notReadMsg[key].lastMsg"
+            @click="selectGroup(key as string)"
+          />
         </div>
       </div>
     </div>
