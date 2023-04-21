@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import { useStore } from '~/stores/store'
+import { useStore, useToastStore } from '~/stores'
 
 const store = useStore()
+const toastStore = useToastStore()
 
 const userId = $ref('')
 const addInfo = $ref('')
 let addModalVisible = $ref(false)
 
 async function addFriend() {
-  await store.addFriend(userId, addInfo).then()
-    .catch(err => alert(err))
-  addModalVisible = false
+  await store.addFriend(userId, addInfo).then(() => {
+    addModalVisible = false
+    toastStore.showToast('发送成功！', 'success')
+  })
+    .catch((err) => {
+      toastStore.showToast(err, 'error')
+    })
 }
 </script>
 

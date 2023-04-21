@@ -1,20 +1,7 @@
 import { defineStore } from 'pinia'
-import { addAdminApi, agreeJoinGroupReqApi, authTokenApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, loginApi, logoutApi, registerApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
+import { addAdminApi, agreeJoinGroupReqApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
 import { addFriendApi, agreeFriendReqApi, deleteFriendApi, getFriendListApi, sendFriendMsgApi } from '~/api/friend'
-import { setCookie } from '~/composables'
 import type { FriendList, FriendMessage, FriendNotification, GroupList, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, Todo } from '~/types'
-
-interface LoginForm {
-  user_id: string
-  password: string
-}
-
-interface RegisterForm {
-  user_id: string
-  password: string
-  username: string
-  lang: string
-}
 
 interface GroupMsgForm {
   group_id: string
@@ -42,12 +29,6 @@ interface GroupMessages {
 interface FriendMessages {
   [key: string]: FriendMessage[]
 }
-// type status = 'ok' | 'null'
-
-// interface basicResponse {
-//   message: string
-//   status: status
-// }
 
 export const useStore = defineStore('stores', {
   state: () => ({
@@ -66,62 +47,13 @@ export const useStore = defineStore('stores', {
     hasNewGPNotify: false,
   }),
   actions: {
-    login(form: LoginForm) {
-      return new Promise((resolve, reject) => {
-        const { execute } = loginApi()
-        execute({ data: form }).then((res) => {
-          if (res.data.value.status === 'ok') {
-            setCookie('user_id', form.user_id, 180)
-            resolve(res.data.value)
-          }
-          else {
-            reject(res.data.value.message)
-          }
-        })
-      })
-    },
-    register(form: RegisterForm) {
-      return new Promise((resolve, reject) => {
-        const { execute } = registerApi()
-        execute({ data: form }).then((res) => {
-          if (res.data.value.status === 'ok')
-            resolve(res.data.value)
-          else
-            reject(res.data.value.message)
-        })
-      })
-    },
-    logout() {
-      return new Promise((resolve, reject) => {
-        const { execute } = logoutApi()
-        execute().then((res) => {
-          if (res.data.value.status === 'ok') {
-            setCookie('user_id', '', -1)
-            resolve(res.data.value)
-          }
-          else {
-            reject(res.data.value.message)
-          }
-        })
-      })
-    },
+
     sendGroupMsg(form: GroupMsgForm) {
       return new Promise((resolve, reject) => {
         const { execute } = sendGroupMsgApi()
         execute({ data: form }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value)
-          else
-            reject(res.data.value.message)
-        })
-      })
-    },
-    authToken() {
-      return new Promise((resolve, reject) => {
-        const { execute } = authTokenApi()
-        execute().then((res) => {
-          if (res.data.value.status === 'ok')
-            resolve(res.data.value.status)
           else
             reject(res.data.value.message)
         })

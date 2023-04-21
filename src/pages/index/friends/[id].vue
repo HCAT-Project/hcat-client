@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useStore } from '~/stores/store'
+import { useStore, useToastStore, useUserStore } from '~/stores'
 import type { Msg } from '~/types'
 
 const props = defineProps<{
@@ -7,6 +7,8 @@ const props = defineProps<{
 }>()
 
 const store = useStore()
+const userStore = useUserStore()
+const toastStore = useToastStore()
 const router = useRouter()
 
 watch(() => props.id, async () => {
@@ -20,7 +22,7 @@ async function sendMessage(msg: Msg) {
     msg: JSON.stringify(msg),
   }
   await store.sendFriendMessage(form).then((res: any) => {
-    const user_id = getCookie('user_id')!
+    const user_id = userStore.userId
     store.friendMessages[props.id] = [
       ...store.friendMessages[props.id] ?? [],
       {
@@ -36,7 +38,7 @@ async function sendMessage(msg: Msg) {
     ]
   },
   ).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 </script>
@@ -44,7 +46,7 @@ async function sendMessage(msg: Msg) {
 <template>
   <div flex>
     <div flex-1 flex="~ col" p="x8 t5" rounded="r-2xl" bg-back-gray of-hidden>
-      <FriendChatHead :id="id" />
+      <ChatHead :id="id" type="friend" />
       <FriendChatContent :id="id" />
       <ChatInputPanel :id="id" @send="sendMessage" />
     </div>

@@ -1,25 +1,26 @@
 <script setup lang="ts" generic="T extends any, O extends any">
-import { useStore } from '~/stores/store.js'
+import { useToastStore, useUserStore } from '~/stores'
 
 const router = useRouter()
-const store = useStore()
+const userStore = useUserStore()
+const toastStore = useToastStore()
 
 const userID = $ref('')
 const password = $ref('')
 
 async function login() {
   if (userID === '' || password === '') {
-    alert('用户名或密码不能为空')
+    toastStore.showToast('用户名或密码不能为空', 'error')
     return
   }
   const form = {
     user_id: userID,
     password,
   }
-  await store.login(form).then((res) => {
+  await userStore.login(form).then((res) => {
     router.replace('/')
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 </script>

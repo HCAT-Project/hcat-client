@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useFileDialog } from '@vueuse/core'
+import { useToastStore } from '~/stores'
 import type { Msg } from '~/types'
 
 defineProps<{
@@ -10,6 +11,7 @@ const emit = defineEmits<{
   (e: 'send', message: Msg): void
 }>()
 
+const toastStore = useToastStore()
 const { files, open } = useFileDialog({ accept: 'image/*' })
 
 // TODO: 两次相同的图片不会触发
@@ -20,7 +22,7 @@ watch(files, (files) => {
   const reader = new FileReader() // 创建 FileReader 对象
   reader.readAsDataURL(img) // 读取文件内容
   if (img.size > 1024 * 1024 * 3) {
-    alert('图片大小不能超过 3MB')
+    toastStore.showToast('图片大小不能超过3MB', 'error')
     return
   }
   reader.onload = async (e) => {

@@ -3,21 +3,22 @@ import { useStore } from '~/stores/store'
 
 const props = defineProps<{
   id: string
+  type: string
 }>()
 
 const store = useStore()
 
 function clearMessages() {
-  store.clearGroupMessages(props.id)
+  props.type === 'friend' ? store.clearFriendMessages(props.id) : store.clearGroupMessages(props.id)
 }
 </script>
 
 <template>
-  <div flex justify-between items-center px8>
+  <div flex justify-between items-center px-8>
     <div flex="~ col">
       <div flex="~ col" gap-1>
         <p text="lg start" font-bold>
-          {{ store.groupList[id]?.group_name ?? '群组' }}
+          {{ type === "friend" ? '好友' : '群组' }}
         </p>
       </div>
     </div>

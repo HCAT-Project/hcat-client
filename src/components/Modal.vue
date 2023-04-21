@@ -17,7 +17,7 @@ const emit = defineEmits(['close'])
             <p text-lg>
               {{ title }}
             </p>
-            <button @click="emit('close')">
+            <button text-text-secondary hover:text-text-light @click="emit('close')">
               <div w-6 h-6 i-carbon-close />
             </button>
           </div>

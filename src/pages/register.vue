@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useStore } from '~/stores/store.js'
+import { useToastStore, useUserStore } from '~/stores'
 
 const router = useRouter()
-const store = useStore()
+const userStore = useUserStore()
+const toastStore = useToastStore()
 
 const userID = $ref('')
 const password = $ref('')
@@ -10,7 +11,7 @@ const username = $ref('')
 
 async function register() {
   if (userID === '' || password === '' || username === '') {
-    alert('用户名或密码不能为空')
+    toastStore.showToast('用户名或密码不能为空', 'error')
     return
   }
   const form = {
@@ -19,10 +20,10 @@ async function register() {
     username,
     lang: '简体中文',
   }
-  await store.register(form).then((res) => {
+  await userStore.register(form).then((res) => {
     router.replace('/login')
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 </script>

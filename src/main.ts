@@ -8,27 +8,27 @@ import App from './App.vue'
 import '@unocss/reset/tailwind.css'
 import './styles/main.css'
 import 'uno.css'
-import { useStore } from './stores/store'
+import { useUserStore } from './stores/user'
 
 const app = createApp(App)
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
-const store = useStore()
+const userStore = useUserStore()
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
 router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth) {
-    await store.authToken().then((res) => {
+    await userStore.authToken().then((res) => {
       next()
     }).catch((_) => {
       next({ name: 'login' })
     })
   }
   else {
-    await store.authToken().then((res) => {
+    await userStore.authToken().then((res) => {
       next({ name: 'index' })
     }).catch((_) => {
       next()

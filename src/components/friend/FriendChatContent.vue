@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useStore } from '~/stores/store'
+import { useUserStore } from '~/stores/user'
 
 const props = defineProps<{
   id: string
 }>()
 
 const store = useStore()
+const userStore = useUserStore()
 
 const chatContent = ref<HTMLElement | null>(null)
 
@@ -18,7 +20,7 @@ watch(() => store.friendMessages[props.id], async () => {
 
 <template>
   <div ref="chatContent" flex="~ col" of="y-auto" flex-1 p="y10" gap-5 class="no-scrollbar">
-    <ChatBubble v-for="item, idx in store.friendMessages[id]" :key="idx" :time="convertTimeStampToTime(item.time)" :from-self="item.user_id === getCookie('user_id')" :user="item.friend_name" :message="item.msg.msg_chain[0]" />
+    <ChatBubble v-for="item, idx in store.friendMessages[id]" :key="idx" :time="convertTimeStampToTime(item.time)" :from-self="item.user_id === userStore.userId" :user="item.friend_name" :message="item.msg.msg_chain[0]" />
   </div>
 </template>
 

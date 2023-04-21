@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useToastStore } from '~/stores'
 import { useStore } from '~/stores/store.js'
 import type { GroupMember, GroupPermission, GroupSetting } from '~/types'
 
@@ -7,6 +8,7 @@ const props = defineProps<{
 }>()
 
 const store = useStore()
+const toastStore = useToastStore()
 const router = useRouter()
 const verificationMethod = $ref({
   fr: '自由加入',
@@ -22,7 +24,7 @@ let transferModalVisible = $ref(false)
 let questionModalVisible = $ref(false)
 let renameModalVisible = $ref(false)
 
-onMounted(async () => {
+watch(() => props.id, async () => {
   const requestList = [
     store.getSelfPmsInGroup(props.id),
     store.getGroupSetting(props.id),
@@ -33,17 +35,17 @@ onMounted(async () => {
     groupSettings = res[1] as GroupSetting
     groupMembers = res[2] as GroupMember[]
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
-})
+}, { immediate: true })
 
 async function transferOwnership(userId: string) {
   await store.transferOwnership(props.id, userId).then(async (res) => {
     transferModalVisible = false
     selfPermission = 'admin'
-    await store.getGroupMembers(props.id)
+    groupMembers = await store.getGroupMembers(props.id)
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 
@@ -57,7 +59,7 @@ async function renameGroup() {
     await store.getGroupList()
     renameModalVisible = false
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 
@@ -68,24 +70,28 @@ async function changeGroupSetting() {
     setting: JSON.stringify(setting),
   }
   await store.changeGroupSetting(form).then((res) => {
-
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 
 async function leaveGroup() {
   await store.leaveGroup(props.id).then(async (res) => {
-    alert('已退出群聊')
+    toastStore.showToast('已退出群聊', 'success')
     await store.getGroupList()
     router.replace('/groups')
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 
 function writeToClipboard() {
   navigator.clipboard.writeText(props.id)
+  toastStore.showToast('已复制群号', 'success')
+}
+
+async function refreshMemberList() {
+  groupMembers = await store.getGroupMembers(props.id)
 }
 </script>
 
@@ -98,7 +104,7 @@ function writeToClipboard() {
       <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl @click="() => { renameModalVisible = true ;newGroupName = store.groupList[id].group_name }">
         <div i-carbon-text-annotation-toggle />
         <Modal :modal-visible="renameModalVisible" title="更改群名" @close="renameModalVisible = false">
-          <div flex="~ col" gap-5 p="x5 y5">
+          <div flex="~ col" gap-8 p="x5 y5">
             <div flex="~ col" gap-3>
               <TextInput v-model="newGroupName" label="群名" />
             </div>
@@ -111,7 +117,7 @@ function writeToClipboard() {
       <button :disabled="groupSettings.verification_method !== 'aw'" hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl @click="questionModalVisible = true">
         <div i-carbon-password />
         <Modal :modal-visible="questionModalVisible" title="修改验证问题" @close="questionModalVisible = false">
-          <div flex="~ col" gap-8>
+          <div flex="~ col" gap-8 p5>
             <div flex="~ col" gap-3>
               <TextInput v-model="groupSettings.question" label="问题" />
               <TextInput v-model="groupSettings.answer" label="答案" />
@@ -126,7 +132,7 @@ function writeToClipboard() {
         <div i-carbon-copy />
       </button>
     </div>
-    <GroupMemberList :id="id" :permission="selfPermission" :members="groupMembers" />
+    <GroupMemberList :id="id" :permission="selfPermission" :members="groupMembers" @refresh-member-list="refreshMemberList" />
     <div v-if="selfPermission === 'owner' || selfPermission === 'admin'" flex="~ col" text-start gap-1>
       <p>加群方式</p>
       <div px="3" flex bg-back-gray rounded-lg hover="bg-back-light">

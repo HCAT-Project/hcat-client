@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useStore } from '~/stores/store.js'
+import { useStore, useToastStore } from '~/stores'
 import type { GroupNotification } from '~/types'
 
 // TODO: 处理不同群组消息
@@ -8,12 +8,13 @@ const props = defineProps<{
 }>()
 
 const store = useStore()
+const toastStore = useToastStore()
 
 function agreeJoinReq() {
   store.agreeJoinGroupReq(props.item.rid).then((res) => {
     store.removeGroupNotification(props.item.rid)
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 </script>

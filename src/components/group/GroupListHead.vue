@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useStore } from '~/stores/store.js'
+import { useStore, useToastStore } from '~/stores'
 
 const createGroupName = $ref('')
 const store = useStore()
+const toastStore = useToastStore()
 let joinModalVisible = $ref(false)
 
 async function createGroup() {
@@ -12,7 +13,7 @@ async function createGroup() {
     await store.getGroupList()
     joinModalVisible = false
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 </script>

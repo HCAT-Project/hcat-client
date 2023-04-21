@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import gsap from 'gsap'
-import { useStore } from '~/stores/store'
+import { useStore, useToastStore, useUserStore } from '~/stores'
 
 const router = useRouter()
 const store = useStore()
+const userStore = useUserStore()
+const toastStore = useToastStore()
 const answer = $ref('')
 const joinGroupID = $ref('')
 const addMessage = $ref('')
@@ -48,27 +50,27 @@ async function joinGroup() {
           store.getGroupList()
           joinGPModalVisible = false
         }).catch((err) => {
-          alert(err)
+          toastStore.showToast(err, 'error')
         })
         break
       case 'ac':
         await store.joinGroup(form).then((res) => {
-          alert('已发送入群申请')
-          store.getGroupList()
+          toastStore.showToast('已发送入群申请', 'success')
+          // store.getGroupList()
           joinGPModalVisible = false
         }).catch((err) => {
-          alert(err)
+          toastStore.showToast(err, 'error')
         })
         break
       case 'na':
-        alert('该群组不允许加入')
+        toastStore.showToast('该群不允许加入', 'error')
         break
       case 'aw':
         showQA = true
         break
     }
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 
@@ -79,9 +81,10 @@ async function submitAnswer() {
   }).then((res) => {
     showQA = false
     joinGPModalVisible = false
+    toastStore.showToast('加入成功', 'success')
     store.getGroupList()
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 
@@ -104,7 +107,7 @@ function sideBarAction(index: number) {
 
 async function logout() {
   store.clearStorage()
-  await store.logout().then((_) => {
+  await userStore.logout().then((_) => {
     router.replace('/login')
   })
 }

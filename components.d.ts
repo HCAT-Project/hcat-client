@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ChatBubble: typeof import('./src/components/ChatBubble.vue')['default']
     ChatCard: typeof import('./src/components/ChatCard.vue')['default']
+    ChatHead: typeof import('./src/components/ChatHead.vue')['default']
     ChatInputPanel: typeof import('./src/components/ChatInputPanel.vue')['default']
     DChatCard: typeof import('./src/components/ChatCard.vue')['default']
     FriendChatContent: typeof import('./src/components/friend/FriendChatContent.vue')['default']
@@ -41,5 +42,6 @@ declare module '@vue/runtime-core' {
     TheCounter: typeof import('./src/components/TheCounter.vue')['default']
     TheFooter: typeof import('./src/components/TheFooter.vue')['default']
     TheInput: typeof import('./src/components/TheInput.vue')['default']
+    Toast: typeof import('./src/components/Toast.vue')['default']
   }
 }

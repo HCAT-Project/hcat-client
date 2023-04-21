@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useStore } from '~/stores/store'
+import { useStore, useToastStore, useUserStore } from '~/stores'
 import type { GroupMember, GroupPermission } from '~/types'
 
 const props = defineProps<{
@@ -8,29 +8,35 @@ const props = defineProps<{
   permission: GroupPermission
 }>()
 
+const emits = defineEmits<{
+  (event: 'refreshMemberList'): void
+}>()
+
 const store = useStore()
+const userStore = useUserStore()
+const toastStore = useToastStore()
 
 async function giveAdmin(userId: string) {
   await store.addAdmin(props.id, userId).then(async (res) => {
-    await store.getGroupMembers(props.id)
+    emits('refreshMemberList')
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 
 async function removeAdmin(userId: string) {
   await store.removeAdmin(props.id, userId).then(async (res) => {
-    await store.getGroupMembers(props.id)
+    emits ('refreshMemberList')
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 
 async function kickMember(userId: string) {
   await store.kickMember(props.id, userId).then(async (res) => {
-    // await store.getGroupMembers(props.id)
+    emits ('refreshMemberList')
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 </script>
@@ -55,7 +61,7 @@ async function kickMember(userId: string) {
           <div text-text-secondary i-carbon-user-admin />
         </button>
         <!--  -->
-        <button v-if="item.permission !== 'owner' && permission !== 'member' && item.user_id !== getCookie('user_id')" @click="kickMember(item.user_id)">
+        <button v-if="item.permission !== 'owner' && permission !== 'member' && userStore.userId" @click="kickMember(item.user_id)">
           <div text="important xs" i-carbon-trash-can />
         </button>
       </div>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useToastStore } from '~/stores'
 import { useStore } from '~/stores/store.js'
 import type { FriendNotification } from '~/types'
 
@@ -7,12 +8,13 @@ defineProps<{
 }>()
 
 const store = useStore()
+const toastStore = useToastStore()
 
 function agreeAddReq(rid: string) {
   store.agreeFriendReq(rid).then((res) => {
     store.removeFriendNotification(rid)
   }).catch((err) => {
-    alert(err)
+    toastStore.showToast(err, 'error')
   })
 }
 </script>
