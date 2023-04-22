@@ -12,8 +12,11 @@ const toastStore = useToastStore()
 const router = useRouter()
 
 watch(() => props.id, async () => {
-  if (!Object.values(store.friendList).includes(props.id))
-    router.replace('/friends')
+  for (const item of store.friendList) {
+    if (item === props.id)
+      return
+  }
+  router.replace('/friends')
 }, { immediate: true })
 
 async function sendMessage(msg: Msg) {

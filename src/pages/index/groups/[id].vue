@@ -12,8 +12,11 @@ const toastStore = useToastStore()
 const router = useRouter()
 
 watch(() => props.id, async () => {
-  if (!store.groupList[props.id])
-    router.replace('/groups')
+  for (const item of store.groupList) {
+    if (item.id === props.id)
+      return
+  }
+  router.replace('/groups')
 }, { immediate: true })
 
 async function sendMessage(msg: Msg) {

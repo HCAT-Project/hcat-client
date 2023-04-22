@@ -31,16 +31,9 @@ export interface GroupVerification {
   verification_method: GroupVerificationMethod
 }
 
-export interface GroupList {
-  [key: string]: Group
-}
-
-export interface FriendList {
-  [key: string]: string
-}
-
 export interface Group {
-  group_name: string
+  id: string
+  groupName: string
   nick: string
   remark: string
 }

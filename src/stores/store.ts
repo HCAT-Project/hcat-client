@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { addAdminApi, agreeJoinGroupReqApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
 import { addFriendApi, agreeFriendReqApi, deleteFriendApi, getFriendListApi, sendFriendMsgApi } from '~/api/friend'
-import type { FriendList, FriendMessage, FriendNotification, GroupList, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, MsgChain, Todo } from '~/types'
+import type { FriendMessage, FriendNotification, Group, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, MsgChain, Todo } from '~/types'
 
 interface GroupMsgForm {
   group_id: string
@@ -40,10 +40,8 @@ interface UnReadMsg {
 
 export const useStore = defineStore('stores', {
   state: () => ({
-    groupList: {
-    } as GroupList,
-    friendList: {
-    } as FriendList,
+    groupList: [] as Group[],
+    friendList: [] as string[],
     activeTab: -1,
     gpNotificationList: [] as GroupNotification[],
     fdNotificationList: [] as FriendNotification[],
@@ -69,12 +67,22 @@ export const useStore = defineStore('stores', {
       })
     },
     getGroupList() {
-      return new Promise((resolve: (value: GroupList) => void, reject) => {
+      return new Promise((resolve, reject) => {
         const { execute } = getGroupListApi()
         execute().then((res) => {
           if (res.data.value.status === 'ok') {
-            this.groupList = res.data.value.data
-            resolve(res.data.value.data)
+            const { data } = res.data.value
+            const groupList = []
+            for (const key in data) {
+              groupList.push({
+                id: key,
+                groupName: data[key].group_name,
+                nick: data[key].nick,
+                remark: data[key].remark,
+              })
+            }
+            this.groupList = groupList
+            resolve(groupList)
           }
           else { reject(res.data.value.message) }
         })
@@ -326,7 +334,13 @@ export const useStore = defineStore('stores', {
         const { execute } = getFriendListApi()
         execute().then((res) => {
           if (res.data.value.status === 'ok') {
-            this.friendList = res.data.value.data
+            const friendList = res.data.value.data as Record<string, string>
+            this.friendList = []
+            for (const key in friendList) {
+              this.friendList.push(
+                friendList[key],
+              )
+            }
             resolve(res.data.value.data)
           }
           else { reject(res.data.value.message) }
@@ -387,8 +401,8 @@ export const useStore = defineStore('stores', {
       this.friendMessages = {}
       this.gpNotificationList = []
       this.fdNotificationList = []
-      this.groupList = {}
-      this.friendList = {}
+      this.groupList = []
+      this.friendList = []
     },
     saveUnReadMsg(conversationId: string, msg: MsgChain) {
       const isText = msg.type === 'text'
@@ -423,6 +437,6 @@ export const useStore = defineStore('stores', {
     key: 'defaultStorage',
     storage: window.localStorage,
     // TODO: 图片不该存储在本地
-    paths: ['gpNotificationList', 'fdNotificationList', 'groupList', 'friendList', 'friendMessages', 'groupMessages'],
+    paths: ['gpNotificationList', 'fdNotificationList', 'friendList', 'groupList', 'friendMessages', 'groupMessages'],
   },
 })
