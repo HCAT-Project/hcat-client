@@ -5,13 +5,15 @@ import { useStore } from '~/stores/store'
 const store = useStore()
 const router = useRouter()
 const route = useRoute()
+const reg = /\/[\w]+\/([^\/]+)/
 
 onMounted(async () => {
   await store.getGroupList()
 })
 
 const selectGroupId = computed(() => {
-  return route.path.split('/')[2]
+  const result = route.path.match(reg)
+  return result ? result[1] : ''
 })
 
 function selectGroup(id: string) {
@@ -27,9 +29,11 @@ function selectGroup(id: string) {
         <GroupListHead />
         <div flex="~ col">
           <ChatCard
-            v-for="item, key in store.groupList" :key="item.group_name" :item-id="key" :name="item.group_name"
-            :new-message-number="route.path.includes(key as string) || !store.notReadMsg[key] ? 0 : store.notReadMsg[key].number" :selected="selectGroupId === key"
-            :new-message=" !store.notReadMsg[key] ? '' : store.notReadMsg[key].lastMsg"
+            v-for="item, key in store.groupList"
+            :key="item.group_name" :item-id="key" :name="item.group_name"
+            :new-message-number="route.path.includes(key as string) || !store.unReadMsg[key] ? 0 : store.unReadMsg[key].number"
+            :selected="selectGroupId === key"
+            :new-message=" !store.unReadMsg[key] ? '' : store.unReadMsg[key].lastMsg"
             @click="selectGroup(key as string)"
           />
         </div>

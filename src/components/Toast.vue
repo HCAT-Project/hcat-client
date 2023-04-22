@@ -35,7 +35,7 @@ const toastStore = useToastStore()
 
 .v-enter-from,
 .v-leave-to {
-  transform: perspective(70px) rotateX(90deg);
+  transform: perspective(100px) rotateX(90deg) translateY(-15px);
   opacity: 0;
 }
 </style>

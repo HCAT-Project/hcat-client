@@ -36,6 +36,7 @@ async function sendMessage(msg: Msg) {
         time: Date.now() / 1000,
       },
     ]
+    store.saveUnReadMsg(props.id, msg.msg_chain[0])
   },
   ).catch((err) => {
     toastStore.showToast(err, 'error')

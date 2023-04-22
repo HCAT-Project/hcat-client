@@ -4,12 +4,15 @@ import { useStore } from '~/stores/store'
 const store = useStore()
 const router = useRouter()
 const route = useRoute()
+const reg = /\/[\w]+\/([^\/]+)/
+
 onMounted(async () => {
   await store.getFriendList()
 })
 
 const selectFriendId = computed(() => {
-  return route.path.split('/')[2]
+  const result = route.path.match(reg)
+  return result ? result[1] : ''
 })
 
 function selectFriend(friendId: string) {
@@ -25,9 +28,11 @@ function selectFriend(friendId: string) {
         <FriendListHead />
         <div flex="~ col">
           <ChatCard
-            v-for="item, key in store.friendList" :key="key" :item-id="item" :name="item as string"
-            :new-message-number="route.path.includes(item as string) || !store.notReadMsg[item] ? 0 : store.notReadMsg[item].number" :selected="selectFriendId === item"
-            :new-message=" !store.notReadMsg[item] ? '' : store.notReadMsg[item].lastMsg"
+            v-for="item, key in store.friendList"
+            :key="key" :item-id="item" :name="item as string"
+            :new-message-number="route.path.includes(item as string) || !store.unReadMsg[item] ? 0 : store.unReadMsg[item].number"
+            :selected="selectFriendId === item"
+            :new-message=" !store.unReadMsg[item] ? '' : store.unReadMsg[item].lastMsg"
             @click="selectFriend(item as string)"
           />
         </div>

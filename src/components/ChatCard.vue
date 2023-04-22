@@ -15,8 +15,8 @@ const props = withDefaults(defineProps<{
 const store = useStore()
 
 watch(() => props.selected, (val) => {
-  if (store.notReadMsg[props.itemId])
-    store.notReadMsg[props.itemId].number = 0
+  if (store.unReadMsg[props.itemId])
+    store.unReadMsg[props.itemId].number = 0
 })
 </script>
 

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { addAdminApi, agreeJoinGroupReqApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
 import { addFriendApi, agreeFriendReqApi, deleteFriendApi, getFriendListApi, sendFriendMsgApi } from '~/api/friend'
-import type { FriendList, FriendMessage, FriendNotification, GroupList, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, Todo } from '~/types'
+import type { FriendList, FriendMessage, FriendNotification, GroupList, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, MsgChain, Todo } from '~/types'
 
 interface GroupMsgForm {
   group_id: string
@@ -29,11 +29,13 @@ interface GroupMessages {
 interface FriendMessages {
   [key: string]: FriendMessage[]
 }
-interface NotReadMsg {
-  [key: string]: {
-    number: number
-    lastMsg: string
-  }
+interface UnReadMsgs {
+  [key: string]: UnReadMsg
+}
+
+interface UnReadMsg {
+  number: number
+  lastMsg: string
 }
 
 export const useStore = defineStore('stores', {
@@ -51,7 +53,7 @@ export const useStore = defineStore('stores', {
     } as FriendMessages,
     hasNewFRNotify: false,
     hasNewGPNotify: false,
-    notReadMsg: {} as NotReadMsg,
+    unReadMsg: {} as UnReadMsgs,
   }),
   actions: {
 
@@ -224,40 +226,14 @@ export const useStore = defineStore('stores', {
                     ...this.groupMessages[item.group_id] ?? [],
                     item,
                   ]
-                  if (this.notReadMsg[item.group_id]) {
-                    this.notReadMsg[item.group_id].number += 1
-                    this.notReadMsg[item.group_id].lastMsg = item.msg.msg_chain[0].type === 'text'
-                      ? item.msg.msg_chain[0].msg
-                      : '[图片]'
-                  }
-                  else {
-                    this.notReadMsg[item.group_id] = {
-                      number: 1,
-                      lastMsg: item.msg.msg_chain[0].type === 'text'
-                        ? item.msg.msg_chain[0].msg
-                        : '[图片]',
-                    }
-                  }
+                  this.saveUnReadMsg(item.group_id, item.msg.msg_chain[0])
                   break
                 case 'friend_msg':
                   this.friendMessages[item.friend_id] = [
                     ...this.friendMessages[item.friend_id] ?? [],
                     item,
                   ]
-                  if (this.notReadMsg[item.friend_id]) {
-                    this.notReadMsg[item.friend_id].number += 1
-                    this.notReadMsg[item.friend_id].lastMsg = item.msg.msg_chain[0].type === 'text'
-                      ? item.msg.msg_chain[0].msg
-                      : '[图片]'
-                  }
-                  else {
-                    this.notReadMsg[item.friend_id] = {
-                      number: 1,
-                      lastMsg: item.msg.msg_chain[0].type === 'text'
-                        ? item.msg.msg_chain[0].msg
-                        : '[图片]',
-                    }
-                  }
+                  this.saveUnReadMsg(item.friend_id, item.msg.msg_chain[0])
                   break
                 case 'friend_request':
                   this.hasNewFRNotify = true
@@ -400,9 +376,11 @@ export const useStore = defineStore('stores', {
     },
     clearGroupMessages(group_id: string) {
       this.groupMessages[group_id] = []
+      this.cleanUnReadMsg(group_id)
     },
     clearFriendMessages(friend_id: string) {
       this.friendMessages[friend_id] = []
+      this.cleanUnReadMsg(friend_id)
     },
     clearStorage() {
       this.groupMessages = {}
@@ -412,7 +390,29 @@ export const useStore = defineStore('stores', {
       this.groupList = {}
       this.friendList = {}
     },
+    saveUnReadMsg(conversationId: string, msg: MsgChain) {
+      const isText = msg.type === 'text'
+      const lastMsg = isText ? msg.msg : '[图片]'
 
+      if (conversationId in this.unReadMsg) {
+        this.unReadMsg[conversationId].number += 1
+        this.unReadMsg[conversationId].lastMsg = lastMsg
+      }
+      else {
+        this.unReadMsg[conversationId] = {
+          number: 1,
+          lastMsg,
+        }
+      }
+    },
+    cleanUnReadMsg(conversationId: string) {
+      if (conversationId in this.unReadMsg) {
+        this.unReadMsg[conversationId] = {
+          number: 0,
+          lastMsg: '',
+        }
+      }
+    },
   },
   getters: {
     hasNewNotify(state) {
