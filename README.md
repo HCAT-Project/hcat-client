@@ -12,6 +12,13 @@ hcat-client客户端的vue版本，仍在开发中。
 <!-- 插入图片 -->
 ![](./public/chat.png)
 
+# 开发
+
+```
+pnpm install
+pnpm dev
+```
+
 # 功能
 
 同[re_hcat-server](https://github.com/HCAT-Project/re_hcat-server#%E5%B7%B2%E5%AE%9E%E7%8E%B0%E7%9A%84%E5%8A%9F%E8%83%BD)，我们会紧跟服务端的更新。
