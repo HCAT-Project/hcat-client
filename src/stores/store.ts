@@ -67,7 +67,7 @@ export const useStore = defineStore('stores', {
       })
     },
     getGroupList() {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve: (value: Group[]) => void, reject) => {
         const { execute } = getGroupListApi()
         execute().then((res) => {
           if (res.data.value.status === 'ok') {

@@ -24,6 +24,20 @@ watch(
   { immediate: true },
 )
 
+watch(
+  () => store.friendList,
+  () => {
+    if (input.value === '') {
+      friendList = store.friendList
+    }
+    else {
+      friendList = store.friendList.filter((item) => {
+        return item.includes(input.value)
+      })
+    }
+  },
+)
+
 onMounted(async () => {
   await store.getFriendList()
 })
@@ -41,19 +55,17 @@ function selectFriend(friendId: string) {
 <template>
   <!-- Chat -->
   <div flex>
-    <div w="70" rounded="l-2xl" bg-back-gray of-hidden hidden md:block>
-      <div flex="~ col" p="y5 x5" gap-5>
-        <FriendListHead v-model="input" />
-        <div flex="~ col">
-          <ChatCard
-            v-for="item in friendList"
-            :key="item" :item-id="item" :name="item"
-            :new-message-number="route.path.includes(item) || !store.unReadMsg[item] ? 0 : store.unReadMsg[item].number"
-            :selected="selectFriendId === item"
-            :new-message=" !store.unReadMsg[item] ? '' : store.unReadMsg[item].lastMsg"
-            @click="selectFriend(item)"
-          />
-        </div>
+    <div w="70" rounded="l-2xl" bg-back-gray of-hidden hidden md:flex flex-col>
+      <FriendListHead v-model="input" p-5 />
+      <div of-y-auto p="x5" class="no-scrollbar">
+        <ChatCard
+          v-for="item in friendList"
+          :key="item" :item-id="item" :name="item"
+          :new-message-number="route.path.includes(item) || !store.unReadMsg[item] ? 0 : store.unReadMsg[item].number"
+          :selected="selectFriendId === item"
+          :new-message=" !store.unReadMsg[item] ? '' : store.unReadMsg[item].lastMsg"
+          @click="selectFriend(item)"
+        />
       </div>
     </div>
     <RouterView flex-1 />

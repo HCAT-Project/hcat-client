@@ -101,7 +101,7 @@ async function refreshMemberList() {
       聊天设定<span mx-2 text="text-secondary xs" font-sans>{{ id }}</span>
     </h1>
     <div v-if="groupSettings" flex justify-between gap-3>
-      <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl @click="() => { renameModalVisible = true ;newGroupName = store.groupList[id].group_name }">
+      <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl @click="() => { renameModalVisible = true ;newGroupName = store.groupList.find(item => item.id === id)?.groupName! }">
         <div i-carbon-text-annotation-toggle />
         <Modal :modal-visible="renameModalVisible" title="更改群名" @close="renameModalVisible = false">
           <div flex="~ col" gap-8 p="x5 y5">

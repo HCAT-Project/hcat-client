@@ -18,18 +18,7 @@ watch(() => store.groupMessages[props.id], async () => {
 </script>
 
 <template>
-  <div ref="chatContent" flex="~ col" of="y-auto" flex-1 p="y10 x8" gap-5 class="no-scrollbar">
+  <div ref="chatContent" flex="~ col" of="y-auto" flex-1 p="y10 x5" gap-5 class="no-scrollbar">
     <ChatBubble v-for="item, idx in store.groupMessages[id]" :key="idx" :time="convertTimeStampToTime(item.time)" :from-self="item.user_id === userStore.userId" :user="item.member_name" :message="item.msg.msg_chain[0]" />
   </div>
 </template>
-
-<style scoped>
-  .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-
-  .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
-</style>

@@ -18,7 +18,10 @@ function clearMessages() {
     <div flex="~ col">
       <div flex="~ col" gap-1>
         <p text="lg start" font-bold>
-          {{ type === "friend" ? '好友' : '群组' }}
+          {{
+            type === "group" ? store.groupList.find(item => item.id === id)?.groupName
+            : store.friendList.find(item => item === id)
+          }}
         </p>
       </div>
     </div>

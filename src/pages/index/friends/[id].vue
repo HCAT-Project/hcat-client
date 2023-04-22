@@ -49,8 +49,8 @@ async function sendMessage(msg: Msg) {
 
 <template>
   <div flex>
-    <div flex-1 flex="~ col" p="x8 t5" rounded="r-2xl" bg-back-gray of-hidden>
-      <ChatHead :id="id" type="friend" />
+    <div flex-1 flex="~ col" p="t5" rounded="r-2xl" bg-back-gray of-hidden>
+      <ChatHead :id="id" type="friend" :name="store.groupList.find(item => item.id === id)?.groupName!" />
       <FriendChatContent :id="id" />
       <ChatInputPanel :id="id" @send="sendMessage" />
     </div>

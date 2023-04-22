@@ -27,7 +27,7 @@ async function addFriend() {
 
 <template>
   <div flex gap-3>
-    <div flex-1 px-5 rounded-lg gap-3 h-10 flex items-center bg="back-light">
+    <div flex-1 px-8 rounded-lg gap-3 h-10 flex items-center bg="back-light">
       <div text-text-secondary i-carbon-search />
       <input v-model="data" w-full outline-none bg-transparent>
     </div>
