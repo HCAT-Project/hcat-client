@@ -111,6 +111,11 @@ async function logout() {
     router.replace('/login')
   })
 }
+
+function showSettings() {
+  // TODO: show settings
+  toastStore.showToast('not implemented', 'info')
+}
 </script>
 
 <template>
@@ -165,7 +170,7 @@ async function logout() {
         <div w-6 h-6 i-carbon-logout />
         <p> 注销</p>
       </button>
-      <button flex="~ col" items-center gap-2 hover="text-light">
+      <button flex="~ col" items-center gap-2 hover="text-light" @click="showSettings">
         <div w-6 h-6 i-carbon-settings />
         <p> 设置</p>
       </button>

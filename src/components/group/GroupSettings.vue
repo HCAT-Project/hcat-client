@@ -58,6 +58,7 @@ async function renameGroup() {
   await store.renameGroup(props.id, newGroupName).then(async (res) => {
     await store.getGroupList()
     renameModalVisible = false
+    toastStore.showToast('更改成功', 'success')
   }).catch((err) => {
     toastStore.showToast(err, 'error')
   })
