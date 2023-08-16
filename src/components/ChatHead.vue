@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useStore } from '~/stores/store'
+import { useStore } from '~/stores'
 
 const props = defineProps<{
   id: string
@@ -16,7 +16,8 @@ function clearMessages() {
 <template>
   <div flex justify-between items-center px-8>
     <div flex="~ col">
-      <div flex="~ col" gap-1>
+      <div flex="~" gap-3>
+        <MobileSidebarBtn />
         <p text="lg start" font-bold>
           {{
             type === "group" ? store.groupList.find(item => item.id === id)?.groupName
