@@ -21,7 +21,7 @@ watch(() => props.selected, (val) => {
 </script>
 
 <template>
-  <div h-20 p="3" rounded-2xl :class="{ 'bg-back-light': selected }" hover="bg-back-light" flex w-full gap-3 items-center select-none>
+  <div h-20 p="3" rounded-xl :class="{ 'bg-back-light': selected }" hover="bg-back-light" flex w-full gap-3 items-center select-none>
     <img w-8 h-8 src="/logo.png" alt="">
     <div flex="~ col" flex-1 text="start" truncate>
       <p>

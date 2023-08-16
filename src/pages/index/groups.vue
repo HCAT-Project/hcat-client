@@ -58,7 +58,7 @@ watch(
   <!-- Chat -->
   <div flex>
     <div w="70" rounded="l-2xl" bg-back-gray hidden md:flex flex-col>
-      <GroupListHead v-model="input" p="x5 y5" />
+      <ChatListHead v-model="input" p="x5 y5" />
       <div of-y-auto p="x5" class="no-scrollbar">
         <ChatCard
           v-for="item in groupList"

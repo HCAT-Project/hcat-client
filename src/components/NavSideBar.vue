@@ -136,10 +136,10 @@ function showSettings() {
         <div ref="notifyButton" w-6 h-6 i-carbon-notification :class="{ 'text-primary': store.hasNewNotify }" />
         <p>通知</p>
       </button>
-      <button :class="[store.activeTab === 3 ? 'text-text-light' : 'text-text-secondary']" flex="~ col" items-center text-xs gap-2 @click="sideBarAction(3)">
+      <!-- <button :class="[store.activeTab === 3 ? 'text-text-light' : 'text-text-secondary']" flex="~ col" items-center text-xs gap-2 @click="sideBarAction(3)">
         <div w-6 h-6 i-carbon-search-advanced />
         <p>查找</p>
-      </button>
+      </button> -->
       <!-- Join Modal -->
       <Modal :modal-visible="joinGPModalVisible" :child-page-visible="showQA" @close="() => { joinGPModalVisible = false, showQA = false }">
         <div v-if="!showQA" flex="~ col" gap-8>

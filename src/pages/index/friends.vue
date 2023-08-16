@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import FriendListHead from '~/components/friend/FriendListHead.vue'
 import { useStore } from '~/stores/store'
 
 const store = useStore()
@@ -55,8 +54,8 @@ function selectFriend(friendId: string) {
 <template>
   <!-- Chat -->
   <div flex>
-    <div w="70" rounded="l-2xl" bg-back-gray of-hidden hidden md:flex flex-col>
-      <FriendListHead v-model="input" p-5 />
+    <div w="70" rounded="l-2xl" bg-back-gray hidden md:flex flex-col>
+      <ChatListHead v-model="input" p-5 />
       <div of-y-auto p="x5" class="no-scrollbar">
         <ChatCard
           v-for="item in friendList"

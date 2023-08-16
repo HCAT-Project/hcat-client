@@ -12,6 +12,7 @@
     "postinstall": "npx simple-git-hooks"
   },
   "dependencies": {
+    "@vueuse/components": "^10.3.0",
     "@vueuse/core": "^10.3.0",
     "@vueuse/integrations": "^10.3.0",
     "axios": "^1.4.0",
