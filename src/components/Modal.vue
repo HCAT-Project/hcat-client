@@ -18,7 +18,7 @@ watch(escape, (v) => {
   <div>
     <Teleport to="main">
       <Transition name="fade">
-        <div v-show="modalVisible" cursor-auto z-50 absolute inset-0 bg="black op60" backdrop-blur-sm flex items-center justify-center>
+        <div v-if="modalVisible" cursor-auto z-50 absolute inset-0 bg="black op60" backdrop-blur-sm flex items-center justify-center>
           <Transition>
             <div v-show="modalVisible" w-90 h-auto bg-back-gray flex="~ col" p="5" rounded gap-3>
               <div flex="~" justify-between>

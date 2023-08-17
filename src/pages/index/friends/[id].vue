@@ -26,13 +26,14 @@ async function sendMessage(msg: Msg) {
   }
   await store.sendFriendMessage(form).then((res: any) => {
     const user_id = userStore.userId
+    const friend_name = userStore.userProfile.name
     store.friendMessages[props.id] = [
       ...store.friendMessages[props.id] ?? [],
       {
         type: 'friend_msg',
         friend_id: props.id,
         user_id,
-        friend_name: user_id,
+        friend_name,
         friend_nick: '',
         rid: '',
         msg,

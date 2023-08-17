@@ -14,7 +14,13 @@ const tl = gsap.timeline({ paused: true })
 
 let question = $ref('')
 let joinGPModalVisible = $ref(false)
+const profileModalVisible = $ref(false)
 let showQA = $ref(false)
+
+onBeforeMount(async () => {
+  const data = await store.getProfile(userStore.userId)
+  userStore.userProfile = data
+})
 
 onMounted(() => {
   tl.to(notifyButton.value,
@@ -120,8 +126,12 @@ function showSettings() {
 
 <template>
   <div w="20" flex="~ col" p="y5" justify-between items-center>
-    <button text-xl font-bold mb-10 @click="router.replace('/')">
+    <button text-xl font-bold @click="router.replace('/')">
       <span text-primary>H</span>CAT
+    </button>
+    <button my-5 @click="profileModalVisible = true">
+      <img rounded-full w-10 h-10 :src="userStore.userProfile.avatar.length === 0 ? '/avatar.jpeg' : userStore.userProfile.avatar" alt="avatar">
+      <EditProfileModal :profile="userStore.userProfile" :modal-visible="profileModalVisible" :close="() => { profileModalVisible = false }" />
     </button>
     <div flex-1 flex="~ col" gap-5>
       <button :class="[store.activeTab === 0 ? 'text-text-light' : 'text-text-secondary']" flex="~ col" items-center text-xs gap-2 @click="sideBarAction(0)">

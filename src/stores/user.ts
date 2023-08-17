@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { authTokenApi, loginApi, logoutApi, registerApi } from '~/api'
+import type { Profile } from '~/types'
 
 interface LoginForm {
   user_id: string
@@ -10,12 +11,21 @@ interface RegisterForm {
   user_id: string
   password: string
   username: string
+
   lang: string
 }
 
 export const useUserStore = defineStore('users', {
   state: () => ({
     userId: '',
+    userProfile: {
+      avatar: '',
+      name: '',
+      id: '',
+      bio: 'NULL',
+      status: '',
+      is_friend: false,
+    } as Profile,
   }),
   actions: {
     login(form: LoginForm) {

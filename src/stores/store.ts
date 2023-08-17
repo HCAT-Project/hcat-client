@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { addAdminApi, agreeJoinGroupReqApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
+import { addAdminApi, agreeJoinGroupReqApi, changeGroupSettingApi, createGroupApi, getAvatarUrlApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getProfileApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
 import { addFriendApi, agreeFriendReqApi, deleteFriendApi, getFriendListApi, sendFriendMsgApi } from '~/api/friend'
-import type { FriendMessage, FriendNotification, Group, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, MsgChain, Todo } from '~/types'
+import type { FriendMessage, FriendNotification, Group, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, MsgChain, Profile, Todo } from '~/types'
 
 interface GroupMsgForm {
   group_id: string
@@ -367,6 +367,27 @@ export const useStore = defineStore('stores', {
             resolve(res.data.value)
           }
           else { reject(res.data.value.message) }
+        })
+      })
+    },
+    getAvatarUrl(user_id: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = getAvatarUrlApi()
+        execute({ data: { user_id } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value.data)
+          else reject(res.data.value.message)
+        })
+      })
+    },
+    getProfile(user_id: string) {
+      return new Promise((resolve: (value: Profile) => void, reject) => {
+        const { execute } = getProfileApi()
+        execute({ data: { user_id } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value.data)
+          else
+            reject(res.data.value.message)
         })
       })
     },
