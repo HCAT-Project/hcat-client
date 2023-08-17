@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { marked } from 'marked'
 import { useStore } from '~/stores'
 
 const props = withDefaults(defineProps<{
@@ -27,9 +28,7 @@ watch(() => props.selected, (val) => {
       <p>
         {{ name }}
       </p>
-      <p text="xs text-secondary" truncate>
-        {{ newMessage }}
-      </p>
+      <p text="xs text-secondary" truncate v-html="marked.parse(newMessage)" />
     </div>
     <p v-if="newMessageNumber !== 0" bg-primary rounded-full p="x-1.5 y0.5" flex items-center text-xs justify-center>
       +{{ newMessageNumber }}
