@@ -9,7 +9,7 @@ const route = useRoute()
 
 <template>
   <Transition name="fade">
-    <div v-show="sidebarStore.show" absolute inset-0 bg="black op80" z-50>
+    <div v-show="sidebarStore.show" absolute inset-0 bg="black op60" backdrop-blur-sm z-50>
       <Transition>
         <OnClickOutside v-show="sidebarStore.show" w="2/3" bg-back-gray flex border-base h-full @trigger="sidebarStore.show = false">
           <NavSideBar />
