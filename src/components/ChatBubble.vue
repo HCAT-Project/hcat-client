@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onClickOutside } from '@vueuse/core'
+import { marked } from 'marked'
 import type { MsgChain } from '~/types'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   fromSelf?: boolean
   message: MsgChain
   time: string
@@ -12,9 +13,16 @@ withDefaults(defineProps<{
 })
 const imgPreviewVisible = ref(false)
 const imgPreview = ref<HTMLImageElement | null>(null)
+
 onClickOutside(imgPreview, (_) => {
   imgPreviewVisible.value = false
 })
+
+marked.setOptions({
+  gfm: true,
+  breaks: true,
+})
+const markedHTML = marked.parse(props.message.msg.replace(/\\n/g, '\n'), { breaks: true, gfm: true })
 </script>
 
 <template>
@@ -25,9 +33,7 @@ onClickOutside(imgPreview, (_) => {
         {{ user }}
       </p>
       <div bg-back-light p="x-3 y3" rounded-lg max-w="md:80 60" text="sm start" flex="~ col" gap-2 break-words>
-        <div v-if="message.type === 'text'" break-all>
-          {{ message.msg }}
-        </div>
+        <span v-if="message.type === 'text'" break-all v-html="markedHTML" />
         <img v-else :src="message.msg" max-w-40 cursor-pointer @click="imgPreviewVisible = true">
         <!-- ImgPreview -->
         <div v-if="imgPreviewVisible" bg="black op40" absolute z-50 inset-0 flex items-center justify-center>

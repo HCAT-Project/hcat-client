@@ -60,7 +60,7 @@ watch(
 <template>
   <div w="70" rounded="l-2xl" bg-back-gray flex-col h-full>
     <ChatListHead p="x5 y5" />
-    <div of-y-auto p="x5" class="no-scrollbar">
+    <div of-y-auto p="x5" class="no-scrollbar" space-y-0.5>
       <ChatCard
         v-for="item in groupList"
         :key="item.id" :item-id="item.id" :name="item.groupName"

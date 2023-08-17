@@ -17,6 +17,8 @@
     "@vueuse/integrations": "^10.3.0",
     "axios": "^1.4.0",
     "gsap": "^3.12.2",
+    "highlight.js": "^11.8.0",
+    "marked": "^7.0.3",
     "pinia": "^2.1.6",
     "pinia-plugin-persistedstate": "^3.2.0",
     "vue": "^3.3.4",
