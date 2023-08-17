@@ -18,9 +18,14 @@ const props = withDefaults(defineProps<{
 const store = useStore()
 const imgPreviewVisible = ref(false)
 const imgPreview = ref<HTMLImageElement | null>(null)
-const nickInput = ref<HTMLImageElement | null>(null)
+const avatarRef = ref<HTMLImageElement | null>(null)
+const { top, left, width } = useElementBounding(avatarRef)
 let profile: Nullable<Profile> = $ref(null)
 let profileCardVisible = $ref(false)
+let position = {
+  x: 0,
+  y: 0,
+}
 
 onClickOutside(imgPreview, (_) => {
   imgPreviewVisible.value = false
@@ -33,6 +38,12 @@ marked.setOptions({
 const markedHTML = marked.parse(props.message.msg.replace(/\\n/g, '\n'), { breaks: true, gfm: true })
 
 async function toggleProfile(id: string) {
+  if (props.fromSelf)
+    return
+  position = {
+    x: left.value + width.value + 5,
+    y: top.value,
+  }
   profile = await store.getProfile(id)
   profileCardVisible = true
 }
@@ -40,44 +51,46 @@ async function toggleProfile(id: string) {
 
 <template>
   <div flex items-start gap-3 :class="{ 'flex-row-reverse': fromSelf }">
-    <OnClickOutside of-visible relative @trigger="profileCardVisible = false" @click="toggleProfile(userId)">
-      <img w-10 h-10 rounded-full :src="fromSelf ? '/avatar.jpeg' : '/hsn.png'">
-      <Transition>
-        <div v-if="profileCardVisible && profile" text-sm w-65 h-80 absolute :class="[fromSelf ? 'right-12' : 'left-12']" top-2 shadow-lg border-base bg-back-gray p-1 rounded-lg>
-          <div flex="~ col" relative h-full>
-            <div h-12 bg="#969696" rounded-t />
-            <div flex-1 flex>
-              <div bg-back flex-1 m-3 mt-8 rounded text-start p-3 relative>
-                <p font-bold text-lg>
-                  {{ profile.name }}
-                </p>
-                <p op40 pb-3 border-b>
-                  # {{ profile.id }}
-                </p>
-                <div v-if="profile.time" pt-3 flex="~ col" gap-1>
-                  <p font-bold>
-                    成为好友的时间
+    <div of-visible relative @click="toggleProfile(userId)">
+      <img ref="avatarRef" w-10 h-10 rounded-full :src="fromSelf ? '/avatar.jpeg' : '/hsn.png'">
+      <Teleport to="main">
+        <Transition>
+          <OnClickOutside v-if="profileCardVisible && profile" :options="{ ignore: [avatarRef] }" :style="{ left: `${position.x}px`, top: `${position.y}px` } " text-sm z-50 w-65 h-80 absolute shadow-lg border-base bg-back-gray p-1 rounded-lg @trigger="profileCardVisible = false">
+            <div flex="~ col" relative h-full>
+              <div h-12 bg="#969696" rounded-t />
+              <div flex-1 flex>
+                <div bg-back flex-1 m-3 mt-8 rounded text-start p-3 relative>
+                  <p font-bold text-lg>
+                    {{ profile.name }}
                   </p>
-                  <p op40>
-                    {{ convertTimeStampToTime(profile.time) }}
+                  <p op40 pb-3 border-b>
+                    # {{ profile.id }}
                   </p>
-                  <p font-bold>
-                    备注
-                  </p>
-                  <input ref="nickInput" :value="profile.nick" outline-none bg-transparent>
+                  <div v-if="profile.time" pt-3 flex="~ col" gap-1>
+                    <p font-bold>
+                      成为好友的时间
+                    </p>
+                    <p op40>
+                      {{ convertTimeStampToTime(profile.time) }}
+                    </p>
+                    <p font-bold>
+                      备注
+                    </p>
+                    <input :value="profile.nick" outline-none bg-transparent>
+                  </div>
+                  <button v-if="!fromSelf" absolute bg-primary p-3 rounded-full right-3 bottom-3>
+                    <div i-carbon-chat />
+                  </button>
                 </div>
-                <button v-if="!fromSelf" absolute bg-primary p-3 rounded-full right-3 bottom-3>
-                  <div i-carbon-chat />
-                </button>
+              </div>
+              <div w-18 h-18 rounded-full p-1.5 bg-back-gray absolute top-2 left-5>
+                <img rounded-full :src="profile.avatar.length === 0 ? '/hsn.png' : profile.avatar" alt="">
               </div>
             </div>
-            <div w-18 h-18 rounded-full p-1.5 bg-back-gray absolute top-2 left-5>
-              <img rounded-full :src="profile.avatar.length === 0 ? '/hsn.png' : profile.avatar" alt="">
-            </div>
-          </div>
-        </div>
-      </Transition>
-    </OnClickOutside>
+          </OnClickOutside>
+        </Transition>
+      </Teleport>
+    </div>
     <div flex="~ col" :class="[fromSelf ? 'items-end' : 'items-start']">
       <p text-text-secondary font-bold text-sm>
         {{ user }}
