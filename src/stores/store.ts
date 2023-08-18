@@ -41,7 +41,7 @@ interface UnReadMsg {
 export const useStore = defineStore('stores', {
   state: () => ({
     groupList: [] as Group[],
-    friendList: [] as string[],
+    friendList: new Set() as Set<string>,
     activeTab: -1,
     gpNotificationList: [] as GroupNotification[],
     fdNotificationList: [] as FriendNotification[],
@@ -334,13 +334,9 @@ export const useStore = defineStore('stores', {
         const { execute } = getFriendListApi()
         execute().then((res) => {
           if (res.data.value.status === 'ok') {
-            const friendList = res.data.value.data as Record<string, string>
-            this.friendList = []
-            for (const key in friendList) {
-              this.friendList.push(
-                friendList[key],
-              )
-            }
+            const friendList = res.data.value.data as string[]
+            for (const friend_id of friendList)
+              this.friendList.add(friend_id)
             resolve(res.data.value.data)
           }
           else { reject(res.data.value.message) }
@@ -423,7 +419,7 @@ export const useStore = defineStore('stores', {
       this.gpNotificationList = []
       this.fdNotificationList = []
       this.groupList = []
-      this.friendList = []
+      this.friendList.clear()
     },
     saveUnReadMsg(conversationId: string, msg: MsgChain) {
       const isText = msg.type === 'text'

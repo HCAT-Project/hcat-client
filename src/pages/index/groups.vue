@@ -1,12 +1,18 @@
 <script setup lang="ts">
+import { useStore } from '~/stores'
 
+const store = useStore()
+
+onBeforeMount(async () => {
+  await store.getGroupList()
+})
 </script>
 
 <template>
   <!-- Chat -->
   <div flex>
     <div hidden sm:block>
-      <GroupList />
+      <ChatListContent :list="store.groupList" type="groups" />
     </div>
     <RouterView flex-1 />
   </div>

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { OnClickOutside } from '@vueuse/components'
-import { useSidebarStore } from '~/stores'
+import { useSidebarStore, useStore } from '~/stores'
 
 const sidebarStore = useSidebarStore()
 
 const route = useRoute()
+const store = useStore()
 </script>
 
 <template>
@@ -13,11 +14,11 @@ const route = useRoute()
       <Transition>
         <OnClickOutside v-show="sidebarStore.show" w="2/3" bg-back-gray flex border-base h-full @trigger="sidebarStore.show = false">
           <NavSideBar />
-          <template v-if="route.path.includes('groups')">
-            <GroupList />
+          <template v-if="route.path.includes('friends')">
+            <ChatListContent :list="store.friendList" type="friends" />
           </template>
-          <template v-else-if="route.path.includes('friends')">
-            <FriendList />
+          <template v-else-if="route.path.includes('groups')">
+            <ChatListContent :list="store.groupList" type="groups" />
           </template>
           <template v-else>
             <NotificationCate />
