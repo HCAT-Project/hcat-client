@@ -4,10 +4,12 @@ import type { GroupMember } from '~/types'
 
 const props = defineProps<{
   modalVisible: boolean
-  close: () => Promise<void>
+  close: () => void
   groupMembers: GroupMember[]
   groupId: string
 }>()
+
+const emit = defineEmits(['refresh'])
 
 const store = useStore()
 const toastStore = useToastStore()
@@ -15,6 +17,7 @@ const toastStore = useToastStore()
 async function transferOwnership(userId: string) {
   await store.transferOwnership(props.groupId, userId).then(async (res) => {
     props.close()
+    emit('refresh')
   }).catch((err) => {
     toastStore.showToast(err, 'error')
   })
