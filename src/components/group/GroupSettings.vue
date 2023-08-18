@@ -68,6 +68,12 @@ function writeToClipboard() {
 async function refreshMemberList() {
   groupMembers = await store.getGroupMembers(props.id)
 }
+
+async function refreshGroupSettings() {
+  selfPermission = await store.getSelfPmsInGroup(props.id)
+  groupSettings = await store.getGroupSetting(props.id)
+  groupMembers = await store.getGroupMembers(props.id)
+}
 </script>
 
 <template>
@@ -103,12 +109,12 @@ async function refreshMemberList() {
       转让群组
       <TransferGroupModal
         :modal-visible="transferModalVisible"
-        :close="async () => {
-          selfPermission = 'admin'
-          groupMembers = await store.getGroupMembers(props.id)
+        :close=" () => {
+          transferModalVisible = false
         }"
         :group-id="id"
         :group-members="groupMembers"
+        @refresh="refreshGroupSettings"
       />
     </button>
     <button v-else bg-back-gray w-full py-2 rounded-lg hover="bg-back-light" text-important @click="leaveGroup">
