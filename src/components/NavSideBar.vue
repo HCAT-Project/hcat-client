@@ -53,7 +53,7 @@ async function logout() {
 
 function showSettings() {
   // TODO: show settings
-  toastStore.showToast('not implemented', 'info')
+  toastStore.notImplemented()
 }
 </script>
 

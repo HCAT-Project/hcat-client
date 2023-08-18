@@ -8,7 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ChangeGroupName: typeof import('./src/components/Modal/ChangeGroupName.vue')['default']
-    ChatBubble: typeof import('./src/components/ChatBubble.vue')['default']
+    ChatBubble: typeof import('./src/components/ChatBubble/ChatBubble.vue')['default']
     ChatCard: typeof import('./src/components/ChatCard.vue')['default']
     ChatHead: typeof import('./src/components/ChatHead.vue')['default']
     ChatInputPanel: typeof import('./src/components/ChatInputPanel.vue')['default']
@@ -51,6 +51,7 @@ declare module 'vue' {
     NavSideBar: typeof import('./src/components/NavSideBar.vue')['default']
     NotificationCate: typeof import('./src/components/Notification/NotificationCate.vue')['default']
     PlaceholderPage: typeof import('./src/components/PlaceholderPage.vue')['default']
+    ProfileCard: typeof import('./src/components/ChatBubble/ProfileCard.vue')['default']
     ProfileModal: typeof import('./src/components/Modal/ProfileModal.vue')['default']
     RenameFriendModal: typeof import('./src/components/Modal/RenameFriendModal.vue')['default']
     RenameGroupModal: typeof import('./src/components/Modal/RenameGroupModal.vue')['default']

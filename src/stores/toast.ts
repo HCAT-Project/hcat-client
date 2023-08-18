@@ -16,10 +16,13 @@ export const useToastStore = defineStore('toast', {
       this.type = type
       setTimeout (() => {
         this.show = false
-      }, 1500)
+      }, 2000)
     },
     hideToast() {
       this.show = false
+    },
+    notImplemented() {
+      this.showToast('Not implemented', 'info')
     },
   },
 })

@@ -12,7 +12,7 @@ const newNickName = $ref('')
 
 function renameFriend() {
   // TODO: rename friend
-  toastStore.showToast('not implemented', 'error')
+  toastStore.notImplemented()
 }
 </script>
 

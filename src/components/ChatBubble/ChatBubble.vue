@@ -3,7 +3,7 @@ import { OnClickOutside } from '@vueuse/components'
 import { onClickOutside } from '@vueuse/core'
 import { marked } from 'marked'
 import type { Nullable } from 'vitest'
-import { useStore } from '~/stores'
+import { useStore, useToastStore } from '~/stores'
 import type { MsgChain, Profile } from '~/types'
 
 const props = withDefaults(defineProps<{
@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<{
   fromSelf: false,
 })
 const store = useStore()
+const toastStore = useToastStore()
 const imgPreviewVisible = ref(false)
 const imgPreview = ref<HTMLImageElement | null>(null)
 const avatarRef = ref<HTMLImageElement | null>(null)
@@ -78,7 +79,7 @@ async function toggleProfile(id: string) {
                     </p>
                     <input :value="profile.nick" outline-none bg-transparent>
                   </div>
-                  <button v-if="!fromSelf" absolute bg-primary p-3 rounded-full right-3 bottom-3>
+                  <button v-if="!fromSelf" absolute bg-primary p-3 rounded-full right-3 bottom-3 @click="toastStore.notImplemented()">
                     <div i-carbon-chat />
                   </button>
                 </div>
