@@ -1,3 +1,5 @@
+import type { Nullable } from 'vitest'
+
 export type ChatType = 'friend' | 'group'
 export type GroupPermission = 'owner' | 'admin' | 'member'
 export type GroupVerificationMethod = 'ac' | 'fr' | 'na' | 'aw'
@@ -145,4 +147,16 @@ export interface FriendMessage {
   rid: string
   time: number
   user_id: string
+}
+
+export interface Profile {
+  avatar: string
+  name: string
+  id: string
+  bio: string
+  status: string
+  is_friend: boolean
+  gender: string
+  nick: Nullable<string>
+  time: Nullable<number>
 }

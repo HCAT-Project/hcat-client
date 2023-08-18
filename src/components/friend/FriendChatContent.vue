@@ -20,7 +20,7 @@ watch(() => store.friendMessages[props.id], async () => {
 
 <template>
   <div ref="chatContent" flex="~ col" of="y-auto" flex-1 p="y10 x5" gap-5 class="no-scrollbar">
-    <ChatBubble v-for="item, idx in store.friendMessages[id]" :key="idx" :time="convertTimeStampToTime(item.time)" :from-self="item.user_id === userStore.userId" :user="item.friend_name" :message="item.msg.msg_chain[0]" />
+    <ChatBubble v-for="item, idx in store.friendMessages[id]" :key="idx" :time="convertTimeStampToTime(item.time)" :from-self="item.user_id === userStore.userId" :user="item.friend_name" :user-id="item.user_id" :message="item.msg.msg_chain[0]" />
   </div>
 </template>
 

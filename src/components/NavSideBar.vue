@@ -6,15 +6,15 @@ const router = useRouter()
 const store = useStore()
 const userStore = useUserStore()
 const toastStore = useToastStore()
-const answer = $ref('')
-const joinGroupID = $ref('')
-const addMessage = $ref('')
+
 const notifyButton = ref<HTMLDivElement | null>(null)
 const tl = gsap.timeline({ paused: true })
+const profileModalVisible = $ref(false)
 
-let question = $ref('')
-let joinGPModalVisible = $ref(false)
-let showQA = $ref(false)
+onBeforeMount(async () => {
+  const data = await store.getProfile(userStore.userId)
+  userStore.userProfile = data
+})
 
 onMounted(() => {
   tl.to(notifyButton.value,
@@ -27,66 +27,8 @@ onMounted(() => {
 watch(() => store.hasNewNotify, (newVal) => {
   if (newVal)
     tl.play()
-
   else tl.pause(0)
 }, { immediate: true })
-
-async function joinGroup() {
-  // TODO: 自由进出与需要验证分开处理
-  if (joinGroupID.trim() === '') {
-    // TODO: 处理错误
-    return
-  }
-
-  await store.getGroupVerification(joinGroupID).then(async (verification) => {
-    question = verification.question
-    const form = {
-      group_id: joinGroupID,
-      add_info: addMessage,
-    }
-    switch (verification.verification_method) {
-      case 'fr':
-        await store.joinGroup(form).then((res) => {
-          store.getGroupList()
-          joinGPModalVisible = false
-        }).catch((err) => {
-          toastStore.showToast(err, 'error')
-        })
-        break
-      case 'ac':
-        await store.joinGroup(form).then((res) => {
-          toastStore.showToast('已发送入群申请', 'success')
-          // store.getGroupList()
-          joinGPModalVisible = false
-        }).catch((err) => {
-          toastStore.showToast(err, 'error')
-        })
-        break
-      case 'na':
-        toastStore.showToast('该群不允许加入', 'error')
-        break
-      case 'aw':
-        showQA = true
-        break
-    }
-  }).catch((err) => {
-    toastStore.showToast(err, 'error')
-  })
-}
-
-async function submitAnswer() {
-  await store.joinGroup({
-    group_id: joinGroupID,
-    add_info: answer,
-  }).then((res) => {
-    showQA = false
-    joinGPModalVisible = false
-    toastStore.showToast('加入成功', 'success')
-    store.getGroupList()
-  }).catch((err) => {
-    toastStore.showToast(err, 'error')
-  })
-}
 
 function sideBarAction(index: number) {
   switch (index) {
@@ -98,9 +40,6 @@ function sideBarAction(index: number) {
       break
     case 2:
       router.replace('/notifications')
-      break
-    case 3:
-      joinGPModalVisible = true
       break
   }
 }
@@ -114,14 +53,18 @@ async function logout() {
 
 function showSettings() {
   // TODO: show settings
-  toastStore.showToast('not implemented', 'info')
+  toastStore.notImplemented()
 }
 </script>
 
 <template>
   <div w="20" flex="~ col" p="y5" justify-between items-center>
-    <button text-xl font-bold mb-10 @click="router.replace('/')">
+    <button text-xl font-bold @click="router.replace('/')">
       <span text-primary>H</span>CAT
+    </button>
+    <button my-5 @click="profileModalVisible = true">
+      <img rounded-full w-10 h-10 :src="userStore.userProfile.avatar.length === 0 ? '/avatar.jpeg' : userStore.userProfile.avatar" alt="avatar">
+      <EditProfileModal :profile="userStore.userProfile" :modal-visible="profileModalVisible" :close="() => { profileModalVisible = false }" />
     </button>
     <div flex-1 flex="~ col" gap-5>
       <button :class="[store.activeTab === 0 ? 'text-text-light' : 'text-text-secondary']" flex="~ col" items-center text-xs gap-2 @click="sideBarAction(0)">
@@ -136,36 +79,8 @@ function showSettings() {
         <div ref="notifyButton" w-6 h-6 i-carbon-notification :class="{ 'text-primary': store.hasNewNotify }" />
         <p>通知</p>
       </button>
-      <button :class="[store.activeTab === 3 ? 'text-text-light' : 'text-text-secondary']" flex="~ col" items-center text-xs gap-2 @click="sideBarAction(3)">
-        <div w-6 h-6 i-carbon-search-advanced />
-        <p>查找</p>
-      </button>
-      <!-- Join Modal -->
-      <Modal :modal-visible="joinGPModalVisible" :child-page-visible="showQA" @close="() => { joinGPModalVisible = false, showQA = false }">
-        <div v-if="!showQA" flex="~ col" gap-8>
-          <div flex-1 flex="~ col" items-center gap-3>
-            <img w-20 h-20 src="/logo.png">
-            <TextInput v-model="joinGroupID" text-sm label="群组ID" />
-            <TextInput v-model="addMessage" text-sm label="附加消息" />
-          </div>
-          <TextButton text="加入" @click="joinGroup" />
-        </div>
-        <div v-else>
-          <div flex="~ col" gap-5>
-            <div flex="~ col" gap-3>
-              <TextInput v-model="question" :disabled="true" text-sm label="问题" />
-              <TextInput v-model="answer" text-sm label="答案" />
-            </div>
-            <TextButton text="提交" @click="submitAnswer" />
-          </div>
-        </div>
-      </Modal>
     </div>
     <div flex="~ col" gap-5 text="xs text-secondary">
-      <!-- <button flex="~ col" items-center gap-2 hover="text-light" @click="() => { store.clearStorage;router.replace('/') }">
-        <div w-6 h-6 i-carbon-trash-can />
-        <p> 清空</p>
-      </button> -->
       <button flex="~ col" items-center gap-2 hover="text-light" @click="logout">
         <div w-6 h-6 i-carbon-logout />
         <p> 注销</p>

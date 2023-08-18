@@ -18,7 +18,10 @@ onMounted(() => {
 <template>
   <div h-full flex="~">
     <!-- Sidebar -->
-    <NavSideBar />
+    <div hidden sm:flex>
+      <NavSideBar />
+    </div>
+    <MobileSideBar />
     <RouterView flex-1 />
   </div>
 </template>

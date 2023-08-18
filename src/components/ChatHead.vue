@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { useStore } from '~/stores/store'
+import { useStore, useToastStore } from '~/stores'
 
 const props = defineProps<{
   id: string
-  type: string
+  type: 'group' | 'friend'
 }>()
 
 const store = useStore()
+const toastStore = useToastStore()
 
 function clearMessages() {
   props.type === 'friend' ? store.clearFriendMessages(props.id) : store.clearGroupMessages(props.id)
@@ -16,11 +17,12 @@ function clearMessages() {
 <template>
   <div flex justify-between items-center px-8>
     <div flex="~ col">
-      <div flex="~ col" gap-1>
+      <div flex="~" gap-3>
+        <MobileSidebarBtn />
         <p text="lg start" font-bold>
           {{
             type === "group" ? store.groupList.find(item => item.id === id)?.groupName
-            : store.friendList.find(item => item === id)
+            : id
           }}
         </p>
       </div>
@@ -29,10 +31,10 @@ function clearMessages() {
       <button @click="clearMessages">
         <div text-text-secondary i-carbon-clean />
       </button>
-      <button>
+      <button @click="toastStore.notImplemented">
         <div text-text-secondary i-carbon-search />
       </button>
-      <button>
+      <button @click="toastStore.notImplemented">
         <div text-text-secondary i-carbon-open-panel-right />
       </button>
     </div>

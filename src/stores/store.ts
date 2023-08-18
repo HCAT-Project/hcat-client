@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { addAdminApi, agreeJoinGroupReqApi, changeGroupSettingApi, createGroupApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
+import { addAdminApi, agreeJoinGroupReqApi, changeGroupSettingApi, createGroupApi, getAvatarUrlApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getProfileApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
 import { addFriendApi, agreeFriendReqApi, deleteFriendApi, getFriendListApi, sendFriendMsgApi } from '~/api/friend'
-import type { FriendMessage, FriendNotification, Group, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, MsgChain, Todo } from '~/types'
+import type { FriendMessage, FriendNotification, Group, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, MsgChain, Profile, Todo } from '~/types'
 
 interface GroupMsgForm {
   group_id: string
@@ -41,7 +41,7 @@ interface UnReadMsg {
 export const useStore = defineStore('stores', {
   state: () => ({
     groupList: [] as Group[],
-    friendList: [] as string[],
+    friendList: new Set() as Set<string>,
     activeTab: -1,
     gpNotificationList: [] as GroupNotification[],
     fdNotificationList: [] as FriendNotification[],
@@ -334,13 +334,9 @@ export const useStore = defineStore('stores', {
         const { execute } = getFriendListApi()
         execute().then((res) => {
           if (res.data.value.status === 'ok') {
-            const friendList = res.data.value.data as Record<string, string>
-            this.friendList = []
-            for (const key in friendList) {
-              this.friendList.push(
-                friendList[key],
-              )
-            }
+            const friendList = res.data.value.data as string[]
+            for (const friend_id of friendList)
+              this.friendList.add(friend_id)
             resolve(res.data.value.data)
           }
           else { reject(res.data.value.message) }
@@ -367,6 +363,27 @@ export const useStore = defineStore('stores', {
             resolve(res.data.value)
           }
           else { reject(res.data.value.message) }
+        })
+      })
+    },
+    getAvatarUrl(user_id: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = getAvatarUrlApi()
+        execute({ data: { user_id } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value.data)
+          else reject(res.data.value.message)
+        })
+      })
+    },
+    getProfile(user_id: string) {
+      return new Promise((resolve: (value: Profile) => void, reject) => {
+        const { execute } = getProfileApi()
+        execute({ data: { user_id } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value.data)
+          else
+            reject(res.data.value.message)
         })
       })
     },
@@ -402,7 +419,7 @@ export const useStore = defineStore('stores', {
       this.gpNotificationList = []
       this.fdNotificationList = []
       this.groupList = []
-      this.friendList = []
+      this.friendList.clear()
     },
     saveUnReadMsg(conversationId: string, msg: MsgChain) {
       const isText = msg.type === 'text'

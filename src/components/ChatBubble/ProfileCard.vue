@@ -3,5 +3,9 @@
 </script>
 
 <template>
-  <PlaceholderPage title="Notifications" />
+  <div />
 </template>
+
+<style scoped>
+
+</style>

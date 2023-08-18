@@ -29,3 +29,15 @@ export function getTodoListApi() {
     method: 'POST',
   })
 }
+
+export function getAvatarUrlApi() {
+  return useAxiosApi('/account/get_avatar_url', {
+    method: 'POST',
+  })
+}
+
+export function getProfileApi() {
+  return useAxiosApi('/account/get_profile', {
+    method: 'POST',
+  })
+}
