@@ -41,3 +41,9 @@ export function getProfileApi() {
     method: 'POST',
   })
 }
+
+export function updateProfileApi() {
+  return useAxiosApi('/account/update_profile', {
+    method: 'POST',
+  })
+}

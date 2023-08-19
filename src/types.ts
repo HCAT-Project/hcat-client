@@ -160,3 +160,5 @@ export interface Profile {
   nick: Nullable<string>
   time: Nullable<number>
 }
+
+export type UpdateProfile = Partial<Profile>

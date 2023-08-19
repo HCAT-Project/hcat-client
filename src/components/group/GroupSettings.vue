@@ -24,18 +24,7 @@ const questionModalVisible = $ref(false)
 const renameModalVisible = $ref(false)
 
 watch(() => props.id, async () => {
-  const requestList = [
-    store.getSelfPmsInGroup(props.id),
-    store.getGroupSetting(props.id),
-    store.getGroupMembers(props.id),
-  ]
-  await Promise.all(requestList).then((res) => {
-    selfPermission = res[0] as GroupPermission
-    groupSettings = res[1] as GroupSetting
-    groupMembers = res[2] as GroupMember[]
-  }).catch((err) => {
-    toastStore.showToast(err, 'error')
-  })
+  await refreshGroupSettings()
 }, { immediate: true })
 
 async function changeGroupSetting(groupSettings: GroupSetting) {
@@ -70,9 +59,18 @@ async function refreshMemberList() {
 }
 
 async function refreshGroupSettings() {
-  selfPermission = await store.getSelfPmsInGroup(props.id)
-  groupSettings = await store.getGroupSetting(props.id)
-  groupMembers = await store.getGroupMembers(props.id)
+  const requestList = [
+    store.getSelfPmsInGroup(props.id),
+    store.getGroupSetting(props.id),
+    store.getGroupMembers(props.id),
+  ]
+  await Promise.all(requestList).then((res) => {
+    selfPermission = res[0] as GroupPermission
+    groupSettings = res[1] as GroupSetting
+    groupMembers = res[2] as GroupMember[]
+  }).catch((err) => {
+    toastStore.showToast(err, 'error')
+  })
 }
 </script>
 

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { addAdminApi, agreeJoinGroupReqApi, changeGroupSettingApi, createGroupApi, getAvatarUrlApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getProfileApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi } from '~/api'
+import { addAdminApi, agreeJoinGroupReqApi, changeGroupSettingApi, createGroupApi, getAvatarUrlApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getProfileApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi, updateProfileApi } from '~/api'
 import { addFriendApi, agreeFriendReqApi, deleteFriendApi, getFriendListApi, sendFriendMsgApi } from '~/api/friend'
-import type { FriendMessage, FriendNotification, Group, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, MsgChain, Profile, Todo } from '~/types'
+import type { FriendMessage, FriendNotification, Group, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, MsgChain, Profile, Todo, UpdateProfile } from '~/types'
 
 interface GroupMsgForm {
   group_id: string
@@ -380,6 +380,18 @@ export const useStore = defineStore('stores', {
       return new Promise((resolve: (value: Profile) => void, reject) => {
         const { execute } = getProfileApi()
         execute({ data: { user_id } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value.data)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    updateProfile(profile: UpdateProfile) {
+      return new Promise((resolve, reject) => {
+        const { execute } = updateProfileApi()
+        const profileStr = JSON.stringify(profile)
+        execute({ data: { profile: profileStr } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value.data)
           else
