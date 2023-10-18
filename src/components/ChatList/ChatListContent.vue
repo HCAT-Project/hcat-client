@@ -5,7 +5,7 @@ import { useSidebarStore } from '~/stores'
 
 const props = defineProps<{
   type: 'groups' | 'friends'
-  list: Set<string> | Group[]
+  list: string[] | Group[]
 }>()
 
 const store = useStore()
@@ -66,7 +66,7 @@ function selectChat(id: string) {
     <div of-y-auto p="x5" class="no-scrollbar" space-y-0.5>
       <template v-if="type === 'friends'">
         <ChatCard
-          v-for="item in (list as Set<string>)"
+          v-for="item in list as string[]"
           :key="item" :item-id="item" :name="item"
           :new-message-number="route.path.includes(item) || !store.unReadMsg[item] ? 0 : store.unReadMsg[item].number"
           :selected="selectedId === item"

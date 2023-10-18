@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { addAdminApi, agreeJoinGroupReqApi, changeGroupSettingApi, createGroupApi, getAvatarUrlApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getProfileApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi, updateProfileApi } from '~/api'
+import { addAdminApi, agreeJoinGroupReqApi, changeGroupSettingApi, checkFileAPi, createGroupApi, getAvatarUrlApi, getGroupListApi, getGroupMembersApi, getGroupNameApi, getGroupSettingApi, getGroupVerificationApi, getProfileApi, getSelfPmsInGroupApi, getTodoListApi, joinGroupApi, kickMemberApi, leaveGroupApi, removeAdminApi, renameGroupApi, sendGroupMsgApi, transferOwnershipApi, updateProfileApi, uploadFileApi } from '~/api'
 import { addFriendApi, agreeFriendReqApi, deleteFriendApi, getFriendListApi, sendFriendMsgApi } from '~/api/friend'
 import type { FriendMessage, FriendNotification, Group, GroupMember, GroupMessage, GroupNotification, GroupPermission, GroupSetting, GroupVerification, MsgChain, Profile, Todo, UpdateProfile } from '~/types'
 
@@ -41,7 +41,7 @@ interface UnReadMsg {
 export const useStore = defineStore('stores', {
   state: () => ({
     groupList: [] as Group[],
-    friendList: new Set() as Set<string>,
+    friendList: [] as string[],
     activeTab: -1,
     gpNotificationList: [] as GroupNotification[],
     fdNotificationList: [] as FriendNotification[],
@@ -334,9 +334,7 @@ export const useStore = defineStore('stores', {
         const { execute } = getFriendListApi()
         execute().then((res) => {
           if (res.data.value.status === 'ok') {
-            const friendList = res.data.value.data as string[]
-            for (const friend_id of friendList)
-              this.friendList.add(friend_id)
+            this.friendList = res.data.value.data as string[]
             resolve(res.data.value.data)
           }
           else { reject(res.data.value.message) }
@@ -399,6 +397,28 @@ export const useStore = defineStore('stores', {
         })
       })
     },
+    checkFile(sha1: string) {
+      return new Promise((resolve, reject) => {
+        const { execute } = checkFileAPi()
+        execute({ data: { sha1 } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value.data)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
+    uploadFile(file: File) {
+      return new Promise((resolve, reject) => {
+        const { execute } = uploadFileApi()
+        execute({ data: { file } }).then((res) => {
+          if (res.data.value.status === 'ok')
+            resolve(res.data.value.data)
+          else
+            reject(res.data.value.message)
+        })
+      })
+    },
     addGroupNotification(notification: GroupNotification) {
       this.gpNotificationList.unshift(notification)
     },
@@ -431,7 +451,7 @@ export const useStore = defineStore('stores', {
       this.gpNotificationList = []
       this.fdNotificationList = []
       this.groupList = []
-      this.friendList.clear()
+      this.friendList = []
     },
     saveUnReadMsg(conversationId: string, msg: MsgChain) {
       const isText = msg.type === 'text'
