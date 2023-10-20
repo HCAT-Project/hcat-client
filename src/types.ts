@@ -35,7 +35,7 @@ export interface GroupVerification {
 
 export interface Group {
   id: string
-  groupName: string
+  group_name: string
   nick: string
   remark: string
 }

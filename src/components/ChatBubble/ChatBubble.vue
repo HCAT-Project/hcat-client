@@ -31,7 +31,6 @@ onMounted(() => {
         new Uint8Array(res.data).reduce((data, byte) => data + String.fromCharCode(byte), ''),
       )
       imgBase64.value = `data:image/png;base64,${base64}`
-
     })
   }
 })
@@ -80,7 +79,7 @@ const markedHTML = marked.parse(props.message.msg.replace(/\\n/g, '\n'), { break
         <img v-else :src="imgBase64" max-w-40 cursor-pointer @click="imgPreviewVisible = true">
         <!-- ImgPreview -->
         <div v-if="imgPreviewVisible" bg="black op40" absolute z-50 inset-0 flex items-center justify-center>
-          <img ref="imgPreview" max-w-screen-sm :src="message.msg">
+          <img ref="imgPreview" max-w-screen-sm :src="imgBase64">
         </div>
         <div flex justify-between items-center gap-10>
           <p text="xs text-secondary">

@@ -72,17 +72,8 @@ export const useStore = defineStore('stores', {
         execute().then((res) => {
           if (res.data.value.status === 'ok') {
             const { data } = res.data.value
-            const groupList = []
-            for (const key in data) {
-              groupList.push({
-                id: key,
-                groupName: data[key].group_name,
-                nick: data[key].nick,
-                remark: data[key].remark,
-              })
-            }
-            this.groupList = groupList
-            resolve(groupList)
+            this.groupList = data
+            resolve(data)
           }
           else { reject(res.data.value.message) }
         })
@@ -157,17 +148,7 @@ export const useStore = defineStore('stores', {
         const { execute } = getGroupMembersApi()
         execute({ data: { group_id } }).then((res) => {
           if (res.data.value.status === 'ok') {
-            const data = res.data.value.data
-            const owners = []
-            const members = []
-            for (const k in data) {
-              const member = { user_id: k, permission: data[k].permission }
-              if (data[k].permission === 'owner')
-                owners.unshift(member)
-              else
-                members.push(member)
-            }
-            const groupMembers = owners.concat(members)
+            const groupMembers = res.data.value.data as GroupMember[]
             resolve(groupMembers)
           }
 
@@ -225,15 +206,11 @@ export const useStore = defineStore('stores', {
         const { execute } = getTodoListApi()
         execute().then((res) => {
           if (res.data.value.status === 'ok') {
-            // console.log(res)
             const data = res.data.value.data as Todo[]
             data.forEach((item) => {
               switch (item.type) {
                 case 'group_msg':
-                  this.groupMessages[item.group_id] = [
-                    ...this.groupMessages[item.group_id] ?? [],
-                    item,
-                  ]
+                  this.groupMessages[item.group_id].push(item)
                   this.saveUnReadMsg(item.group_id, item.msg.msg_chain[0])
                   break
                 case 'friend_msg':

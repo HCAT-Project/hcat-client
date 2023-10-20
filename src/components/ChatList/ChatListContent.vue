@@ -77,7 +77,7 @@ function selectChat(id: string) {
       <template v-else>
         <ChatCard
           v-for="item in list as Group[]"
-          :key="item.id" :item-id="item.id" :name="item.groupName"
+          :key="item.id" :item-id="item.id" :name="item.group_name"
           :new-message-number="route.path.includes(item.id) || !store.unReadMsg[item.id] ? 0 : store.unReadMsg[item.id].number"
           :selected="selectedId === item.id"
           :new-message=" !store.unReadMsg[item.id] ? '' : store.unReadMsg[item.id].lastMsg"

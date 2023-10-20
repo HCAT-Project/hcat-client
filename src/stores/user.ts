@@ -18,6 +18,7 @@ interface RegisterForm {
 export const useUserStore = defineStore('users', {
   state: () => ({
     userId: '',
+    token: '',
     userProfile: {
       avatar: '',
       name: '',
@@ -35,6 +36,7 @@ export const useUserStore = defineStore('users', {
           if (res.data.value.status === 'ok') {
             setCookie('user_id', form.user_id, 180)
             this.userId = form.user_id
+            this.token = res.data.value.token
             resolve(res.data.value)
           }
           else {
@@ -56,7 +58,7 @@ export const useUserStore = defineStore('users', {
     },
     authToken() {
       return new Promise((resolve, reject) => {
-        const { execute } = authTokenApi()
+        const { execute } = authTokenApi(this.token)
         execute().then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value.status)
@@ -85,6 +87,6 @@ export const useUserStore = defineStore('users', {
     key: 'userStorage',
     storage: window.localStorage,
     // TODO: 图片不该存储在本地
-    paths: ['userId'],
+    paths: ['userId','token'],
   },
 })

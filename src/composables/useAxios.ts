@@ -3,6 +3,7 @@ import { useAxios } from '@vueuse/integrations/useAxios'
 import type { AxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import { IP } from '~/constant'
+import { useUserStore } from '~/stores'
 
 // create an axios instance
 const instance = axios.create({
@@ -10,7 +11,7 @@ const instance = axios.create({
   withCredentials: true,
   timeout: 5000,
   headers: {
-    'Content-Type': 'multipart/form-data',
+    'Content-Type': 'application/json',
   },
 })
 
@@ -19,14 +20,11 @@ instance.interceptors.request.use(
   (config) => {
     // do something before request is sent
     // const token = store.state.user.token;
+    const  token = useUserStore().$state.token
 
-    // if (token) {
-    //   // let each request carry token
-    //   config.headers = {
-    //     ...config.headers,
-    //     Authorization: `Bearer ${token}`
-    //   };
-    // }
+    if (token) {
+      config.headers.Authorization = token
+    }
     return config
   },
   (error) => {

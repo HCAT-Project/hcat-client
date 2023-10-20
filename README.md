@@ -6,7 +6,6 @@ hcat-client客户端的vue版本，仍在开发中。
 
 由于本项目仅为静态客户端资源，您需要配合[re_hcat-server](https://github.com/HCAT-Project/re_hcat-server)使用。[re_hcat-server](https://github.com/HCAT-Project/re_hcat-server)是[HCAT-Project](https://github.com/HCAT-Project)的核心项目，作为服务端使用，您可以前往其仓库学习安装方法。
 
-在安装完成服务端后，接着你需要配置`src/constant.ts`文件中的url地址。
 
 # 预览
 <!-- 插入图片 -->

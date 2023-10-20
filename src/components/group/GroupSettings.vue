@@ -82,7 +82,7 @@ async function refreshGroupSettings() {
     <div v-if="groupSettings" flex justify-between gap-3>
       <button hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl @click="() => { renameModalVisible = true }">
         <div i-carbon-text-annotation-toggle />
-        <RenameGroupModal :modal-visible="renameModalVisible" :close="() => { renameModalVisible = false }" :group-id="id" :group-name="store.groupList.find(item => item.id === id)?.groupName! " />
+        <RenameGroupModal :modal-visible="renameModalVisible" :close="() => { renameModalVisible = false }" :group-id="id" :group-name="store.groupList.find(item => item.id === id)?.group_name! " />
       </button>
       <button :disabled="groupSettings.verification_method !== 'aw'" hover="bg-back-light" w-12 h-12 bg-back-gray flex items-center justify-center rounded-xl @click="questionModalVisible = true">
         <div i-carbon-password />

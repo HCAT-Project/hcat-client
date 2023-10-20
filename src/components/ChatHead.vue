@@ -21,7 +21,7 @@ function clearMessages() {
         <MobileSidebarBtn />
         <p text="lg start" font-bold>
           {{
-            type === "group" ? store.groupList.find(item => item.id === id)?.groupName
+            type === "group" ? store.groupList.find(item => item.id === id)?.group_name
             : id
           }}
         </p>

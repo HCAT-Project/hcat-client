@@ -1,8 +1,9 @@
 import useAxiosApi from '~/composables/useAxios'
 
-export function authTokenApi() {
+export function authTokenApi(token: string) {
   return useAxiosApi('/account/authenticate_token', {
     method: 'GET',
+    params: {token}
   })
 }
 
@@ -26,7 +27,7 @@ export function logoutApi() {
 
 export function getTodoListApi() {
   return useAxiosApi('/account/get_todo_list', {
-    method: 'POST',
+    method: 'GET',
   })
 }
 

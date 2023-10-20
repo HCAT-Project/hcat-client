@@ -51,7 +51,7 @@ async function sendMessage(msg: Msg) {
 <template>
   <div flex>
     <div flex-1 flex="~ col" p="t5" rounded="r-2xl" bg-back-gray of-hidden>
-      <ChatHead :id="id" type="friend" :name="store.groupList.find(item => item.id === id)?.groupName!" />
+      <ChatHead :id="id" type="friend" :name="store.groupList.find(item => item.id === id)?.group_name!" />
       <FriendChatContent :id="id" />
       <ChatInputPanel :id="id" @send="sendMessage" />
     </div>
