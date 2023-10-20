@@ -1,0 +1,105 @@
+<!--
+  ~ Copyright (C) 2023. HCAT-Project-Team
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<html>
+  <head>
+  <meta name="description" content="HCAT">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>HCAT - 注册</title>
+  <link rel="shortcut icon" href="img/hcat.ico">
+  <link rel="stylesheet" href="https://cdn.staticfile.org/mdui/1.0.2/css/mdui.min.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <script src="https://cdn.staticfile.org/mdui/1.0.2/js/mdui.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="https://cdn.staticfile.org/jquery/3.6.1/jquery.min.js"></script>
+  <!--<link href="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/css/bootstrap.min.css" rel="stylesheet">-->
+  <!--<script src="https://cdn.staticfile.org/twitter-bootstrap/5.2.1/js/bootstrap.bundle.min.js"></script>-->
+</head>
+<body class="mdui-theme-primary-indigo mdui-theme-accent-indigo background">
+  <div class="mdui-appbar mb10" style="box-shadow: 0px 0px;z-index: 10000;position: sticky;">
+    <div class="mdui-toolbar mdui-color-indigo-50" id="toolbar">
+      <a class="mdui-typo-headline" href="">HCAT</a>
+      <a class="mdui-typo-title">注册</a>
+    </div>
+  </div>
+  
+<div class="mdui-container-fluid">
+    <div class="mdui-row main-area mdui-center" style="width: calc(100% - 28px);">
+        <div id="chatting-list" class="card mdui-card" style="height: 600px;padding: 60px;">
+            <div class="mdui-text-center mdui-typo-display-3" style="font-size: 36px">注册HCAT</div>
+            <div class="mdui-textfield" style="padding: 16px 20%">
+            <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">account_circle</i><label class="mdui-textfield-label" style="margin-left: 48px;">账号</label><input id="reg_account" required="" class="mdui-textfield-input" style="margin-left: 48px;" type="text" name="uid"/></div>
+            <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">lock</i><label class="mdui-textfield-label" style="margin-left: 48px;">密码</label><input id="reg_passwd" required="" class="mdui-textfield-input" style="margin-left: 48px;" type="password" name="password"/></div>
+            <div class="mdui-textfield mdui-textfield-floating-label"><i class="mdui-icon material-icons">contacts</i><label class="mdui-textfield-label" style="margin-left: 48px;">昵称</label><input id="reg_display_name" required="" class="mdui-textfield-input" style="margin-left: 48px;" type="text" name="display_name"/></div>
+            <div class="mdui-textfield mdui-textfield-floating-label" style="margin-top: 15px;overflow: visible;"><i class="mdui-icon material-icons">language</i><select class="mdui-select" id="language-select" style="margin-left: 48px;" mdui-select><option value="zh_CN">简体中文</option><option value="meow_CN">喵体中文</option><option value="en_US">英文</option></select></div><br>
+            <input onclick="loginHandler()" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent-100" type="submit" value="注册"><br>
+            <button onclick="window.location='login.html'" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-ripple mdui-color-theme-accent-100">已有账号？点击登录！</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function loginHandler() {
+    var user = $("#reg_account").val();
+    var pwd = $("#reg_passwd").val();
+    var disn = $("#reg_display_name").val();
+    var lang = $("#language-select option:selected").val();
+    if(user === "" || pwd === ""){
+        mdui.snackbar({message:'请填写内容'});
+        return;
+    }
+    $.ajax({
+        type: 'post',
+        url: apiAddress + "/account/register",
+        data: {user_id: user, password: pwd, username: disn, lang: lang},
+        dataType: 'text',
+        success: function(data){
+            obj = JSON.parse(data);
+            if (obj.status == "ok"){
+                mdui.snackbar({message:'注册成功'});
+                window.location = "login.html";
+            }else if(obj.status == "error"){
+                mdui.snackbar({message:'注册失败，错误原因：' + obj.message});
+            }else{
+                mdui.snackbar({message:'未知错误'});
+            }
+        }
+    });
+}
+// token验证
+function authenticateToken(){
+    $.ajax({
+        type: 'get',
+        url: apiAddress + "/account/authenticate_token",
+        data: {},
+        dataType: 'text',
+        success: function(data){
+            obj = JSON.parse(data);
+            if (obj.status == "ok"){
+                mdui.snackbar({message:'您已登录'});
+                window.location = "index.html";
+            }
+        }
+    });
+}
+authenticateToken();
+</script>
+
+</body>
+</html>

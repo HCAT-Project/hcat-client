@@ -1,0 +1,359 @@
+/*
+ * Copyright (C) 2023. HCAT-Project-Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+.unread {
+    color: #FF0000;
+}
+
+.username {
+    margin-top: 2px;
+    line-height: 27px;
+    color: #000000;
+    display: block;
+    margin-left: 5px;
+    width: fit-content;
+}
+
+.bubble {
+    line-height: 25px;
+    background: rgb(236, 236, 236);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    min-height: 10px;
+    padding: 8px;
+    border: solid 1px rgb(201, 198, 198);
+    border-radius: 10px;
+    color: #000000;
+    width: fit-content;
+}
+
+.opacity {
+    opacity: 0.75;
+}
+
+.background {
+    background-color: #99c2ea;
+    background-image: url(https://api.kdcc.cn/);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.list {
+    border-radius: 20px;
+}
+
+.main-area {
+    padding: 0px 3px 0px 3px;
+}
+
+.input-content {
+    width: 100%;
+    height: 50px;
+    background: transparent;
+    border-top: 1px solid #333333;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    padding: 13px;
+    color: #000000;
+    border-radius: 0px 0px 25px 25px;
+}
+
+input::-webkit-input-placeholder {
+    color: #333333;
+}
+
+.card {
+    width: 100%;
+    padding: 30px 60px 10px 60px;
+    color: #000000;
+    /* opacity: 0.95; */
+    border-radius: 20px;
+}
+
+.CardTitle {
+    color: #000000;
+    height: 50px;
+    padding: 16px;
+    font-size: 3vh;
+    margin: 0;
+    line-height: 1;
+    font-weight: bold;
+    border-radius: 20px;
+}
+
+.ToolsArea {
+    color: #000000;
+    height: 50px;
+    padding: 16px;
+    font-size: 3vh;
+    margin: 0;
+    line-height: 1;
+    font-weight: bold;
+    border-top: 1px solid #787d9a;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    display: flex;
+    align-items: center;
+}
+  
+.CardBody {
+    padding: 0px 12px 10px 12px;
+    font-weight: 400;
+    font-size: 16px;
+}
+  
+.mb10 {
+    margin-bottom: 12px;
+}
+
+.logo {
+    margin-bottom: 12px;
+    margin-top:30px;
+}
+
+#dplayer {
+    width: 100%;
+    height: 512px;
+    zoom: 1.1;
+    display: none;
+}
+
+#notstart {
+    display: none;
+    text-align: center;
+    width: 100%;
+    height: 512px;
+    zoom: 1.1;
+    background: #333333;
+    color: #FFFFFF;
+}
+
+#notstart img {
+    width: 320px;
+    max-width: 100%;
+    margin-top: 64px;
+}
+
+.comments {
+    font-size: 16px;
+    font-weight: bold;
+    display: inline-block;
+    width: 100%;
+    color: #7fa5bc;
+    border-radius: 20px;
+}
+
+.h100 {
+    height: 100%;
+}
+
+.comment-data {
+    width: 100%;
+    height: 550px;
+    overflow-y: auto;
+}
+
+.comment-data-2 {
+    width: 100%;
+    height: 650px;
+}
+
+.msg-content .headimg {
+    display: inline-block;
+    width: 32px;
+}
+
+.msg-content .headimg img {
+    width: 100%;
+    border-radius: 50%;
+}
+
+.msg-content {
+    display: block;
+    line-height: 10px;
+}
+
+.msg {
+    width: 100%;
+    font-size: 2vh;
+    display: block;
+    color: #000000;
+}
+
+.inputcontentbutton {
+    width: 100%;
+    height: 50px;
+    display: block;
+    background: transparent;
+    border-top: 1px solid #787d9a;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    padding: 4px;
+    color: #000000;
+}
+
+
+.player {
+    padding-right: 5px ! important;
+}
+
+.active {
+    border-left: 3px solid rgb(255, 161, 161);
+}
+
+.NekohaShizuku {
+    position: fixed;
+    width: 30em;
+    bottom: 0;
+    right: 0;
+}
+
+.livEstatus {
+    background: #ffeb00;
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    vertical-align: 4%;
+    margin-right: 5px;
+    border-radius: 6px;
+}
+
+.swal2-container.swal2-center>.swal2-popup {
+    font-size:16px;
+}
+
+a,div,span,i {
+    color: #333333!important
+}
+
+#toolbar {
+    border-radius: 25px;
+    padding: 0px 15px 0 8px;
+    backdrop-filter: blur(5px);
+    background-color: rgba(255,255,255, 0.85)!important;
+    box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
+    border: 0px rgba(255,255,255,0.4) solid;
+    border-bottom: 0px rgba(40,40,40,0.35) solid;
+    border-right: 0px rgba(40,40,40,0.35) solid;
+    box-shadow:
+    2.8px 2.8px 2.2px rgba(0, 0, 0, 0.042),
+    6.7px 6.7px 5.3px rgba(0, 0, 0, 0.061),
+    12.5px 12.5px 10px rgba(0, 0, 0, 0.075),
+    22.3px 22.3px 17.9px rgba(0, 0, 0, 0.089),
+    41.8px 41.8px 33.4px rgba(0, 0, 0, 0.108),
+    100px 100px 80px rgba(0, 0, 0, 0.15)
+    ;
+    margin: 10px 20px;
+    width: calc(100% - 40px);
+    height: 48px;
+    line-height: 48px;
+}
+
+#chatting-list {
+    border-radius: 25px;
+    backdrop-filter: blur(5px);
+    background-color: rgba(255,255,255, 0.8)!important;
+    box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
+    border: 0px rgba(255,255,255,0.4) solid;
+    border-bottom: 0px rgba(40,40,40,0.35) solid;
+    border-right: 0px rgba(40,40,40,0.35) solid;
+    user-select: auto;
+}
+
+#chatting-list:hover {
+    background-color: rgb(255 255 255 / 0.75)!important;
+}
+
+#textfield {
+    padding-top: 0px;
+}
+
+.mdui-col, [class*=mdui-col-lg-], [class*=mdui-col-md-], [class*=mdui-col-sm-], [class*=mdui-col-xl-], [class*=mdui-col-xs-] {
+    padding: 0px 14px;
+}
+
+.mdui-menu {
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    background-color: rgba(255,255,255, 0.85)!important;
+    box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
+    border: 0px rgba(255,255,255,0.4) solid;
+    border-bottom: 0px rgba(40,40,40,0.35) solid;
+    border-right: 0px rgba(40,40,40,0.35) solid;
+    box-shadow: 2.8px 2.8px 2.2px rgb(0 0 0 / 4%), 6.7px 6.7px 5.3px rgb(0 0 0 / 6%), 12.5px 12.5px 10px rgb(0 0 0 / 8%), 22.3px 22.3px 17.9px rgb(0 0 0 / 9%), 41.8px 41.8px 33.4px rgb(0 0 0 / 11%), 100px 100px 80px rgb(0 0 0 / 15%);
+    margin: 10px
+}
+
+.main-area {
+    padding: 0px;
+}
+
+.mdui-tooltip {
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    background-color: rgba(255,255,255, 0.8)!important;
+    box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
+    border: 0px rgba(255,255,255,0.4) solid;
+    border-bottom: 0px rgba(40,40,40,0.35) solid;
+    border-right: 0px rgba(40,40,40,0.35) solid;
+    box-shadow: 2.8px 2.8px 2.2px rgb(0 0 0 / 4%), 6.7px 6.7px 5.3px rgb(0 0 0 / 6%), 12.5px 12.5px 10px rgb(0 0 0 / 8%), 22.3px 22.3px 17.9px rgb(0 0 0 / 9%), 41.8px 41.8px 33.4px rgb(0 0 0 / 11%), 100px 100px 80px rgb(0 0 0 / 15%);
+    margin: 10px
+}
+
+.mdui-dialog {
+    border-radius: 25px;
+    backdrop-filter: blur(5px); 
+    background-color: rgba(255,255,255, 0.85)!important;
+    box-shadow: rgb(0 0 0 \ 30%) 2px 8px 8px;
+    border: 0px rgba(255,255,255,0.4) solid;
+    border-bottom: 0px rgba(40,40,40,0.35) solid;
+    border-right: 0px rgba(40,40,40,0.35) solid
+}
+
+
+delete {
+    text-decoration: line-through;
+}
+
+.mdui-snackbar {
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    background-color: rgba(255,255,255, 0.8)!important;
+    box-shadow: rgb(0 0 0 / 30%) 2px 8px 8px;
+    border: 0px rgba(255,255,255,0.4) solid;
+    border-bottom: 0px rgba(40,40,40,0.35) solid;
+    border-right: 0px rgba(40,40,40,0.35) solid;
+    box-shadow: 2.8px 2.8px 2.2px rgb(0 0 0 / 4%), 6.7px 6.7px 5.3px rgb(0 0 0 / 6%), 12.5px 12.5px 10px rgb(0 0 0 / 8%), 22.3px 22.3px 17.9px rgb(0 0 0 / 9%), 41.8px 41.8px 33.4px rgb(0 0 0 / 11%), 100px 100px 80px rgb(0 0 0 / 15%);
+    margin: 20px 0px
+}
+
+body {
+    user-select: none;
+    background-position: 50%;
+}
+
+#drop-area {
+  position: relative;
+  z-index: 9999;
+}
+
+#drop-area.highlight {
+  background-color: #e9f2fe;
+}
