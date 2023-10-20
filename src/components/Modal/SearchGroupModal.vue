@@ -29,7 +29,7 @@ async function joinGroup() {
     }
     switch (verification.verification_method) {
       case 'fr':
-        await store.joinGroup(form).then((res) => {
+        await store.joinGroup(form).then(() => {
           store.getGroupList()
           props.close()
         }).catch((err) => {
@@ -37,7 +37,7 @@ async function joinGroup() {
         })
         break
       case 'ac':
-        await store.joinGroup(form).then((res) => {
+        await store.joinGroup(form).then(() => {
           toastStore.showToast('已发送入群申请', 'success')
           props.close()
         }).catch((err) => {
@@ -60,7 +60,7 @@ async function submitAnswer() {
   await store.joinGroup({
     group_id: joinGroupID,
     add_info: answer,
-  }).then((res) => {
+  }).then(() => {
     showQA = false
     props.close()
     toastStore.showToast('加入成功', 'success')

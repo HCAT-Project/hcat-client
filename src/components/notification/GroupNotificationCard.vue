@@ -11,7 +11,7 @@ const store = useStore()
 const toastStore = useToastStore()
 
 function agreeJoinReq() {
-  store.agreeJoinGroupReq(props.item.rid).then((res) => {
+  store.agreeJoinGroupReq(props.item.rid).then(() => {
     store.removeGroupNotification(props.item.rid)
   }).catch((err) => {
     toastStore.showToast(err, 'error')

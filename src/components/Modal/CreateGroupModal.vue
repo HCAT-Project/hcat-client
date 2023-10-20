@@ -14,7 +14,7 @@ const createGroupName = $ref('')
 async function createGroup() {
   if (createGroupName === '')
     return
-  await store.createGroup(createGroupName).then(async (res) => {
+  await store.createGroup(createGroupName).then(async () => {
     await store.getGroupList()
     close()
   }).catch((err) => {

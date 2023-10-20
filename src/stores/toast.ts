@@ -10,7 +10,7 @@ export const useToastStore = defineStore('toast', {
     description: '',
   }),
   actions: {
-    showToast(message: string, type: ToastState, description?: string) {
+    showToast(message: string, type: ToastState) {
       this.show = true
       this.message = message
       this.type = type

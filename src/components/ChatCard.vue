@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<{
 
 const store = useStore()
 
-watch(() => props.selected, (val) => {
+watch(() => props.selected, () => {
   if (store.unReadMsg[props.itemId])
     store.unReadMsg[props.itemId].number = 0
 })

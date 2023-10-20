@@ -17,7 +17,7 @@ const userStore = useUserStore()
 const toastStore = useToastStore()
 
 async function giveAdmin(userId: string) {
-  await store.addAdmin(props.id, userId).then(async (res) => {
+  await store.addAdmin(props.id, userId).then(async () => {
     emits('refreshMemberList')
   }).catch((err) => {
     toastStore.showToast(err, 'error')
@@ -25,7 +25,7 @@ async function giveAdmin(userId: string) {
 }
 
 async function removeAdmin(userId: string) {
-  await store.removeAdmin(props.id, userId).then(async (res) => {
+  await store.removeAdmin(props.id, userId).then(async () => {
     emits ('refreshMemberList')
   }).catch((err) => {
     toastStore.showToast(err, 'error')
@@ -33,7 +33,7 @@ async function removeAdmin(userId: string) {
 }
 
 async function kickMember(userId: string) {
-  await store.kickMember(props.id, userId).then(async (res) => {
+  await store.kickMember(props.id, userId).then(async () => {
     emits ('refreshMemberList')
   }).catch((err) => {
     toastStore.showToast(err, 'error')

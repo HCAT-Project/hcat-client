@@ -17,10 +17,14 @@ onBeforeMount(async () => {
 })
 
 onMounted(() => {
-  tl.to(notifyButton.value,
-    { rotation: 30, duration: 0.6, repeat: -1, yoyo: true, transformOrigin: '50% 0', ease: 'sine.inOut' })
+  tl.to(notifyButton.value, { rotation: 30, duration: 0.6, repeat: -1, yoyo: true, transformOrigin: '50% 0', ease: 'sine.inOut' })
     .to(notifyButton.value, {
-      rotation: -30, duration: 0.6, repeat: -1, yoyo: true, transformOrigin: '50% 0', ease: 'sine.inOut',
+      rotation: -30,
+      duration: 0.6,
+      repeat: -1,
+      yoyo: true,
+      transformOrigin: '50% 0',
+      ease: 'sine.inOut',
     })
 })
 

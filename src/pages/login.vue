@@ -17,7 +17,7 @@ async function login() {
     user_id: userID,
     password,
   }
-  await userStore.login(form).then((value) => {
+  await userStore.login(form).then(() => {
     router.replace('/')
   }).catch((err) => {
     toastStore.showToast(err, 'error')

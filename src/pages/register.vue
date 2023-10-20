@@ -20,7 +20,7 @@ async function register() {
     username,
     lang: '简体中文',
   }
-  await userStore.register(form).then((res) => {
+  await userStore.register(form).then(() => {
     router.replace('/login')
   }).catch((err) => {
     toastStore.showToast(err, 'error')

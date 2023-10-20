@@ -43,7 +43,7 @@ onMounted(() => {
 //   y: 0,
 // }
 
-onClickOutside(imgPreview, (_) => {
+onClickOutside(imgPreview.value, (_) => {
   imgPreviewVisible.value = false
 })
 
