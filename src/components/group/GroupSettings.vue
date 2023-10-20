@@ -33,14 +33,14 @@ async function changeGroupSetting(groupSettings: GroupSetting) {
     group_id: props.id,
     setting: JSON.stringify(setting),
   }
-  await store.changeGroupSetting(form).then(() => {
+  await store.changeGroupSetting(form).then((res) => {
   }).catch((err) => {
     toastStore.showToast(err, 'error')
   })
 }
 
 async function leaveGroup() {
-  await store.leaveGroup(props.id).then(async () => {
+  await store.leaveGroup(props.id).then(async (res) => {
     toastStore.showToast('已退出群聊', 'success')
     await store.getGroupList()
     router.replace('/groups')

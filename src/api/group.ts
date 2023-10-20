@@ -1,5 +1,5 @@
 import useAxiosApi from '~/composables/useAxios'
-
+import { useUserStore } from '~/stores'
 export function sendGroupMsgApi() {
   return useAxiosApi('/chat/send_group_msg', {
     method: 'POST',

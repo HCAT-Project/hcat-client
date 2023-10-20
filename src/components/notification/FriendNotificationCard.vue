@@ -11,7 +11,7 @@ const store = useStore()
 const toastStore = useToastStore()
 
 function agreeAddReq(rid: string) {
-  store.agreeFriendReq(rid).then(async () => {
+  store.agreeFriendReq(rid).then(async (res) => {
     store.removeFriendNotification(rid)
     await store.getFriendList()
   }).catch((err) => {

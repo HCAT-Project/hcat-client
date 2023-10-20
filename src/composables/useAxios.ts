@@ -20,11 +20,11 @@ instance.interceptors.request.use(
   (config) => {
     // do something before request is sent
     // const token = store.state.user.token;
-    const token = useUserStore().$state.token
+    const  token = useUserStore().$state.token
 
-    if (token)
+    if (token) {
       config.headers.Authorization = token
-
+    }
     return config
   },
   (error) => {

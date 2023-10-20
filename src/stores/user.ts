@@ -87,6 +87,6 @@ export const useUserStore = defineStore('users', {
     key: 'userStorage',
     storage: window.localStorage,
     // TODO: 图片不该存储在本地
-    paths: ['userId', 'token'],
+    paths: ['userId','token'],
   },
 })

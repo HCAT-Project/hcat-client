@@ -5,7 +5,7 @@ export const useSidebarStore = defineStore('sidebar', {
     show: false,
   }),
   actions: {
-    showSidebar() {
+    showSidebar(message: string) {
       this.show = true
     },
     hideSidebar() {

@@ -24,7 +24,7 @@ async function sendMessage(msg: Msg) {
     group_id: props.id,
     msg: JSON.stringify(msg),
   }
-  await store.sendGroupMsg(form).then(() => {
+  await store.sendGroupMsg(form).then((res: any) => {
     const user_id = userStore.userId
     store.groupMessages[props.id] = [
       ...store.groupMessages[props.id] ?? [],

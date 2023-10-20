@@ -21,14 +21,14 @@ const router = createRouter({
 })
 router.beforeEach(async (to, from, next) => {
   if (to.meta.requiresAuth) {
-    await userStore.authToken().then(() => {
+    await userStore.authToken().then((res) => {
       next()
     }).catch((_) => {
       next({ name: 'login' })
     })
   }
   else {
-    await userStore.authToken().then(() => {
+    await userStore.authToken().then((res) => {
       next({ name: 'index' })
     }).catch((_) => {
       next()

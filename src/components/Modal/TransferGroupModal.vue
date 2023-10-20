@@ -15,7 +15,7 @@ const store = useStore()
 const toastStore = useToastStore()
 
 async function transferOwnership(userId: string) {
-  await store.transferOwnership(props.groupId, userId).then(async () => {
+  await store.transferOwnership(props.groupId, userId).then(async (res) => {
     props.close()
     emit('refresh')
   }).catch((err) => {

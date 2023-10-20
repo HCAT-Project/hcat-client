@@ -3,7 +3,7 @@ import useAxiosApi from '~/composables/useAxios'
 export function authTokenApi(token: string) {
   return useAxiosApi('/account/authenticate_token', {
     method: 'GET',
-    params: { token },
+    params: {token}
   })
 }
 
