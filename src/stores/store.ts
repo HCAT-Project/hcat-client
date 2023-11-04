@@ -388,7 +388,9 @@ export const useStore = defineStore('stores', {
     uploadFile(file: File) {
       return new Promise((resolve, reject) => {
         const { execute } = uploadFileApi()
-        execute({ data: { file } }).then((res) => {
+        execute({ data: { file }, headers: {
+          'Content-Type': 'multipart/form-data',
+        } }).then((res) => {
           if (res.data.value.status === 'ok')
             resolve(res.data.value.data)
           else

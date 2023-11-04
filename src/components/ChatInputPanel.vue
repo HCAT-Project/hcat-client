@@ -28,8 +28,8 @@ watch(files, (files) => {
     return
   }
   reader.onload = async (e) => {
-    const wordArry = crypto.lib.WordArray.create(e.target?.result as any)
-    const hash = crypto.SHA1(wordArry).toString()
+    const wordArray = crypto.lib.WordArray.create(e.target?.result as any)
+    const hash = crypto.SHA1(wordArray).toString()
     const msg = {
       msg_chain: [{ type: 'img', msg: hash }],
     }
